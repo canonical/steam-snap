@@ -1,10 +1,11 @@
 name: steam
-version: '1.0.0.61'
 summary: Launcher for the Steam software distribution service
 description: |
  Steam is a software distribution service with an online store, automated
  installation, automatic updates, achievements, SteamCloud synchronized
  savegame and screenshot functionality, and many social features.
+
+adopt-info: steam
 
 grade: stable
 confinement: devmode
@@ -57,11 +58,16 @@ parts:
 
   steam:
     plugin: nil
-    source: http://repo.steampowered.com/steam/pool/steam/s/steam/steam-launcher_$SNAPCRAFT_PROJECT_VERSION_all.deb
+    source: http://repo.steampowered.com/steam/archive/precise/steam_latest.deb
+    build-packages:
+      - dpkg-dev
     override-build: |
+      # Set the snap version from the .deb package version
+      snapcraftctl set-version $(dpkg-parsechangelog -l usr/share/doc/steam-launcher/changelog.gz -S Version)
       # Copy the binaries and data
       cp -a usr/bin $SNAPCRAFT_PART_INSTALL/bin
       cp -a usr/lib $SNAPCRAFT_PART_INSTALL/lib
+      cp -a usr/share/doc/steam $SNAPCRAFT_PART_INSTALL/doc
       # Copy over the icon
       cp usr/share/icons/hicolor/256x256/apps/steam.png $SNAPCRAFT_PART_INSTALL/steam.png
       mkdir -p $SNAPCRAFT_PART_INSTALL/meta/gui
