@@ -84,6 +84,7 @@ apps:
       LIBGL_DEBUG: verbose
     plugs:
       - desktop
+      - hardware-observe
       - joystick
       - network
       - opengl
