@@ -12,19 +12,19 @@ confinement: devmode
 architectures:
   - build-on: amd64
 
-passthrough:
-  # Modern snapcraft can not build against unknown base snaps, so hide
-  # this in passthrough so that legacy snapcraft is used.
-  base: steamos
-  layout:
-    /usr/share/themes:
-      bind: $SNAP/share/themes
-    /usr/share/icons:
-      bind: $SNAP/share/icons
-    /usr/share/sounds:
-      bind: $SNAP/share/sounds
-    /usr/lib/steam:
-      bind: $SNAP/lib/steam
+# Build snap on a Focal VM, despite using the steamos base
+build-base: core20
+base: steamos
+
+layout:
+  /usr/share/themes:
+    bind: $SNAP/share/themes
+  /usr/share/icons:
+    bind: $SNAP/share/icons
+  /usr/share/sounds:
+    bind: $SNAP/share/sounds
+  /usr/lib/steam:
+    bind: $SNAP/lib/steam
 
 plugs:
   gtk-3-themes:
@@ -63,7 +63,7 @@ parts:
       - dpkg-dev
     override-build: |
       # Set the snap version from the .deb package version
-      snapcraftctl set-version $(dpkg-parsechangelog -l usr/share/doc/steam-launcher/changelog.gz -S Version)
+      snapcraftctl set-version $(dpkg-parsechangelog -l usr/share/doc/steam-launcher/changelog.all.gz -S Version)
       # Copy the binaries and data
       cp -a usr/bin $SNAPCRAFT_PART_INSTALL/bin
       cp -a usr/lib $SNAPCRAFT_PART_INSTALL/lib
@@ -73,11 +73,11 @@ parts:
       mkdir -p $SNAPCRAFT_PART_INSTALL/meta/gui
       ln -s ../../steam.png $SNAPCRAFT_PART_INSTALL/meta/gui/icon.png
       # Install the desktop file, with the icon field munged
-      sed 's|Icon=steam|Icon=$SNAP/steam.png|g' usr/share/applications/steam.desktop > $SNAPCRAFT_PART_INSTALL/steam.desktop
+      sed 's|Icon=steam|Icon=${SNAP}/steam.png|g' usr/share/applications/steam.desktop > $SNAPCRAFT_PART_INSTALL/steam.desktop
 
 apps:
   steam:
-    command: steam-snap.sh
+    command: bin/steam-snap.sh
     desktop: steam.desktop
     environment:
       HOME: $SNAP_USER_COMMON
