@@ -8,65 +8,94 @@ description: |
 adopt-info: steam
 
 grade: stable
-confinement: devmode
+confinement: strict
 architectures:
   - build-on: amd64
 
-# Build snap on a Focal VM, despite using the steamos base
-build-base: core20
-base: steamos
+base: core20
 
 layout:
-  /usr/share/themes:
-    bind: $SNAP/share/themes
-  /usr/share/icons:
-    bind: $SNAP/share/icons
-  /usr/share/sounds:
-    bind: $SNAP/share/sounds
   /usr/lib/steam:
     bind: $SNAP/lib/steam
 
 plugs:
-  gtk-3-themes:
-    interface: content
-    target: $SNAP/share/themes
-    default-provider: gtk-common-themes
-  icon-themes:
-    interface: content
-    target: $SNAP/share/icons
-    default-provider: gtk-common-themes
-  sound-themes:
-    interface: content
-    target: $SNAP/share/sounds
-    default-provider: gtk-common-themes
   steam-library:
     interface: personal-files
     write:
       - $HOME/.local/share/Steam
       - $HOME/Steam
 
+environment:
+  LD_LIBRARY_PATH: $SNAP_LIBRARY_PATH:$LD_LIBRARY_PATH:$SNAP/usr/lib/i386-linux-gnu:$SNAP/lib/i386-linux-gnu:$SNAP/usr/lib/i386-linux-gnu/pulseaudio
+
 parts:
   launcher:
     plugin: nil
     source : ./src
     override-build: |
-      mkdir -p $SNAPCRAFT_PART_INSTALL/share/themes
-      mkdir -p $SNAPCRAFT_PART_INSTALL/share/icons
-      mkdir -p $SNAPCRAFT_PART_INSTALL/share/sounds
       mkdir -p $SNAPCRAFT_PART_INSTALL/bin
       cp steam-snap.sh $SNAPCRAFT_PART_INSTALL/bin
 
+  enable-i386:
+    plugin: nil
+    override-build: |
+      snapcraftctl build
+      if [ "$SNAPCRAFT_ARCH_TRIPLET" = "x86_64-linux-gnu" ]; then
+        dpkg --add-architecture i386
+        apt update
+      fi
+
   steam:
+    after: [ enable-i386 ]
     plugin: nil
     source: http://repo.steampowered.com/steam/archive/precise/steam_latest.deb
     build-packages:
       - dpkg-dev
+    stage-packages:
+      - pciutils
+      - xz-utils
+      - zenity
+      - on amd64:
+          - libasound2:i386
+          - libasound2-plugins:i386
+          - libbsd0:i386
+          - libc6:i386
+          - libcurl4:i386
+          - libdrm2:i386
+          - libfreetype6:i386
+          - libgcc1:i386
+          - libgdk-pixbuf2.0-0:i386
+          - libgl1:i386
+          - libgl1-mesa-dri:i386
+          - libglib2.0-0:i386
+          - libglx-mesa0:i386
+          - libgnutls30:i386
+          - libgtk2.0-0:i386
+          - libopenal1:i386
+          - libopengl0:i386
+          - libpulse0:i386
+          - libstdc++6:i386
+          - libva2:i386
+          #- libva-wayland1:i386
+          #- libva-x11-1:i386
+          - libvdpau1:i386
+          - libvulkan1:i386
+          - libx11-6:i386
+          - libxau6:i386
+          - libxcb1:i386
+          - libxdmcp6:i386
+          - libxrandr2:i386
+          - libxtst6:i386
+          - mesa-vdpau-drivers:i386
+          - mesa-vulkan-drivers:i386
+          - va-driver-all:i386
+
     override-build: |
       # Set the snap version from the .deb package version
       snapcraftctl set-version $(dpkg-parsechangelog -l usr/share/doc/steam-launcher/changelog.all.gz -S Version)
       # Copy the binaries and data
       cp -a usr/bin $SNAPCRAFT_PART_INSTALL/bin
-      cp -a usr/lib $SNAPCRAFT_PART_INSTALL/lib
+      cp -a usr/lib/* $SNAPCRAFT_PART_INSTALL/lib/
       cp -a usr/share/doc/steam $SNAPCRAFT_PART_INSTALL/doc
       # Copy over the icon
       cp usr/share/icons/hicolor/256x256/apps/steam.png $SNAPCRAFT_PART_INSTALL/steam.png
@@ -77,18 +106,16 @@ parts:
 
 apps:
   steam:
+    extensions: [ gnome-3-38 ]
     command: bin/steam-snap.sh
     desktop: steam.desktop
     environment:
       HOME: $SNAP_USER_COMMON
       LIBGL_DEBUG: verbose
     plugs:
-      - desktop
       - hardware-observe
       - joystick
       - network
       - opengl
-      - pulseaudio
-      - steam-support
-      - wayland
-      - x11
+      - audio-playback
+      - audio-record
