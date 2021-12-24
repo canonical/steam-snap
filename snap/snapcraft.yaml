@@ -17,8 +17,32 @@ base: core20
 layout:
   /usr/lib/steam:
     bind: $SNAP/lib/steam
+  /usr/share/zenity:
+    bind: $SNAP/usr/share/zenity
+  /usr/share/themes:
+    bind: $SNAP/share/themes
+  /usr/share/icons:
+    bind: $SNAP/share/icons
+  /usr/share/sounds:
+    bind: $SNAP/share/sounds
+  /usr/lib/i386-linux-gnu/dri:
+    bind: $SNAP/usr/lib/i386-linux-gnu/dri
+  /usr/lib/x86_64-linux-gnu/dri:
+    bind: $SNAP/usr/lib/x86_64-linux-gnu/dri
 
 plugs:
+  gtk-3-themes:
+    interface: content
+    target: $SNAP/share/themes
+    default-provider: gtk-common-themes
+  icon-themes:
+    interface: content
+    target: $SNAP/share/icons
+    default-provider: gtk-common-themes
+  sound-themes:
+    interface: content
+    target: $SNAP/share/sounds
+    default-provider: gtk-common-themes
   steam-library:
     interface: personal-files
     write:
@@ -26,7 +50,7 @@ plugs:
       - $HOME/Steam
 
 environment:
-  LD_LIBRARY_PATH: $SNAP_LIBRARY_PATH:$LD_LIBRARY_PATH:$SNAP/usr/lib/i386-linux-gnu:$SNAP/lib/i386-linux-gnu:$SNAP/usr/lib/i386-linux-gnu/pulseaudio
+  LD_LIBRARY_PATH: $SNAP/usr/lib/i386-linux-gnu:$SNAP/lib/i386-linux-gnu:$SNAP/usr/lib/i386-linux-gnu/pulseaudio:$SNAP_LIBRARY_PATH:$LD_LIBRARY_PATH
 
 parts:
   launcher:
@@ -52,9 +76,43 @@ parts:
     build-packages:
       - dpkg-dev
     stage-packages:
+      - file
       - pciutils
       - xz-utils
       - zenity
+      - libasound2
+      - libasound2-plugins
+      - libbsd0
+      - libc6
+      - libcurl4
+      - libdrm2
+      - libfreetype6
+      - libgcc1
+      - libgdk-pixbuf2.0-0
+      - libgl1
+      - libgl1-mesa-dri
+      - libglib2.0-0
+      - libglx-mesa0
+      - libgnutls30
+      - libgtk2.0-0
+      - libopenal1
+      - libopengl0
+      - libpulse0
+      - libstdc++6
+      - libva2
+      - libva-wayland2
+      - libva-x11-2
+      - libvdpau1
+      - libvulkan1
+      - libx11-6
+      - libxau6
+      - libxcb1
+      - libxdmcp6
+      - libxrandr2
+      - libxtst6
+      - mesa-vdpau-drivers
+      - mesa-vulkan-drivers
+      - va-driver-all
       - on amd64:
           - libasound2:i386
           - libasound2-plugins:i386
@@ -76,8 +134,8 @@ parts:
           - libpulse0:i386
           - libstdc++6:i386
           - libva2:i386
-          #- libva-wayland1:i386
-          #- libva-x11-1:i386
+          - libva-wayland2:i386
+          - libva-x11-2:i386
           - libvdpau1:i386
           - libvulkan1:i386
           - libx11-6:i386
@@ -92,7 +150,7 @@ parts:
 
     override-build: |
       # Set the snap version from the .deb package version
-      snapcraftctl set-version $(dpkg-parsechangelog -l usr/share/doc/steam-launcher/changelog.all.gz -S Version)
+      snapcraftctl set-version $(dpkg-parsechangelog -l usr/share/doc/steam-launcher/changelog.all.gz -S Version | sed -e s/1://g)
       # Copy the binaries and data
       cp -a usr/bin $SNAPCRAFT_PART_INSTALL/bin
       cp -a usr/lib/* $SNAPCRAFT_PART_INSTALL/lib/
@@ -106,13 +164,15 @@ parts:
 
 apps:
   steam:
-    extensions: [ gnome-3-38 ]
     command: bin/steam-snap.sh
     desktop: steam.desktop
     environment:
       HOME: $SNAP_USER_COMMON
       LIBGL_DEBUG: verbose
     plugs:
+      - desktop
+      - wayland
+      - x11
       - hardware-observe
       - joystick
       - network
