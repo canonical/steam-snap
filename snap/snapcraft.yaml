@@ -29,6 +29,22 @@ layout:
     bind: $SNAP/usr/lib/i386-linux-gnu/dri
   /usr/lib/x86_64-linux-gnu/dri:
     bind: $SNAP/usr/lib/x86_64-linux-gnu/dri
+  /usr/lib/i386-linux-gnu/mesa:
+    bind: $SNAP/usr/lib/i386-linux-gnu/mesa
+  /usr/lib/x86_64-linux-gnu/mesa:
+    bind: $SNAP/usr/lib/x86_64-linux-gnu/mesa
+  /usr/lib/i386-linux-gnu/mesa-egl:
+    bind: $SNAP/usr/lib/i386-linux-gnu/mesa-egl
+  /usr/lib/x86_64-linux-gnu/mesa-egl:
+    bind: $SNAP/usr/lib/x86_64-linux-gnu/mesa-egl
+  /usr/share/glvnd/egl_vendor.d:
+    bind: $SNAP/usr/share/glvnd/egl_vendor.d
+  /usr/lib/$SNAPCRAFT_ARCH_TRIPLET/alsa-lib:
+    bind: $SNAP/usr/lib/$SNAPCRAFT_ARCH_TRIPLET/alsa-lib
+  /usr/share/alsa:
+    bind: $SNAP/usr/share/alsa
+  /usr/share/vulkan:
+    bind: $SNAP/usr/share/vulkan
 
 plugs:
   gtk-3-themes:
@@ -48,6 +64,9 @@ plugs:
     write:
       - $HOME/.local/share/Steam
       - $HOME/Steam
+  browser-sandbox:
+    interface: browser-support
+    allow-sandbox: true
 
 environment:
   LD_LIBRARY_PATH: $SNAP/usr/lib/i386-linux-gnu:$SNAP/lib/i386-linux-gnu:$SNAP/usr/lib/i386-linux-gnu/pulseaudio:$SNAP_LIBRARY_PATH:$LD_LIBRARY_PATH
@@ -58,26 +77,79 @@ parts:
     source : ./src
     override-build: |
       mkdir -p $SNAPCRAFT_PART_INSTALL/bin
-      cp steam-snap.sh $SNAPCRAFT_PART_INSTALL/bin
+      cp steam-snap.sh $SNAPCRAFT_PART_INSTALL/bin/
+      cp desktop-launch $SNAPCRAFT_PART_INSTALL/bin/
+
+  alsa-mixin:
+    plugin: dump
+    source: https://github.com/diddlesnaps/snapcraft-alsa.git
+    source-subdir: snapcraft-assets
+    build-packages:
+      - libasound2-dev
+    stage-packages:
+      - libasound2
+      - libasound2-plugins
+      - yad
+    stage:
+      # restrict to only audio-related files - you need to ensure
+      # that gtk3 is staged for yad to work correctly, to prompt
+      # users to connect the alsa plug or proceed with pulseaudio.
+      #
+      # This helps prevent symbol conflicts in situations where
+      # you're using a non-default library, such as those that the
+      # gnome-3-34 extension for core18 provides.
+      - etc/asound.conf
+      - snap/command-chain/alsa-launch
+      - usr/bin/yad*
+      - usr/lib/$SNAPCRAFT_ARCH_TRIPLET/alsa-lib
+      - usr/lib/$SNAPCRAFT_ARCH_TRIPLET/libasound*
+      - usr/lib/$SNAPCRAFT_ARCH_TRIPLET/libdnsfile*
+      - usr/lib/$SNAPCRAFT_ARCH_TRIPLET/libFLAC*
+      - usr/lib/$SNAPCRAFT_ARCH_TRIPLET/libjack*
+      - usr/lib/$SNAPCRAFT_ARCH_TRIPLET/libpulse*
+      - usr/lib/$SNAPCRAFT_ARCH_TRIPLET/libsamplerate*
+      - usr/lib/$SNAPCRAFT_ARCH_TRIPLET/libspeex*
+      - usr/lib/$SNAPCRAFT_ARCH_TRIPLET/libvorbis*
+      - usr/lib/$SNAPCRAFT_ARCH_TRIPLET/pulseaudio
 
   enable-i386:
+    after: [ launcher ]
     plugin: nil
     override-build: |
       snapcraftctl build
+      tee /etc/apt/sources.list.d/steam.list <<'EOF'
+      deb [arch=amd64,i386] http://repo.steampowered.com/steam/ stable steam
+      deb-src [arch=amd64,i386] http://repo.steampowered.com/steam/ stable steam
+      EOF
+      #apt-key adv --keyserver keyserver.ubuntu.com --recv-keys F24AEA9FB05498B7
+      apt-key add $SNAPCRAFT_PROJECT_DIR/src/valve-archive-keyring.gpg
+
       if [ "$SNAPCRAFT_ARCH_TRIPLET" = "x86_64-linux-gnu" ]; then
         dpkg --add-architecture i386
-        apt update
       fi
+      apt update
 
   steam:
-    after: [ enable-i386 ]
+    after: [ enable-i386, alsa-mixin ]
     plugin: nil
-    source: http://repo.steampowered.com/steam/archive/precise/steam_latest.deb
+    #source: http://repo.steampowered.com/steam/archive/precise/steam_latest.deb
     build-packages:
       - dpkg-dev
     stage-packages:
+      - steam-launcher
+      - ca-certificates
       - curl
+      - curl:i386
       - file
+      - file:i386
+      - fontconfig:amd64
+      - fontconfig:i386
+      - fonts-liberation:amd64
+      - fonts-liberation:i386
+      - i965-va-driver:i386
+      - i965-va-driver-shaders:i386
+      - intel-media-va-driver:i386
+      - intel-media-va-driver-non-free:i386
       - libasound2:amd64
       - libasound2:i386
       - libasound2-plugins:amd64
@@ -86,15 +158,21 @@ parts:
       - libc6:i386
       - libcurl4:i386
       - libdrm2:i386
+      - libegl1:i386
+      - libgbm1:i386
       - libgcc1:i386
+      - libgcc-s1:i386
       - libgdk-pixbuf2.0-0:i386
       - libgl1:amd64
       - libgl1:i386
       - libgl1-mesa-dri:amd64
       - libgl1-mesa-dri:i386
+      - libgl1-mesa-glx:amd64
+      - libgl1-mesa-glx:i386
       - libglib2.0-0:i386
       - libglx-mesa0:amd64
       - libglx-mesa0:i386
+      - libgpg-error0:i386
       - libgtk2.0-0:i386
       - libmagic1
       - libnotify4
@@ -104,7 +182,9 @@ parts:
       - libopengl0:i386
       - libpulse0:amd64
       - libpulse0:i386
+      - libsdl2-2.0-0:i386
       - libstdc++6:i386
+      - libudev1:i386
       - libva2:amd64
       - libva2:i386
       - libva-wayland2:amd64
@@ -118,41 +198,56 @@ parts:
       - libx11-6:i386
       - libxau6:i386
       - libxcb1:i386
+      - libxcb-dri3-0:i386
       - libxdmcp6:i386
+      - libxi6:i386
+      - libxinerama1:i386
       - libxrandr2:i386
+      - libxss1:i386
       - libxtst6:i386
       - locales-all
+      - mesa-va-drivers:i386
       - mesa-vdpau-drivers:amd64
       - mesa-vdpau-drivers:i386
       - mesa-vulkan-drivers:amd64
       - mesa-vulkan-drivers:i386
       - pciutils
+      - steam-devices:i386
       - va-driver-all:amd64
       - va-driver-all:i386
+      - va-driver:i386
+      - xdg-utils:amd64
+      - xdg-utils:i386
+      - xterm:amd64
+      - xterm:i386
       - xz-utils
+      - xz-utils:i386
       - zenity
+      - zenity:i386
+      - libappindicator3-1
+
     override-build: |
+      snapcraftctl build
       # Set the snap version from the .deb package version
-      snapcraftctl set-version $(dpkg-parsechangelog -l usr/share/doc/steam-launcher/changelog.all.gz -S Version | sed -e s/1://g)
-      # Copy the binaries and data
-      cp -a usr/bin $SNAPCRAFT_PART_INSTALL/bin
-      cp -a usr/lib/* $SNAPCRAFT_PART_INSTALL/lib/
-      cp -a usr/share/doc/steam $SNAPCRAFT_PART_INSTALL/doc
+      snapcraftctl set-version $(dpkg-parsechangelog -l $SNAPCRAFT_PART_INSTALL/usr/share/doc/steam-launcher/changelog.all.gz -S Version | sed -e s/1://g)
       # Copy over the icon
-      cp usr/share/icons/hicolor/256x256/apps/steam.png $SNAPCRAFT_PART_INSTALL/steam.png
+      cp $SNAPCRAFT_PART_INSTALL/usr/share/icons/hicolor/256x256/apps/steam.png $SNAPCRAFT_PART_INSTALL/steam.png
       mkdir -p $SNAPCRAFT_PART_INSTALL/meta/gui
       ln -s ../../steam.png $SNAPCRAFT_PART_INSTALL/meta/gui/icon.png
       # Install the desktop file, with the icon field munged
-      sed 's|Icon=steam|Icon=${SNAP}/steam.png|g' usr/share/applications/steam.desktop > $SNAPCRAFT_PART_INSTALL/steam.desktop
+      sed 's|Icon=steam|Icon=${SNAP}/steam.png|g' $SNAPCRAFT_PART_INSTALL/usr/share/applications/steam.desktop > $SNAPCRAFT_PART_INSTALL/steam.desktop
 
 apps:
   steam:
-    command: bin/steam-snap.sh
+    command-chain: [ bin/desktop-launch ]
+    #command: bin/steam-snap.sh
+    command: usr/lib/steam/bin_steam.sh
     desktop: steam.desktop
     environment:
       HOME: $SNAP_USER_COMMON
       LIBGL_DEBUG: verbose
     plugs:
+      - browser-sandbox
       - desktop
       - wayland
       - x11
