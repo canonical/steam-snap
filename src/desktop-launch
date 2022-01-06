@@ -203,7 +203,8 @@ prepend_dir XDG_DATA_DIRS "$SNAP/data-dir"
 prepend_dir XDG_DATA_DIRS "$SNAP_USER_DATA"
 
 # Set XDG_DATA_HOME to local path
-export XDG_DATA_HOME="$SNAP_USER_DATA/.local/share"
+# steam snap
+export XDG_DATA_HOME="$SNAP_USER_COMMON/.local/share"
 ensure_dir_exists "$XDG_DATA_HOME"
 
 # Workaround for GLib < 2.53.2 not searching for schemas in $XDG_DATA_HOME:
