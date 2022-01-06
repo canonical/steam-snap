@@ -125,6 +125,7 @@ parts:
       - usr/lib/$SNAPCRAFT_ARCH_TRIPLET/libspeex*
       - usr/lib/$SNAPCRAFT_ARCH_TRIPLET/libvorbis*
       - usr/lib/$SNAPCRAFT_ARCH_TRIPLET/pulseaudio
+      - usr/share/alsa
 
   enable-i386:
     after: [ launcher ]
