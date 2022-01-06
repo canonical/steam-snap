@@ -76,6 +76,8 @@ plugs:
     write:
       - $HOME/.local/share/Steam
       - $HOME/Steam
+  desktop:
+    mount-host-font-cache: false
   browser-sandbox:
     interface: browser-support
     allow-sandbox: true
@@ -141,6 +143,10 @@ parts:
       fi
       apt update
 
+  steam-devices:
+    plugin: dump
+    source: https://github.com/ValveSoftware/steam-devices.git
+
   steam:
     after: [ enable-i386, alsa-mixin ]
     plugin: nil
@@ -162,7 +168,13 @@ parts:
       - va-driver-all:amd64
       - va-driver-all:i386
       - va-driver:i386
+      - libvdpau-va-gl1:amd64
       - xdg-utils
+      - fontconfig-config
+      - fontconfig:i386
+      - fontconfig:amd64
+      - pciutils
+      - vulkan-tools # For testing
 
     override-build: |
       snapcraftctl build
@@ -174,6 +186,8 @@ parts:
       ln -s ../../steam.png $SNAPCRAFT_PART_INSTALL/meta/gui/icon.png
       # Install the desktop file, with the icon field munged
       sed 's|Icon=steam|Icon=${SNAP}/steam.png|g' $SNAPCRAFT_PART_INSTALL/usr/share/applications/steam.desktop > $SNAPCRAFT_PART_INSTALL/steam.desktop
+    prime:
+      - -etc/fonts
 
 apps:
   steam:
@@ -183,11 +197,14 @@ apps:
     desktop: steam.desktop
     environment:
       HOME: $SNAP_USER_COMMON
-      LIBGL_DEBUG: verbose
+      #LIBGL_DEBUG: verbose
+
     plugs:
       - browser-sandbox
       - desktop
+      - desktop-legacy
       - wayland
+      - home
       - x11
       - gsettings
       - hardware-observe
@@ -196,3 +213,6 @@ apps:
       - opengl
       - audio-playback
       - audio-record
+      - screen-inhibit-control
+      - process-control
+      - bluez
