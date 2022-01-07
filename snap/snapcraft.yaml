@@ -25,6 +25,8 @@ layout:
     bind: $SNAP/share/icons
   /usr/share/sounds:
     bind: $SNAP/share/sounds
+  /usr/share/libdrm:
+    bind: $SNAP/usr/share/libdrm
   /usr/lib/i386-linux-gnu/dri:
     bind: $SNAP/usr/lib/i386-linux-gnu/dri
   /usr/lib/x86_64-linux-gnu/dri:
