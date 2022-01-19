@@ -8,23 +8,57 @@ description: |
 adopt-info: steam
 
 grade: stable
-confinement: devmode
+confinement: strict
 architectures:
   - build-on: amd64
 
-# Build snap on a Focal VM, despite using the steamos base
-build-base: core20
-base: steamos
+base: core20
 
 layout:
+  /usr/lib/steam:
+    bind: $SNAP/lib/steam
+  /usr/share/zenity:
+    bind: $SNAP/usr/share/zenity
   /usr/share/themes:
     bind: $SNAP/share/themes
   /usr/share/icons:
     bind: $SNAP/share/icons
   /usr/share/sounds:
     bind: $SNAP/share/sounds
-  /usr/lib/steam:
-    bind: $SNAP/lib/steam
+  /usr/share/libdrm:
+    bind: $SNAP/usr/share/libdrm
+  /usr/lib/i386-linux-gnu/dri:
+    bind: $SNAP/usr/lib/i386-linux-gnu/dri
+  /usr/lib/x86_64-linux-gnu/dri:
+    bind: $SNAP/usr/lib/x86_64-linux-gnu/dri
+  /usr/lib/i386-linux-gnu/mesa:
+    bind: $SNAP/usr/lib/i386-linux-gnu/mesa
+  /usr/lib/x86_64-linux-gnu/mesa:
+    bind: $SNAP/usr/lib/x86_64-linux-gnu/mesa
+  /usr/lib/i386-linux-gnu/mesa-egl:
+    bind: $SNAP/usr/lib/i386-linux-gnu/mesa-egl
+  /usr/lib/x86_64-linux-gnu/mesa-egl:
+    bind: $SNAP/usr/lib/x86_64-linux-gnu/mesa-egl
+  /usr/share/glvnd/egl_vendor.d:
+    bind: $SNAP/usr/share/glvnd/egl_vendor.d
+  /usr/lib/$SNAPCRAFT_ARCH_TRIPLET/alsa-lib:
+    bind: $SNAP/usr/lib/$SNAPCRAFT_ARCH_TRIPLET/alsa-lib
+  /usr/share/alsa:
+    bind: $SNAP/usr/share/alsa
+  /usr/share/vulkan:
+    bind: $SNAP/usr/share/vulkan
+  /usr/lib/i386-linux-gnu/libvulkan_intel.so:
+    bind-file: $SNAP/usr/lib/i386-linux-gnu/libvulkan_intel.so
+  /usr/lib/x86_64-linux-gnu/libvulkan_intel.so:
+    bind-file: $SNAP/usr/lib/x86_64-linux-gnu/libvulkan_intel.so
+  /usr/lib/i386-linux-gnu/libvulkan_lvp.so:
+    bind-file: $SNAP/usr/lib/i386-linux-gnu/libvulkan_lvp.so
+  /usr/lib/x86_64-linux-gnu/libvulkan_lvp.so:
+    bind-file: $SNAP/usr/lib/x86_64-linux-gnu/libvulkan_lvp.so
+  /usr/lib/i386-linux-gnu/libvulkan_radeon.so:
+    bind-file: $SNAP/usr/lib/i386-linux-gnu/libvulkan_radeon.so
+  /usr/lib/x86_64-linux-gnu/libvulkan_radeon.so:
+    bind-file: $SNAP/usr/lib/x86_64-linux-gnu/libvulkan_radeon.so
 
 plugs:
   gtk-3-themes:
@@ -44,51 +78,144 @@ plugs:
     write:
       - $HOME/.local/share/Steam
       - $HOME/Steam
+  desktop:
+    mount-host-font-cache: false
+  browser-sandbox:
+    interface: browser-support
+    allow-sandbox: true
+
+environment:
+  LD_LIBRARY_PATH: $SNAP/usr/lib/i386-linux-gnu:$SNAP/lib/i386-linux-gnu:$SNAP/usr/lib/i386-linux-gnu/pulseaudio:$SNAP_LIBRARY_PATH:$LD_LIBRARY_PATH
 
 parts:
   launcher:
     plugin: nil
     source : ./src
     override-build: |
-      mkdir -p $SNAPCRAFT_PART_INSTALL/share/themes
-      mkdir -p $SNAPCRAFT_PART_INSTALL/share/icons
-      mkdir -p $SNAPCRAFT_PART_INSTALL/share/sounds
       mkdir -p $SNAPCRAFT_PART_INSTALL/bin
-      cp steam-snap.sh $SNAPCRAFT_PART_INSTALL/bin
+      cp steam-snap.sh $SNAPCRAFT_PART_INSTALL/bin/
+      cp desktop-launch $SNAPCRAFT_PART_INSTALL/bin/
+
+  alsa-mixin:
+    plugin: dump
+    source: https://github.com/diddlesnaps/snapcraft-alsa.git
+    source-subdir: snapcraft-assets
+    build-packages:
+      - libasound2-dev
+    stage-packages:
+      - libasound2
+      - libasound2-plugins
+      - yad
+    stage:
+      # restrict to only audio-related files - you need to ensure
+      # that gtk3 is staged for yad to work correctly, to prompt
+      # users to connect the alsa plug or proceed with pulseaudio.
+      #
+      # This helps prevent symbol conflicts in situations where
+      # you're using a non-default library, such as those that the
+      # gnome-3-34 extension for core18 provides.
+      - etc/asound.conf
+      - snap/command-chain/alsa-launch
+      - usr/bin/yad*
+      - usr/lib/$SNAPCRAFT_ARCH_TRIPLET/alsa-lib
+      - usr/lib/$SNAPCRAFT_ARCH_TRIPLET/libasound*
+      - usr/lib/$SNAPCRAFT_ARCH_TRIPLET/libdnsfile*
+      - usr/lib/$SNAPCRAFT_ARCH_TRIPLET/libFLAC*
+      - usr/lib/$SNAPCRAFT_ARCH_TRIPLET/libjack*
+      - usr/lib/$SNAPCRAFT_ARCH_TRIPLET/libpulse*
+      - usr/lib/$SNAPCRAFT_ARCH_TRIPLET/libsamplerate*
+      - usr/lib/$SNAPCRAFT_ARCH_TRIPLET/libspeex*
+      - usr/lib/$SNAPCRAFT_ARCH_TRIPLET/libvorbis*
+      - usr/lib/$SNAPCRAFT_ARCH_TRIPLET/pulseaudio
+      - usr/share/alsa
+
+  enable-i386:
+    after: [ launcher ]
+    plugin: nil
+    override-build: |
+      snapcraftctl build
+      tee /etc/apt/sources.list.d/steam.list <<'EOF'
+      deb [arch=amd64,i386] http://repo.steampowered.com/steam/ stable steam
+      deb-src [arch=amd64,i386] http://repo.steampowered.com/steam/ stable steam
+      EOF
+      apt-key adv --keyserver keyserver.ubuntu.com --recv-keys F24AEA9FB05498B7
+      apt-key add $SNAPCRAFT_PROJECT_DIR/src/valve-archive-keyring.gpg
+
+      if [ "$SNAPCRAFT_ARCH_TRIPLET" = "x86_64-linux-gnu" ]; then
+        dpkg --add-architecture i386
+      fi
+      apt update
+
+  steam-devices:
+    plugin: dump
+    source: https://github.com/ValveSoftware/steam-devices.git
 
   steam:
+    after: [ enable-i386, alsa-mixin ]
     plugin: nil
-    source: http://repo.steampowered.com/steam/archive/precise/steam_latest.deb
+    #source: http://repo.steampowered.com/steam/archive/precise/steam_latest.deb
     build-packages:
       - dpkg-dev
+    stage-packages:
+      - steam-launcher
+      - steam-libs-amd64
+      - steam-libs-i386
+      - libappindicator3-1
+      - libvkd3d1:i386
+      - libvkd3d1:amd64
+      - mesa-va-drivers:i386
+      - mesa-vdpau-drivers:amd64
+      - mesa-vdpau-drivers:i386
+      - mesa-vulkan-drivers:amd64
+      - mesa-vulkan-drivers:i386
+      - va-driver-all:amd64
+      - va-driver-all:i386
+      - va-driver:i386
+      - libvdpau-va-gl1:amd64
+      - xdg-utils
+      - fontconfig-config
+      - fontconfig:i386
+      - fontconfig:amd64
+      - pciutils
+      - vulkan-tools # For testing
+
     override-build: |
+      snapcraftctl build
       # Set the snap version from the .deb package version
-      snapcraftctl set-version $(dpkg-parsechangelog -l usr/share/doc/steam-launcher/changelog.all.gz -S Version)
-      # Copy the binaries and data
-      cp -a usr/bin $SNAPCRAFT_PART_INSTALL/bin
-      cp -a usr/lib $SNAPCRAFT_PART_INSTALL/lib
-      cp -a usr/share/doc/steam $SNAPCRAFT_PART_INSTALL/doc
+      snapcraftctl set-version $(dpkg-parsechangelog -l $SNAPCRAFT_PART_INSTALL/usr/share/doc/steam-launcher/changelog.all.gz -S Version | sed -e s/1://g)
       # Copy over the icon
-      cp usr/share/icons/hicolor/256x256/apps/steam.png $SNAPCRAFT_PART_INSTALL/steam.png
+      cp $SNAPCRAFT_PART_INSTALL/usr/share/icons/hicolor/256x256/apps/steam.png $SNAPCRAFT_PART_INSTALL/steam.png
       mkdir -p $SNAPCRAFT_PART_INSTALL/meta/gui
       ln -s ../../steam.png $SNAPCRAFT_PART_INSTALL/meta/gui/icon.png
       # Install the desktop file, with the icon field munged
-      sed 's|Icon=steam|Icon=${SNAP}/steam.png|g' usr/share/applications/steam.desktop > $SNAPCRAFT_PART_INSTALL/steam.desktop
+      sed 's|Icon=steam|Icon=${SNAP}/steam.png|g' $SNAPCRAFT_PART_INSTALL/usr/share/applications/steam.desktop > $SNAPCRAFT_PART_INSTALL/steam.desktop
+    prime:
+      - -etc/fonts
 
 apps:
   steam:
-    command: bin/steam-snap.sh
+    command-chain: [ bin/desktop-launch ]
+    #command: bin/steam-snap.sh
+    command: usr/lib/steam/bin_steam.sh
     desktop: steam.desktop
     environment:
       HOME: $SNAP_USER_COMMON
-      LIBGL_DEBUG: verbose
+      #LIBGL_DEBUG: verbose
+
     plugs:
+      - browser-sandbox
       - desktop
+      - desktop-legacy
+      - wayland
+      - home
+      - x11
+      - gsettings
       - hardware-observe
       - joystick
       - network
       - opengl
-      - pulseaudio
-      - steam-support
-      - wayland
-      - x11
+      - audio-playback
+      - audio-record
+      - screen-inhibit-control
+      - process-control
+      - bluez
