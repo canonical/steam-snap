@@ -80,9 +80,8 @@ plugs:
       - $HOME/Steam
   desktop:
     mount-host-font-cache: false
-  browser-sandbox:
-    interface: browser-support
-    allow-sandbox: true
+  shared-memory:
+    private: true
 
 environment:
   LD_LIBRARY_PATH: $SNAP/usr/lib/i386-linux-gnu:$SNAP/lib/i386-linux-gnu:$SNAP/usr/lib/i386-linux-gnu/pulseaudio:$SNAP_LIBRARY_PATH:$LD_LIBRARY_PATH
@@ -203,7 +202,7 @@ apps:
       #LIBGL_DEBUG: verbose
 
     plugs:
-      - browser-sandbox
+      - shared-memory
       - desktop
       - desktop-legacy
       - wayland
