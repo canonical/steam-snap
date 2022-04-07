@@ -72,7 +72,7 @@ plugs:
     interface: content
     target: $SNAP/share/sounds
     default-provider: gtk-common-themes
-  steam-library:
+  dot-local-share-steam:
     interface: personal-files
     write:
       - $HOME/.local/share/Steam
