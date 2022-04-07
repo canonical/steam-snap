@@ -4,15 +4,14 @@ description: |
  Steam is a software distribution service with an online store, automated
  installation, automatic updates, achievements, SteamCloud synchronized
  savegame and screenshot functionality, and many social features.
-
 adopt-info: steam
-
 grade: stable
 confinement: strict
 architectures:
   - build-on: amd64
-
 base: core20
+assumes:
+  - snapd2.55.2
 
 layout:
   /usr/lib/steam:
@@ -162,6 +161,8 @@ parts:
       - libappindicator3-1
       - libvkd3d1:i386
       - libvkd3d1:amd64
+      - zlib1g:i386
+      - zlib1g:amd64
       - mesa-va-drivers:i386
       - mesa-vdpau-drivers:amd64
       - mesa-vdpau-drivers:i386
