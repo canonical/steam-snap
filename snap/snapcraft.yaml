@@ -83,7 +83,7 @@ plugs:
     private: true
 
 environment:
-  LD_LIBRARY_PATH: $SNAP/usr/lib/i386-linux-gnu:$SNAP/lib/i386-linux-gnu:$SNAP/usr/lib/i386-linux-gnu/pulseaudio:$SNAP_LIBRARY_PATH:$LD_LIBRARY_PATH
+  LD_LIBRARY_PATH: $SNAP/usr/lib/i386-linux-gnu:$SNAP/lib/i386-linux-gnu:$SNAP/usr/lib/i386-linux-gnu/pulseaudio${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}
 
 parts:
   launcher:
@@ -149,7 +149,7 @@ parts:
     source: https://github.com/ValveSoftware/steam-devices.git
 
   steam:
-    after: [ enable-i386, alsa-mixin ]
+    after: [ enable-i386 ]
     plugin: nil
     #source: http://repo.steampowered.com/steam/archive/precise/steam_latest.deb
     build-packages:
@@ -191,31 +191,6 @@ parts:
       sed 's|Icon=steam|Icon=${SNAP}/steam.png|g' $SNAPCRAFT_PART_INSTALL/usr/share/applications/steam.desktop > $SNAPCRAFT_PART_INSTALL/steam.desktop
     prime:
       - -etc/fonts
-
-  libraries:
-    after: [ steam ]
-    plugin: nil
-    stage-packages:
-      - libasyncns0
-      - libcairo2
-      - libgdk-pixbuf2.0-0
-      - libgtk-3-0
-      - libogg0
-      - libogg-dbg
-      - libpango-1.0-0
-      - libpangocairo-1.0-0
-      - libsndfile1
-      - libxcb1
-    stage:
-      - usr/lib/*/libasyncns*
-      - usr/lib/*/libcairo*
-      - usr/lib/*/gdk*
-      - usr/lib/*/gtk*
-      - usr/lib/*/ogg*
-      - usr/lib/*/pango*
-      - usr/lib/*/sndfile*
-      - usr/lib/*/xcb*
-      - -usr/bin
 
 apps:
   steam:
