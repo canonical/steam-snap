@@ -201,6 +201,7 @@ apps:
     environment:
       HOME: $SNAP_USER_COMMON
       #LIBGL_DEBUG: verbose
+      TMPDIR: $XDG_RUNTIME_DIR
 
     plugs:
       - shared-memory
