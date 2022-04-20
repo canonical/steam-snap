@@ -213,6 +213,7 @@ apps:
       - gsettings
       - hardware-observe
       - mount-observe
+      - system-observe
       - joystick
       - network
       - opengl
