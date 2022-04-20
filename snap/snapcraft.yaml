@@ -192,6 +192,31 @@ parts:
     prime:
       - -etc/fonts
 
+  libraries:
+    after: [ steam ]
+    plugin: nil
+    stage-packages:
+      - libasyncns0
+      - libcairo2
+      - libgdk-pixbuf2.0-0
+      - libgtk-3-0
+      - libogg0
+      - libogg-dbg
+      - libpango-1.0-0
+      - libpangocairo-1.0-0
+      - libsndfile1
+      - libxcb1
+    stage:
+      - usr/lib/*/libasyncns*
+      - usr/lib/*/libcairo*
+      - usr/lib/*/gdk*
+      - usr/lib/*/gtk*
+      - usr/lib/*/ogg*
+      - usr/lib/*/pango*
+      - usr/lib/*/sndfile*
+      - usr/lib/*/xcb*
+      - -usr/bin
+
 apps:
   steam:
     command-chain: [ bin/desktop-launch ]
