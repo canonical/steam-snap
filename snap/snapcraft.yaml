@@ -211,6 +211,7 @@ apps:
       - x11
       - gsettings
       - hardware-observe
+      - mount-observe
       - joystick
       - network
       - opengl
@@ -219,3 +220,5 @@ apps:
       - screen-inhibit-control
       - process-control
       - bluez
+      - network-control
+      - fuse-support
