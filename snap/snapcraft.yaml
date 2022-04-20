@@ -178,6 +178,7 @@ parts:
       - fontconfig:amd64
       - pciutils
       - vulkan-tools # For testing
+      - lsof
 
     override-build: |
       snapcraftctl build
