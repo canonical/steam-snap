@@ -226,3 +226,4 @@ apps:
       - network-control
       - fuse-support
       - steam-support
+      - removable-media
