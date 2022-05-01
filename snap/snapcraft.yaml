@@ -130,6 +130,8 @@ parts:
   enable-i386:
     after: [ launcher ]
     plugin: nil
+    build-packages:
+      - dirmngr
     override-build: |
       snapcraftctl build
       tee /etc/apt/sources.list.d/steam.list <<'EOF'
