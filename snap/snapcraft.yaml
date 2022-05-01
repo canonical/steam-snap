@@ -11,7 +11,7 @@ architectures:
   - build-on: amd64
 base: core20
 assumes:
-  - snapd2.55.3
+  - snapd2.55.4
 
 layout:
   /usr/lib/steam:
