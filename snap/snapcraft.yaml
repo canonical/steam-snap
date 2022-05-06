@@ -197,7 +197,7 @@ parts:
 
 apps:
   steam:
-    command-chain: [ bin/desktop-launch ]
+    command-chain: [ snap/command-chain/alsa-launch, bin/desktop-launch ]
     #command: bin/steam-snap.sh
     command: usr/lib/steam/bin_steam.sh
     desktop: steam.desktop
@@ -205,6 +205,7 @@ apps:
       HOME: $SNAP_USER_COMMON
       #LIBGL_DEBUG: verbose
       TMPDIR: $XDG_RUNTIME_DIR
+      ALWAYS_USE_PULSEAUDIO: 1
 
     plugs:
       - shared-memory
