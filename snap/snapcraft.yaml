@@ -9,7 +9,7 @@ grade: stable
 confinement: strict
 architectures:
   - build-on: amd64
-base: core20
+base: core22
 compression: lzo
 assumes:
   - snapd2.55.4
@@ -209,7 +209,6 @@ parts:
       - mesa-vulkan-drivers:i386
       - va-driver-all:amd64
       - va-driver-all:i386
-      - va-driver:i386
       - libvdpau-va-gl1:amd64
       - xdg-utils
       - fontconfig-config
