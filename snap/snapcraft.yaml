@@ -61,8 +61,8 @@ layout:
     bind: $SNAP/usr/lib/x86_64-linux-gnu/mesa-egl
   /usr/share/glvnd/egl_vendor.d:
     bind: $SNAP/usr/share/glvnd/egl_vendor.d
-  /usr/lib/$CRAFT_ARCH_TRIPLET/alsa-lib:
-    bind: $SNAP/usr/lib/$CRAFT_ARCH_TRIPLET/alsa-lib
+  /usr/lib/x86_64-linux-gnu/alsa-lib:
+    bind: $SNAP/usr/lib/x86_64-linux-gnu/alsa-lib
   /usr/share/alsa:
     bind: $SNAP/usr/share/alsa
   /usr/share/vulkan:
@@ -113,6 +113,15 @@ hooks:
 environment:
   LD_LIBRARY_PATH: $SNAP/usr/lib/i386-linux-gnu:$SNAP/lib/i386-linux-gnu:$SNAP/usr/lib/i386-linux-gnu/pulseaudio${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}
 
+package-repositories:
+  - type: apt
+    components: [stable]
+    suites: [steam]
+    architectures: [i386, amd64]
+    key-id: BA1816EF8E75005FCF5E27A1F24AEA9FB05498B7
+    key-server: keyserver.ubuntu.com
+    url: http://repo.steampowered.com/steam/
+
 parts:
   launcher:
     plugin: nil
@@ -143,36 +152,19 @@ parts:
       - etc/asound.conf
       - snap/command-chain/alsa-launch
       - usr/bin/yad*
-      - usr/lib/$CRAFT_ARCH_TRIPLET/alsa-lib
-      - usr/lib/$CRAFT_ARCH_TRIPLET/libasound*
-      - usr/lib/$CRAFT_ARCH_TRIPLET/libasyncns*
-      - usr/lib/$CRAFT_ARCH_TRIPLET/libdnsfile*
-      - usr/lib/$CRAFT_ARCH_TRIPLET/libFLAC*
-      - usr/lib/$CRAFT_ARCH_TRIPLET/libjack*
-      - usr/lib/$CRAFT_ARCH_TRIPLET/libpulse*
-      - usr/lib/$CRAFT_ARCH_TRIPLET/libsamplerate*
-      - usr/lib/$CRAFT_ARCH_TRIPLET/libsndfile*
-      - usr/lib/$CRAFT_ARCH_TRIPLET/libspeex*
-      - usr/lib/$CRAFT_ARCH_TRIPLET/libvorbis*
-      - usr/lib/$CRAFT_ARCH_TRIPLET/pulseaudio
+      - usr/lib/*/alsa-lib
+      - usr/lib/*/libasound*
+      - usr/lib/*/libasyncns*
+      - usr/lib/*/libdnsfile*
+      - usr/lib/*/libFLAC*
+      - usr/lib/*/libjack*
+      - usr/lib/*/libpulse*
+      - usr/lib/*/libsamplerate*
+      - usr/lib/*/libsndfile*
+      - usr/lib/*/libspeex*
+      - usr/lib/*/libvorbis*
+      - usr/lib/*/pulseaudio
       - usr/share/alsa
-
-  enable-i386:
-    after: [ launcher ]
-    plugin: nil
-    override-build: |
-      craftctl build
-      tee /etc/apt/sources.list.d/steam.list <<'EOF'
-      deb [arch=amd64,i386] http://repo.steampowered.com/steam/ stable steam
-      deb-src [arch=amd64,i386] http://repo.steampowered.com/steam/ stable steam
-      EOF
-      apt-key adv --keyserver keyserver.ubuntu.com --recv-keys F24AEA9FB05498B7
-      apt-key add $CRAFT_PROJECT_DIR/src/valve-archive-keyring.gpg
-
-      if [ "$CRAFT_ARCH_TRIPLET" = "x86_64-linux-gnu" ]; then
-        dpkg --add-architecture i386
-      fi
-      apt update
 
   gamemode:
     source: https://github.com/ashuntu/gamemode.git
@@ -195,7 +187,6 @@ parts:
     source: https://github.com/ValveSoftware/steam-devices.git
 
   steam:
-    after: [ enable-i386, gamemode ]
     plugin: nil
     #source: http://repo.steampowered.com/steam/archive/precise/steam_latest.deb
     build-packages:
@@ -227,9 +218,9 @@ parts:
       - lsof
       - locales-all
     override-build: |
-      craftctl build
+      craftctl default
       # Set the snap version from the .deb package version
-      craftctl set-version $(dpkg-parsechangelog -l $CRAFT_PART_INSTALL/usr/share/doc/steam-launcher/changelog.all.gz -S Version | sed -e s/1://g)
+      craftctl set version=$(dpkg-parsechangelog -l $CRAFT_PART_INSTALL/usr/share/doc/steam-launcher/changelog.all.gz -S Version | sed -e s/1://g)
       # Copy over the icon
       cp $CRAFT_PART_INSTALL/usr/share/icons/hicolor/256x256/apps/steam.png $CRAFT_PART_INSTALL/steam.png
       mkdir -p $CRAFT_PART_INSTALL/meta/gui
