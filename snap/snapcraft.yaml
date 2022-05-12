@@ -61,8 +61,8 @@ layout:
     bind: $SNAP/usr/lib/x86_64-linux-gnu/mesa-egl
   /usr/share/glvnd/egl_vendor.d:
     bind: $SNAP/usr/share/glvnd/egl_vendor.d
-  /usr/lib/$SNAPCRAFT_ARCH_TRIPLET/alsa-lib:
-    bind: $SNAP/usr/lib/$SNAPCRAFT_ARCH_TRIPLET/alsa-lib
+  /usr/lib/$CRAFT_ARCH_TRIPLET/alsa-lib:
+    bind: $SNAP/usr/lib/$CRAFT_ARCH_TRIPLET/alsa-lib
   /usr/share/alsa:
     bind: $SNAP/usr/share/alsa
   /usr/share/vulkan:
@@ -118,9 +118,9 @@ parts:
     plugin: nil
     source : ./src
     override-build: |
-      mkdir -p $SNAPCRAFT_PART_INSTALL/bin
-      cp steam-snap.sh $SNAPCRAFT_PART_INSTALL/bin/
-      cp desktop-launch $SNAPCRAFT_PART_INSTALL/bin/
+      mkdir -p $CRAFT_PART_INSTALL/bin
+      cp steam-snap.sh $CRAFT_PART_INSTALL/bin/
+      cp desktop-launch $CRAFT_PART_INSTALL/bin/
 
   alsa-mixin:
     plugin: dump
@@ -143,26 +143,33 @@ parts:
       - etc/asound.conf
       - snap/command-chain/alsa-launch
       - usr/bin/yad*
-      - usr/lib/$SNAPCRAFT_ARCH_TRIPLET/alsa-lib
-      - usr/lib/$SNAPCRAFT_ARCH_TRIPLET/libasound*
-      - usr/lib/$SNAPCRAFT_ARCH_TRIPLET/libasyncns*
-      - usr/lib/$SNAPCRAFT_ARCH_TRIPLET/libdnsfile*
-      - usr/lib/$SNAPCRAFT_ARCH_TRIPLET/libFLAC*
-      - usr/lib/$SNAPCRAFT_ARCH_TRIPLET/libjack*
-      - usr/lib/$SNAPCRAFT_ARCH_TRIPLET/libpulse*
-      - usr/lib/$SNAPCRAFT_ARCH_TRIPLET/libsamplerate*
-      - usr/lib/$SNAPCRAFT_ARCH_TRIPLET/libsndfile*
-      - usr/lib/$SNAPCRAFT_ARCH_TRIPLET/libspeex*
-      - usr/lib/$SNAPCRAFT_ARCH_TRIPLET/libvorbis*
-      - usr/lib/$SNAPCRAFT_ARCH_TRIPLET/pulseaudio
+      - usr/lib/$CRAFT_ARCH_TRIPLET/alsa-lib
+      - usr/lib/$CRAFT_ARCH_TRIPLET/libasound*
+      - usr/lib/$CRAFT_ARCH_TRIPLET/libasyncns*
+      - usr/lib/$CRAFT_ARCH_TRIPLET/libdnsfile*
+      - usr/lib/$CRAFT_ARCH_TRIPLET/libFLAC*
+      - usr/lib/$CRAFT_ARCH_TRIPLET/libjack*
+      - usr/lib/$CRAFT_ARCH_TRIPLET/libpulse*
+      - usr/lib/$CRAFT_ARCH_TRIPLET/libsamplerate*
+      - usr/lib/$CRAFT_ARCH_TRIPLET/libsndfile*
+      - usr/lib/$CRAFT_ARCH_TRIPLET/libspeex*
+      - usr/lib/$CRAFT_ARCH_TRIPLET/libvorbis*
+      - usr/lib/$CRAFT_ARCH_TRIPLET/pulseaudio
       - usr/share/alsa
 
   enable-i386:
     after: [ launcher ]
     plugin: nil
     override-build: |
-      snapcraftctl build
-      if [ "$SNAPCRAFT_ARCH_TRIPLET" = "x86_64-linux-gnu" ]; then
+      craftctl build
+      tee /etc/apt/sources.list.d/steam.list <<'EOF'
+      deb [arch=amd64,i386] http://repo.steampowered.com/steam/ stable steam
+      deb-src [arch=amd64,i386] http://repo.steampowered.com/steam/ stable steam
+      EOF
+      apt-key adv --keyserver keyserver.ubuntu.com --recv-keys F24AEA9FB05498B7
+      apt-key add $CRAFT_PROJECT_DIR/src/valve-archive-keyring.gpg
+
+      if [ "$CRAFT_ARCH_TRIPLET" = "x86_64-linux-gnu" ]; then
         dpkg --add-architecture i386
       fi
       apt update
@@ -220,15 +227,15 @@ parts:
       - lsof
       - locales-all
     override-build: |
-      snapcraftctl build
+      craftctl build
       # Set the snap version from the .deb package version
-      snapcraftctl set-version $(dpkg-parsechangelog -l $SNAPCRAFT_PART_INSTALL/usr/share/doc/steam-launcher/changelog.all.gz -S Version | sed -e s/1://g)
+      craftctl set-version $(dpkg-parsechangelog -l $CRAFT_PART_INSTALL/usr/share/doc/steam-launcher/changelog.all.gz -S Version | sed -e s/1://g)
       # Copy over the icon
-      cp $SNAPCRAFT_PART_INSTALL/usr/share/icons/hicolor/256x256/apps/steam.png $SNAPCRAFT_PART_INSTALL/steam.png
-      mkdir -p $SNAPCRAFT_PART_INSTALL/meta/gui
-      ln -s ../../steam.png $SNAPCRAFT_PART_INSTALL/meta/gui/icon.png
+      cp $CRAFT_PART_INSTALL/usr/share/icons/hicolor/256x256/apps/steam.png $CRAFT_PART_INSTALL/steam.png
+      mkdir -p $CRAFT_PART_INSTALL/meta/gui
+      ln -s ../../steam.png $CRAFT_PART_INSTALL/meta/gui/icon.png
       # Install the desktop file, with the icon field munged
-      sed 's|Icon=steam|Icon=${SNAP}/steam.png|g' $SNAPCRAFT_PART_INSTALL/usr/share/applications/steam.desktop > $SNAPCRAFT_PART_INSTALL/steam.desktop
+      sed 's|Icon=steam|Icon=${SNAP}/steam.png|g' $CRAFT_PART_INSTALL/usr/share/applications/steam.desktop > $CRAFT_PART_INSTALL/steam.desktop
     prime:
       - -etc/fonts
 
