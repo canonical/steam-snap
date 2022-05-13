@@ -115,8 +115,8 @@ environment:
 
 package-repositories:
   - type: apt
-    components: [stable]
-    suites: [steam]
+    components: [steam]
+    suites: [stable]
     architectures: [i386, amd64]
     key-id: BA1816EF8E75005FCF5E27A1F24AEA9FB05498B7
     key-server: keyserver.ubuntu.com
