@@ -148,6 +148,7 @@ parts:
     #source: http://repo.steampowered.com/steam/archive/precise/steam_latest.deb
     build-packages:
       - dpkg-dev
+      - dirmngr # Needed for launchpad builds
     stage-packages:
       - steam-launcher
       - steam-libs-amd64
