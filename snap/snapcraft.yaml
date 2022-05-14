@@ -94,6 +94,8 @@ package-repositories:
     key-id: BA1816EF8E75005FCF5E27A1F24AEA9FB05498B7
     key-server: keyserver.ubuntu.com
     url: http://repo.steampowered.com/steam/
+  - type: apt
+    ppa: kisak/kisak-mesa
 
 parts:
   launcher:
