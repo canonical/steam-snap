@@ -154,6 +154,7 @@ parts:
       - steam-libs-amd64
       - steam-libs-i386
       - libappindicator3-1
+      - libpci3
       - libvkd3d1:i386
       - libvkd3d1:amd64
       - zlib1g:i386
