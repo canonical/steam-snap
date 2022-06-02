@@ -80,7 +80,8 @@ plugs:
       - $HOME/Steam
   desktop:
     mount-host-font-cache: false
-  shared-memory:
+  shmem:
+    interface: shared-memory
     private: true
 
 environment:
@@ -201,7 +202,7 @@ apps:
       ALWAYS_USE_PULSEAUDIO: 1
 
     plugs:
-      - shared-memory
+      - shmem
       - desktop
       - desktop-legacy
       - wayland
