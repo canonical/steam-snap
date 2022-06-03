@@ -201,6 +201,8 @@ parts:
       - libpci3
       - libvkd3d1:i386
       - libvkd3d1:amd64
+      - libvulkan1:i386
+      - libvulkan1:amd64
       - zlib1g:i386
       - zlib1g:amd64
       - mesa-va-drivers:i386
@@ -232,6 +234,12 @@ parts:
       sed 's|Icon=steam|Icon=${SNAP}/steam.png|g' $CRAFT_PART_INSTALL/usr/share/applications/steam.desktop > $CRAFT_PART_INSTALL/steam.desktop
     prime:
       - -etc/fonts
+      - -usr/share/doc
+      - -usr/share/man
+      - -usr/share/bug
+      - -usr/share/gdb
+      - -usr/share/emacs*
+      - -usr/share/lintian
 
 apps:
   steam:
