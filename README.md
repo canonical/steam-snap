@@ -18,7 +18,7 @@ be built with the following command:
 
 [ProtonDB][3] is a great resource for finding community information about specific games and their playability.
 
-To filter your own library, go to your Steam Library tab and click the penguin ([Tux][7]) to show games that run on Linux. Alternatively, click the *advanced filtering options* button, expand the dropdown under *Hardware Support*, and choose a level of verification level for games to filter by.
+To filter your own library, go to your Steam Library tab and click the penguin ([Tux][7]) to show games that run on Linux. Alternatively, click the *advanced filtering options* button, expand the dropdown under *Hardware Support*, and choose a level of verification level of games to filter by.
 
 ### Steam Play / Proton
 
