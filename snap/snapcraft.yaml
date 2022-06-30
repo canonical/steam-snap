@@ -31,14 +31,14 @@ layout:
     bind: $SNAP/usr/lib/i386-linux-gnu/dri
   /usr/lib/x86_64-linux-gnu/dri:
     bind: $SNAP/usr/lib/x86_64-linux-gnu/dri
-  /usr/lib/i386-linux-gnu/mesa:
-    bind: $SNAP/usr/lib/i386-linux-gnu/mesa
-  /usr/lib/x86_64-linux-gnu/mesa:
-    bind: $SNAP/usr/lib/x86_64-linux-gnu/mesa
-  /usr/lib/i386-linux-gnu/mesa-egl:
-    bind: $SNAP/usr/lib/i386-linux-gnu/mesa-egl
-  /usr/lib/x86_64-linux-gnu/mesa-egl:
-    bind: $SNAP/usr/lib/x86_64-linux-gnu/mesa-egl
+  # /usr/lib/i386-linux-gnu/mesa:
+  #   bind: $SNAP/usr/lib/i386-linux-gnu/mesa
+  # /usr/lib/x86_64-linux-gnu/mesa:
+  #   bind: $SNAP/usr/lib/x86_64-linux-gnu/mesa
+  # /usr/lib/i386-linux-gnu/mesa-egl:
+  #   bind: $SNAP/usr/lib/i386-linux-gnu/mesa-egl
+  # /usr/lib/x86_64-linux-gnu/mesa-egl:
+  #   bind: $SNAP/usr/lib/x86_64-linux-gnu/mesa-egl
   /usr/share/glvnd/egl_vendor.d:
     bind: $SNAP/usr/share/glvnd/egl_vendor.d
   /usr/lib/$SNAPCRAFT_ARCH_TRIPLET/alsa-lib:
@@ -59,6 +59,10 @@ layout:
     bind-file: $SNAP/usr/lib/i386-linux-gnu/libvulkan_radeon.so
   /usr/lib/x86_64-linux-gnu/libvulkan_radeon.so:
     bind-file: $SNAP/usr/lib/x86_64-linux-gnu/libvulkan_radeon.so
+  /usr/share/libdrm:  # Needed by mesa-core20 on AMD GPUs
+    bind: $SNAP/graphics/libdrm
+  /usr/share/drirc.d:  # Used by mesa-core20 for app specific workarounds
+    bind: $SNAP/graphics/drirc.d
 
 plugs:
   gtk-3-themes:
@@ -82,6 +86,11 @@ plugs:
     mount-host-font-cache: false
   shared-memory:
     private: true
+  # https://github.com/AlanGriffiths/kisak-core20
+  graphics-core20:
+    interface: content
+    target: $SNAP/graphics
+    default-provider: mesa-core20
 
 environment:
   LD_LIBRARY_PATH: $SNAP/usr/lib/i386-linux-gnu:$SNAP/lib/i386-linux-gnu:$SNAP/usr/lib/i386-linux-gnu/pulseaudio${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}
@@ -168,11 +177,11 @@ parts:
       - libvkd3d1:amd64
       - zlib1g:i386
       - zlib1g:amd64
-      - mesa-va-drivers:i386
-      - mesa-vdpau-drivers:amd64
-      - mesa-vdpau-drivers:i386
-      - mesa-vulkan-drivers:amd64
-      - mesa-vulkan-drivers:i386
+      # - mesa-va-drivers:i386
+      # - mesa-vdpau-drivers:amd64
+      # - mesa-vdpau-drivers:i386
+      # - mesa-vulkan-drivers:amd64
+      # - mesa-vulkan-drivers:i386
       - va-driver-all:amd64
       - va-driver-all:i386
       - va-driver:i386
@@ -198,6 +207,19 @@ parts:
     prime:
       - -etc/fonts
 
+  cleanup:
+    after: [steam]
+    plugin: nil
+    build-snaps: [ mesa-core20 ]
+    override-prime: |
+      set -eux
+      cd /snap/mesa-core20/current/egl/lib
+      find . -type f,l -exec rm -f $SNAPCRAFT_PRIME/usr/lib/${SNAPCRAFT_ARCH_TRIPLET}/{} \;
+      rm -fr "$SNAPCRAFT_PRIME/usr/lib/${SNAPCRAFT_ARCH_TRIPLET}/dri"
+      for CRUFT in bug drirc.d glvnd libdrm lintian man; do
+        rm -rf "$SNAPCRAFT_PRIME/usr/share/$CRUFT"
+      done
+
 apps:
   steam:
     command-chain: [ snap/command-chain/alsa-launch, bin/desktop-launch ]
@@ -210,7 +232,10 @@ apps:
       TMPDIR: $XDG_RUNTIME_DIR
       ALWAYS_USE_PULSEAUDIO: 1
       DISABLE_WAYLAND: 1
-
+      LD_LIBRARY_PATH: $LD_LIBRARY_PATH:$SNAP/graphics/lib
+      LIBGL_DRIVERS_PATH: $LIBGL_DRIVERS_PATH:$SNAP/graphics/dri
+      LIBVA_DRIVERS_PATH: $LIBVA_DRIVERS_PATH:$SNAP/graphics/dri
+      __EGL_VENDOR_LIBRARY_DIRS: $__EGL_VENDOR_LIBRARY_DIRS:$SNAP/graphics/glvnd/egl_vendor.d
     plugs:
       - shared-memory
       - desktop
