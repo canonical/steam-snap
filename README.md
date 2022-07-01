@@ -12,6 +12,12 @@ be built with the following command:
     
 ## Troubleshooting
 
+**Terms**
+
+__Native__: a *native* game is a game that runs on Linux *without any* compatability libraries like Proton. This generally means the game developer specifically built a version of the game for Linux systems and is usually the "best" form of the game.
+
+[__Proton__][8]: Proton is a compatability layer, made by Valve, for Steam on Linux that emulates a Windows environment using tools like [Wine][9]. Proton allows Windows-exclusive games to run on Linux systems. You can force native games to use Proton instead, but generally native is better if available.
+
 ### What games can I play?
 
 [Steam Deck verified games][4] are verified by Valve to work on the Steam Deck (Linux-based) and should work on desktop Linux distributions.
@@ -27,10 +33,14 @@ To filter your own library, go to your Steam Library tab and click the penguin (
 
 Enabling Steam Play will automatically download Proton compatability libraries for non-native games.
 
+'Enable Steam Play for supported titles' enables compatability tools for games verified by Valve to work well on Linux.
+
+'Enable Steam Play for all other titles' enables compatability tools for *all* non-native games in your library. Unsupported titles greatly vary in functionality, check [ProtonDB][3] for more info on specific games.
+
 **Enable Proton Individually**  
 `Right click the game > Properties > Compatbility > Check 'Force the use of...' > Choose a Proton version`
 
-*Note: it is not always beneficial to use Proton; some games run natively on Linux without compatability tools. Additionally, check [ProtonDB][3] for Linux supported games and tips on running.*
+*Note: it is not always beneficial to use Proton; some games run natively on Linux without compatability tools. Check [ProtonDB][3] for Linux supported games and tips on running.*
 
 ### NVIDIA GPUs
 
@@ -55,3 +65,5 @@ Check [existing issues](5) for information regarding any issue you may have firs
 [5]: https://github.com/canonical/steam-snap/issues
 [6]: https://github.com/canonical/steam-snap/issues/new/choose
 [7]: https://en.wikipedia.org/wiki/Tux_(mascot)
+[8]: https://github.com/ValveSoftware/Proton
+[9]: https://www.winehq.org/
