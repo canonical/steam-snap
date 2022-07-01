@@ -63,6 +63,8 @@ layout:
     bind: $SNAP/graphics/libdrm
   /usr/share/drirc.d:  # Used by mesa-core20 for app specific workarounds
     bind: $SNAP/graphics/drirc.d
+  /etc/ld.so.cache:
+    bind-file: $SNAP_DATA/etc/ld.so.cache
 
 plugs:
   gtk-3-themes:
@@ -161,6 +163,15 @@ parts:
   steam-devices:
     plugin: dump
     source: https://github.com/ValveSoftware/steam-devices.git
+
+  ldcache:
+    plugin: nil
+    source: ./src
+    override-build: |
+      mkdir $SNAPCRAFT_PART_INSTALL/bin
+      cp *.sh $SNAPCRAFT_PART_INSTALL/bin
+      mkdir -p $SNAPCRAFT_PART_INSTALL/snap/hooks
+      ln -s ../../bin/ldcache.sh $SNAPCRAFT_PART_INSTALL/snap/hooks/post-refresh
 
   steam:
     after: [ enable-i386 ]
