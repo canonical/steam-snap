@@ -28,19 +28,19 @@ layout:
   /usr/share/libdrm:
     bind: $SNAP/usr/share/libdrm
   /usr/lib/i386-linux-gnu/dri:
-    bind: $SNAP/usr/lib/i386-linux-gnu/dri
+    bind: $SNAP/graphics/dri-i386
   /usr/lib/x86_64-linux-gnu/dri:
-    bind: $SNAP/usr/lib/x86_64-linux-gnu/dri
-  # /usr/lib/i386-linux-gnu/mesa:
-  #   bind: $SNAP/usr/lib/i386-linux-gnu/mesa
-  # /usr/lib/x86_64-linux-gnu/mesa:
-  #   bind: $SNAP/usr/lib/x86_64-linux-gnu/mesa
-  # /usr/lib/i386-linux-gnu/mesa-egl:
-  #   bind: $SNAP/usr/lib/i386-linux-gnu/mesa-egl
-  # /usr/lib/x86_64-linux-gnu/mesa-egl:
-  #   bind: $SNAP/usr/lib/x86_64-linux-gnu/mesa-egl
+    bind: $SNAP/graphics/dri
+  /usr/lib/i386-linux-gnu/mesa:
+    bind: $SNAP/graphics/usr/lib/i386-linux-gnu/mesa
+  /usr/lib/x86_64-linux-gnu/mesa:
+    bind: $SNAP/graphics/usr/lib/x86_64-linux-gnu/mesa
+  /usr/lib/i386-linux-gnu/mesa-egl:
+    bind: $SNAP/graphics/usr/lib/i386-linux-gnu/mesa-egl
+  /usr/lib/x86_64-linux-gnu/mesa-egl:
+    bind: $SNAP/graphics/usr/lib/x86_64-linux-gnu/mesa-egl
   /usr/share/glvnd/egl_vendor.d:
-    bind: $SNAP/usr/share/glvnd/egl_vendor.d
+    bind: $SNAP/graphics/glvnd/egl_vendor.d
   /usr/lib/$SNAPCRAFT_ARCH_TRIPLET/alsa-lib:
     bind: $SNAP/usr/lib/$SNAPCRAFT_ARCH_TRIPLET/alsa-lib
   /usr/share/alsa:
@@ -65,6 +65,11 @@ layout:
     bind: $SNAP/graphics/drirc.d
   /etc/ld.so.cache:
     bind-file: $SNAP_DATA/etc/ld.so.cache
+
+hooks:
+  post-refresh:
+    plugs:
+      - opengl
 
 plugs:
   gtk-3-themes:
@@ -93,9 +98,6 @@ plugs:
     interface: content
     target: $SNAP/graphics
     default-provider: mesa-core20
-
-environment:
-  LD_LIBRARY_PATH: $SNAP/usr/lib/i386-linux-gnu:$SNAP/lib/i386-linux-gnu:$SNAP/usr/lib/i386-linux-gnu/pulseaudio${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}
 
 parts:
   launcher:
@@ -164,15 +166,6 @@ parts:
     plugin: dump
     source: https://github.com/ValveSoftware/steam-devices.git
 
-  ldcache:
-    plugin: nil
-    source: ./src
-    override-build: |
-      mkdir $SNAPCRAFT_PART_INSTALL/bin
-      cp *.sh $SNAPCRAFT_PART_INSTALL/bin
-      mkdir -p $SNAPCRAFT_PART_INSTALL/snap/hooks
-      ln -s ../../bin/ldcache.sh $SNAPCRAFT_PART_INSTALL/snap/hooks/post-refresh
-
   steam:
     after: [ enable-i386 ]
     plugin: nil
@@ -188,11 +181,6 @@ parts:
       - libvkd3d1:amd64
       - zlib1g:i386
       - zlib1g:amd64
-      # - mesa-va-drivers:i386
-      # - mesa-vdpau-drivers:amd64
-      # - mesa-vdpau-drivers:i386
-      # - mesa-vulkan-drivers:amd64
-      # - mesa-vulkan-drivers:i386
       - va-driver-all:amd64
       - va-driver-all:i386
       - va-driver:i386
@@ -243,10 +231,10 @@ apps:
       TMPDIR: $XDG_RUNTIME_DIR
       ALWAYS_USE_PULSEAUDIO: 1
       DISABLE_WAYLAND: 1
-      LD_LIBRARY_PATH: $LD_LIBRARY_PATH:$SNAP/graphics/lib
-      LIBGL_DRIVERS_PATH: $LIBGL_DRIVERS_PATH:$SNAP/graphics/dri
-      LIBVA_DRIVERS_PATH: $LIBVA_DRIVERS_PATH:$SNAP/graphics/dri
-      __EGL_VENDOR_LIBRARY_DIRS: $__EGL_VENDOR_LIBRARY_DIRS:$SNAP/graphics/glvnd/egl_vendor.d
+      LD_LIBRARY_PATH: $SNAP/graphics/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}
+      LIBGL_DRIVERS_PATH: $SNAP/graphics/dri${LIBGL_DRIVERS_PATH:+:$LIBGL_DRIVERS_PATH}
+      LIBVA_DRIVERS_PATH: $SNAP/graphics/dri${LIBVA_DRIVERS_PATH:+:$LIBVA_DRIVERS_PATH}
+      __EGL_VENDOR_LIBRARY_DIRS: $SNAP/graphics/glvnd/egl_vendor.d${__EGL_VENDOR_LIBRARY_DIRS:+:$__EGL_VENDOR_LIBRARY_DIRS}
     plugs:
       - shared-memory
       - desktop
