@@ -14,6 +14,10 @@ compression: lzo
 assumes:
   - snapd2.55.4
 
+package-repositories:
+  - type: apt
+    ppa: kisak/kisak-mesa
+
 layout:
   /usr/lib/steam:
     bind: $SNAP/lib/steam
@@ -59,6 +63,8 @@ layout:
     bind-file: $SNAP/usr/lib/i386-linux-gnu/libvulkan_radeon.so
   /usr/lib/x86_64-linux-gnu/libvulkan_radeon.so:
     bind-file: $SNAP/usr/lib/x86_64-linux-gnu/libvulkan_radeon.so
+  /etc/ld.so.cache:
+    bind-file: $SNAP_DATA/etc/ld.so.cache
 
 plugs:
   gtk-3-themes:
@@ -82,6 +88,11 @@ plugs:
     mount-host-font-cache: false
   shared-memory:
     private: true
+
+hooks:
+  post-refresh:
+    plugs:
+      - opengl
 
 environment:
   LD_LIBRARY_PATH: $SNAP/usr/lib/i386-linux-gnu:$SNAP/lib/i386-linux-gnu:$SNAP/usr/lib/i386-linux-gnu/pulseaudio${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}
@@ -184,7 +195,6 @@ parts:
       - pciutils
       - vulkan-tools # For testing
       - lsof
-
     override-build: |
       snapcraftctl build
       # Set the snap version from the .deb package version
@@ -210,7 +220,6 @@ apps:
       TMPDIR: $XDG_RUNTIME_DIR
       ALWAYS_USE_PULSEAUDIO: 1
       DISABLE_WAYLAND: 1
-
     plugs:
       - shared-memory
       - desktop
