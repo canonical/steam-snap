@@ -148,15 +148,15 @@ export XCURSOR_PATH="$SNAP_DESKTOP_RUNTIME/usr/share/icons"
 prepend_dir XCURSOR_PATH "$SNAP/data-dir/icons"
 
 # Mesa Libs for OpenGL support
-#append_dir LD_LIBRARY_PATH "$SNAP_DESKTOP_RUNTIME/usr/lib/$ARCH/mesa"
-#append_dir LD_LIBRARY_PATH "$SNAP_DESKTOP_RUNTIME/usr/lib/$ARCH/mesa-egl"
-#append_dir LD_LIBRARY_PATH "$SNAP_DESKTOP_RUNTIME/usr/lib/x86_64-linux-gnu/mesa"
-#append_dir LD_LIBRARY_PATH "$SNAP_DESKTOP_RUNTIME/usr/lib/x86_64-linux-gnu/mesa-egl"
+append_dir LD_LIBRARY_PATH "$SNAP_DESKTOP_RUNTIME/usr/lib/$ARCH/mesa"
+append_dir LD_LIBRARY_PATH "$SNAP_DESKTOP_RUNTIME/usr/lib/$ARCH/mesa-egl"
+append_dir LD_LIBRARY_PATH "$SNAP_DESKTOP_RUNTIME/usr/lib/x86_64-linux-gnu/mesa"
+append_dir LD_LIBRARY_PATH "$SNAP_DESKTOP_RUNTIME/usr/lib/x86_64-linux-gnu/mesa-egl"
 
 # Tell libGL and libva where to find the drivers
 export LIBGL_DRIVERS_PATH="$LIBGL_DRIVERS_PATH:$SNAP_DESKTOP_RUNTIME/usr/lib/$ARCH/dri"
 append_dir LIBGL_DRIVERS_PATH "$SNAP_DESKTOP_RUNTIME/usr/lib/x86_64-linux-gnu/dri"
-#append_dir LD_LIBRARY_PATH "$LIBGL_DRIVERS_PATH"
+append_dir LD_LIBRARY_PATH "$LIBGL_DRIVERS_PATH"
 append_dir LIBVA_DRIVERS_PATH "$SNAP_DESKTOP_RUNTIME/usr/lib/$ARCH/dri"
 append_dir LIBVA_DRIVERS_PATH "$SNAP_DESKTOP_RUNTIME/usr/lib/x86_64-linux-gnu/dri"
 
@@ -175,14 +175,14 @@ export VK_ICD_FILENAMES="/var/lib/snapd/lib/vulkan/icd.d/nvidia_icd.json:$SNAP/u
 # /var/lib/snapd/lib/gl that needs to be in LD_LIBRARY_PATH
 # Without that OpenGL using apps do not work with the nVidia drivers.
 # Ref.: https://bugs.launchpad.net/snappy/+bug/1588192
-#append_dir LD_LIBRARY_PATH "/var/lib/snapd/lib/gl"
-#append_dir LD_LIBRARY_PATH "/var/lib/snapd/lib/gl/vdpau"
+append_dir LD_LIBRARY_PATH "/var/lib/snapd/lib/gl"
+append_dir LD_LIBRARY_PATH "/var/lib/snapd/lib/gl/vdpau"
 
 # Unity7 export (workaround for https://launchpad.net/bugs/1638405)
-#append_dir LD_LIBRARY_PATH "$SNAP_DESKTOP_RUNTIME/usr/lib/$ARCH/libunity"
+append_dir LD_LIBRARY_PATH "$SNAP_DESKTOP_RUNTIME/usr/lib/$ARCH/libunity"
 
 # Pulseaudio export
-#append_dir LD_LIBRARY_PATH "$SNAP_DESKTOP_RUNTIME/usr/lib/$ARCH/pulseaudio"
+append_dir LD_LIBRARY_PATH "$SNAP_DESKTOP_RUNTIME/usr/lib/$ARCH/pulseaudio"
 
 # EGL vendor files on glvnd enabled systems
 prepend_dir __EGL_VENDOR_LIBRARY_DIRS "/var/lib/snapd/lib/glvnd/egl_vendor.d"

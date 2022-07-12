@@ -71,6 +71,9 @@ hooks:
     plugs:
       - opengl
 
+environment:
+  LD_LIBRARY_PATH: $SNAP/usr/lib/i386-linux-gnu:$SNAP/lib/i386-linux-gnu:$SNAP/usr/lib/i386-linux-gnu/pulseaudio${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}
+
 plugs:
   gtk-3-themes:
     interface: content
@@ -231,10 +234,10 @@ apps:
       TMPDIR: $XDG_RUNTIME_DIR
       ALWAYS_USE_PULSEAUDIO: 1
       DISABLE_WAYLAND: 1
-      LD_LIBRARY_PATH: $SNAP/graphics/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}
-      LIBGL_DRIVERS_PATH: $SNAP/graphics/dri${LIBGL_DRIVERS_PATH:+:$LIBGL_DRIVERS_PATH}
-      LIBVA_DRIVERS_PATH: $SNAP/graphics/dri${LIBVA_DRIVERS_PATH:+:$LIBVA_DRIVERS_PATH}
-      __EGL_VENDOR_LIBRARY_DIRS: $SNAP/graphics/glvnd/egl_vendor.d${__EGL_VENDOR_LIBRARY_DIRS:+:$__EGL_VENDOR_LIBRARY_DIRS}
+      LD_LIBRARY_PATH: $LD_LIBRARY_PATH:$SNAP/graphics/lib
+      LIBGL_DRIVERS_PATH: $LIBGL_DRIVERS_PATH:$SNAP/graphics/dri
+      LIBVA_DRIVERS_PATH: $LIBVA_DRIVERS_PATH:$SNAP/graphics/dri
+      __EGL_VENDOR_LIBRARY_DIRS: $__EGL_VENDOR_LIBRARY_DIRS:$SNAP/graphics/glvnd/egl_vendor.d
     plugs:
       - shared-memory
       - desktop
