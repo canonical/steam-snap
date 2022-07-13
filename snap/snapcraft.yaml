@@ -16,7 +16,23 @@ assumes:
 
 package-repositories:
   - type: apt
-    ppa: kisak/kisak-mesa
+    url: http://repo.steampowered.com/steam/
+    suites: [stable]
+    components: [steam]
+    architectures: [amd64, i386]
+    key-id: BA1816EF8E75005FCF5E27A1F24AEA9FB05498B7
+  - type: apt
+    # FIXME: We need to enable both 32-bit and 64-bit architectures
+    # for this PPA, but Snapcraft doesn't let us do that with the
+    # short syntax. So use the full version instead.
+
+    # ppa: kisak/kisak-mesa
+    url: http://ppa.launchpad.net/kisak/kisak-mesa/ubuntu
+    suites: [focal]
+    components: [main]
+    architectures: [amd64, i386]
+    key-id: EB8B81E14DA65431D7504EA8F63F0F2B90935439
+    key-server: keyserver.ubuntu.com
 
 layout:
   /usr/lib/steam:
@@ -144,17 +160,8 @@ parts:
   enable-i386:
     after: [ launcher ]
     plugin: nil
-    build-packages:
-      - dirmngr
     override-build: |
       snapcraftctl build
-      tee /etc/apt/sources.list.d/steam.list <<'EOF'
-      deb [arch=amd64,i386] http://repo.steampowered.com/steam/ stable steam
-      deb-src [arch=amd64,i386] http://repo.steampowered.com/steam/ stable steam
-      EOF
-      apt-key adv --keyserver keyserver.ubuntu.com --recv-keys F24AEA9FB05498B7
-      apt-key add $SNAPCRAFT_PROJECT_DIR/src/valve-archive-keyring.gpg
-
       if [ "$SNAPCRAFT_ARCH_TRIPLET" = "x86_64-linux-gnu" ]; then
         dpkg --add-architecture i386
       fi
