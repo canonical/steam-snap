@@ -41,7 +41,7 @@ REALHOME=$(getent passwd $UID | cut -d ':' -f 6)
 export SNAP_DESKTOP_RUNTIME=$SNAP
 
 # Set config folder to local path
-export XDG_CONFIG_HOME="$SNAP_USER_DATA/.config"
+export XDG_CONFIG_HOME="$SNAP_USER_COMMON/.config"
 ensure_dir_exists "$XDG_CONFIG_HOME"
 chmod 700 "$XDG_CONFIG_HOME"
 
