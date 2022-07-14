@@ -25,14 +25,6 @@ $SNAP/usr/lib
 $SNAP/usr/lib/x86_64-linux-gnu/dri
 $SNAP/usr/lib/i386-linux-gnu/dri
 $SNAP/usr/lib/i386-linux-gnu/pulseaudio
-$RUNTIME/lib/x86_64-linux-gnu
-$RUNTIME/lib/i386-linux-gnu
-$RUNTIME/lib
-$RUNTIME/usr/lib/x86_64-linux-gnu
-$RUNTIME/usr/lib/i386-linux-gnu
-$RUNTIME/usr/lib
-$RUNTIME/usr/lib/x86_64-linux-gnu/dri
-$RUNTIME/usr/lib/i386-linux-gnu/dri
 /lib/x86_64-linux-gnu
 /lib/i386-linux-gnu
 /usr/lib/x86_64-linux-gnu
