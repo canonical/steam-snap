@@ -217,8 +217,6 @@ prepend_dir XDG_DATA_DIRS "$SNAP_USER_DATA"
 export XDG_DATA_HOME="$SNAP_USER_COMMON/.local/share"
 ensure_dir_exists "$XDG_DATA_HOME"
 
-
-
 # Workaround for GLib < 2.53.2 not searching for schemas in $XDG_DATA_HOME:
 #   https://bugzilla.gnome.org/show_bug.cgi?id=741335
 prepend_dir XDG_DATA_DIRS "$XDG_DATA_HOME"
