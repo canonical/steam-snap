@@ -84,6 +84,14 @@ Steam and game-related logs will be displayed in the same terminal window.
 
 Then, run `cd $SNAP` as most directories you want will be here. Other useful directories may be listed in `env`.
 
+### HiDPI
+
+Enable HiDPI support in the client by going to `Steam > Settings > Interface` and check *Enlarge text and icons based on monitor size*. Then, restart Steam for the changes to take effect.
+
+With PR [#34][9], Steam should correctly display cursors at their right size (and with the right icons!).
+
+The [Arch wiki][8] also has some information regarding Steam and HiDPI issues.
+
 ### Issues
 
 Check [existing issues](5) for information regarding any issue you may have first. If nothing exists, open a new issue describing your problem [here][6]. Helpful information to include would be your Steam snap and Snapd versions, Proton version(s), system/GPU information, and any relevant logs.
@@ -114,3 +122,5 @@ Run `snap refresh steam --amend` to switch to a verified branch.
 [5]: https://github.com/canonical/steam-snap/issues
 [6]: https://github.com/canonical/steam-snap/issues/new/choose
 [7]: https://en.wikipedia.org/wiki/Tux_(mascot)
+[8]: https://wiki.archlinux.org/title/HiDPI#Steam
+[9]: https://github.com/canonical/steam-snap/pull/34
