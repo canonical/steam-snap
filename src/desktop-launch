@@ -41,7 +41,7 @@ REALHOME=$(getent passwd $UID | cut -d ':' -f 6)
 export SNAP_DESKTOP_RUNTIME=$SNAP
 
 # Set config folder to local path
-export XDG_CONFIG_HOME="$SNAP_USER_DATA/.config"
+export XDG_CONFIG_HOME="$SNAP_USER_COMMON/.config"
 ensure_dir_exists "$XDG_CONFIG_HOME"
 chmod 700 "$XDG_CONFIG_HOME"
 
@@ -55,6 +55,13 @@ if [[ -f "$XDG_CONFIG_HOME/user-dirs.dirs.md5sum" ]]; then
 else
   # shellcheck disable=SC2034
   needs_update=true
+fi
+
+# If the user has saves in the old $SNAP_USER_DATA/.config, move them
+# to $SNAP_USER_COMMON/.config
+if [[ -d $SNAP_USER_DATA/.config ]]; then
+  mv -n $SNAP_USER_DATA/.config/* $XDG_CONFIG_HOME
+  rm -r $SNAP_USER_DATA/.config
 fi
 
 if [ "$SNAP_ARCH" = "amd64" ]; then
