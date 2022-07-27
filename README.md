@@ -40,16 +40,16 @@ Enabling Steam Play will automatically download Proton compatability libraries f
 
 **Enable Proton Individually**
 
-`Right click the game > Properties > Compatbility > Check 'Force the use of...' > Choose a Proton version`
+`Right click the game > Properties > Compatibility > Check 'Force the use of...' > Choose a Proton version`
 
-*Note: it is not always beneficial to use Proton; some games run natively on Linux without compatability tools. Additionally, check [ProtonDB][3] for Linux supported games and tips on running.*
+*Note: it is not always beneficial to use Proton; some games run natively on Linux without compatibility tools. Additionally, check [ProtonDB][3] for Linux supported games and tips on running.*
 
 ### How do I use my dedicated GPU?
 
 #### NVIDIA
 
 **Enabling a graphics card**  
-Switch between graphics modes with `sudo prime-select <mode>` and reboot. For games to use your graphics card, `prime-select` should be set to `nvidia` or `on-demand`. Show your current graphics mode with `sudo prime-select query`. *Note: exlcusively using a disrete graphics card (`nvidia` option) will use more power than normal.*
+Switch between graphics modes with `sudo prime-select <mode>` and reboot. For games to use your graphics card, `prime-select` should be set to `nvidia` or `on-demand`. Show your current graphics mode with `sudo prime-select query`. *Note: exclusively using a discrete graphics card (`nvidia` option) will use more power than normal.*
 
 **GPU stats**  
 To view programs using your GPU as well as power usage and other information, run `nvidia-smi`. If a game is correctly using your GPU, a listing should appear in `nvidia-smi` after it has started running.
@@ -94,7 +94,7 @@ The [Arch wiki][8] also has some information regarding Steam and HiDPI issues.
 
 ### Issues
 
-Check [existing issues](5) for information regarding any issue you may have first. If nothing exists, open a new issue describing your problem [here][6]. Helpful information to include would be your Steam snap and Snapd versions, Proton version(s), system/GPU information, and any relevant logs.
+Check [existing issues][5] for information regarding any issue you may have first. If nothing exists, open a new issue describing your problem [here][6]. Helpful information to include would be your Steam snap and Snapd versions, Proton version(s), system/GPU information, and any relevant logs.
 
 ### Using Unverified Builds
 
@@ -103,7 +103,7 @@ You probably shouldn't be doing this unless recommended to or are testing a spec
 
 #### Installing
 
-Download the `snap` artifact you need from its Action. They usually can be found on the "Summary" tab of the Action cooresponding to the commit/merge. [All action runs can be found here, too](https://github.com/canonical/steam-snap/actions).
+Download the `snap` artifact you need from its Action. They usually can be found on the "Summary" tab of the Action corresponding to the commit/merge. [All action runs can be found here, too](https://github.com/canonical/steam-snap/actions).
 
 Unzip the file you downloaded and open up a terminal. Run `snap install /path/to/your/steam.snap --dangerous`.
 
