@@ -204,6 +204,7 @@ parts:
       - mesa-utils # For testing/debugging
       - lsof
       - locales-all
+      - gamemode
     override-build: |
       snapcraftctl build
       # Set the snap version from the .deb package version
