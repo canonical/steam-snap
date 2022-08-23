@@ -200,7 +200,8 @@ parts:
       - fontconfig:i386
       - fontconfig:amd64
       - pciutils
-      - vulkan-tools # For testing
+      - vulkan-tools # For testing/debugging
+      - mesa-utils # For testing/debugging
       - lsof
       - locales-all
     override-build: |
