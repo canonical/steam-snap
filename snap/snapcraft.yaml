@@ -167,12 +167,25 @@ parts:
       fi
       apt update
 
+  gamemode:
+    source: https://github.com/ashuntu/gamemode.git
+    source-branch: 'add-snap-support'
+    plugin: meson
+    organize:
+      snap/steam/current/usr: usr
+    meson-parameters:
+      - --prefix=/usr
+    build-packages:
+      - libsystemd-dev
+      - pkg-config
+      - libdbus-1-dev
+
   steam-devices:
     plugin: dump
     source: https://github.com/ValveSoftware/steam-devices.git
 
   steam:
-    after: [ enable-i386 ]
+    after: [ enable-i386, gamemode ]
     plugin: nil
     #source: http://repo.steampowered.com/steam/archive/precise/steam_latest.deb
     build-packages:
@@ -204,7 +217,6 @@ parts:
       - mesa-utils # For testing/debugging
       - lsof
       - locales-all
-      - gamemode
     override-build: |
       snapcraftctl build
       # Set the snap version from the .deb package version
