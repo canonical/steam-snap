@@ -179,6 +179,9 @@ parts:
       - libsystemd-dev
       - pkg-config
       - libdbus-1-dev
+    prime:
+      - usr/bin/gamemoderun
+      - usr/lib/*/libgamemode*.so.*
 
   steam-devices:
     plugin: dump
