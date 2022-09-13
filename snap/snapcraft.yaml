@@ -9,7 +9,7 @@ grade: stable
 confinement: strict
 architectures:
   - build-on: amd64
-base: core20
+base: core22
 compression: lzo
 assumes:
   - snapd2.55.4
@@ -61,8 +61,8 @@ layout:
     bind: $SNAP/usr/lib/x86_64-linux-gnu/mesa-egl
   /usr/share/glvnd/egl_vendor.d:
     bind: $SNAP/usr/share/glvnd/egl_vendor.d
-  /usr/lib/$SNAPCRAFT_ARCH_TRIPLET/alsa-lib:
-    bind: $SNAP/usr/lib/$SNAPCRAFT_ARCH_TRIPLET/alsa-lib
+  /usr/lib/x86_64-linux-gnu/alsa-lib:
+    bind: $SNAP/usr/lib/x86_64-linux-gnu/alsa-lib
   /usr/share/alsa:
     bind: $SNAP/usr/share/alsa
   /usr/share/vulkan:
@@ -102,7 +102,8 @@ plugs:
       - $HOME/Steam
   desktop:
     mount-host-font-cache: false
-  shared-memory:
+  shmem:
+    interface: shared-memory
     private: true
 
 hooks:
@@ -113,14 +114,23 @@ hooks:
 environment:
   LD_LIBRARY_PATH: $SNAP/usr/lib/i386-linux-gnu:$SNAP/lib/i386-linux-gnu:$SNAP/usr/lib/i386-linux-gnu/pulseaudio${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}
 
+package-repositories:
+  - type: apt
+    components: [steam]
+    suites: [stable]
+    architectures: [i386, amd64]
+    key-id: BA1816EF8E75005FCF5E27A1F24AEA9FB05498B7
+    key-server: keyserver.ubuntu.com
+    url: http://repo.steampowered.com/steam/
+
 parts:
   launcher:
     plugin: nil
     source : ./src
     override-build: |
-      mkdir -p $SNAPCRAFT_PART_INSTALL/bin
-      cp steam-snap.sh $SNAPCRAFT_PART_INSTALL/bin/
-      cp desktop-launch $SNAPCRAFT_PART_INSTALL/bin/
+      mkdir -p $CRAFT_PART_INSTALL/bin
+      cp steam-snap.sh $CRAFT_PART_INSTALL/bin/
+      cp desktop-launch $CRAFT_PART_INSTALL/bin/
 
   alsa-mixin:
     plugin: dump
@@ -143,47 +153,40 @@ parts:
       - etc/asound.conf
       - snap/command-chain/alsa-launch
       - usr/bin/yad*
-      - usr/lib/$SNAPCRAFT_ARCH_TRIPLET/alsa-lib
-      - usr/lib/$SNAPCRAFT_ARCH_TRIPLET/libasound*
-      - usr/lib/$SNAPCRAFT_ARCH_TRIPLET/libasyncns*
-      - usr/lib/$SNAPCRAFT_ARCH_TRIPLET/libdnsfile*
-      - usr/lib/$SNAPCRAFT_ARCH_TRIPLET/libFLAC*
-      - usr/lib/$SNAPCRAFT_ARCH_TRIPLET/libjack*
-      - usr/lib/$SNAPCRAFT_ARCH_TRIPLET/libpulse*
-      - usr/lib/$SNAPCRAFT_ARCH_TRIPLET/libsamplerate*
-      - usr/lib/$SNAPCRAFT_ARCH_TRIPLET/libsndfile*
-      - usr/lib/$SNAPCRAFT_ARCH_TRIPLET/libspeex*
-      - usr/lib/$SNAPCRAFT_ARCH_TRIPLET/libvorbis*
-      - usr/lib/$SNAPCRAFT_ARCH_TRIPLET/pulseaudio
+      - usr/lib/*/alsa-lib
+      - usr/lib/*/libasound*
+      - usr/lib/*/libasyncns*
+      - usr/lib/*/libdnsfile*
+      - usr/lib/*/libFLAC*
+      - usr/lib/*/libjack*
+      - usr/lib/*/libpulse*
+      - usr/lib/*/libsamplerate*
+      - usr/lib/*/libsndfile*
+      - usr/lib/*/libspeex*
+      - usr/lib/*/libvorbis*
+      - usr/lib/*/pulseaudio
       - usr/share/alsa
-
-  enable-i386:
-    after: [ launcher ]
-    plugin: nil
-    override-build: |
-      snapcraftctl build
-      if [ "$SNAPCRAFT_ARCH_TRIPLET" = "x86_64-linux-gnu" ]; then
-        dpkg --add-architecture i386
-      fi
-      apt update
 
   steam-devices:
     plugin: dump
     source: https://github.com/ValveSoftware/steam-devices.git
 
   steam:
-    after: [ enable-i386 ]
     plugin: nil
     #source: http://repo.steampowered.com/steam/archive/precise/steam_latest.deb
     build-packages:
       - dpkg-dev
+      - dirmngr # Needed for launchpad builds
     stage-packages:
       - steam-launcher
       - steam-libs-amd64
       - steam-libs-i386
       - libappindicator3-1
+      - libpci3
       - libvkd3d1:i386
       - libvkd3d1:amd64
+      - libvulkan1:i386
+      - libvulkan1:amd64
       - zlib1g:i386
       - zlib1g:amd64
       - mesa-va-drivers:i386
@@ -193,7 +196,6 @@ parts:
       - mesa-vulkan-drivers:i386
       - va-driver-all:amd64
       - va-driver-all:i386
-      - va-driver:i386
       - libvdpau-va-gl1:amd64
       - xdg-utils
       - fontconfig-config
@@ -205,17 +207,23 @@ parts:
       - lsof
       - locales-all
     override-build: |
-      snapcraftctl build
+      craftctl default
       # Set the snap version from the .deb package version
-      snapcraftctl set-version $(dpkg-parsechangelog -l $SNAPCRAFT_PART_INSTALL/usr/share/doc/steam-launcher/changelog.all.gz -S Version | sed -e s/1://g)
+      craftctl set version=$(dpkg-parsechangelog -l $CRAFT_PART_INSTALL/usr/share/doc/steam-launcher/changelog.all.gz -S Version | sed -e s/1://g)
       # Copy over the icon
-      cp $SNAPCRAFT_PART_INSTALL/usr/share/icons/hicolor/256x256/apps/steam.png $SNAPCRAFT_PART_INSTALL/steam.png
-      mkdir -p $SNAPCRAFT_PART_INSTALL/meta/gui
-      ln -s ../../steam.png $SNAPCRAFT_PART_INSTALL/meta/gui/icon.png
+      cp $CRAFT_PART_INSTALL/usr/share/icons/hicolor/256x256/apps/steam.png $CRAFT_PART_INSTALL/steam.png
+      mkdir -p $CRAFT_PART_INSTALL/meta/gui
+      ln -s ../../steam.png $CRAFT_PART_INSTALL/meta/gui/icon.png
       # Install the desktop file, with the icon field munged
-      sed 's|Icon=steam|Icon=${SNAP}/steam.png|g' $SNAPCRAFT_PART_INSTALL/usr/share/applications/steam.desktop > $SNAPCRAFT_PART_INSTALL/steam.desktop
+      sed 's|Icon=steam|Icon=${SNAP}/steam.png|g' $CRAFT_PART_INSTALL/usr/share/applications/steam.desktop > $CRAFT_PART_INSTALL/steam.desktop
     prime:
       - -etc/fonts
+      - -usr/share/doc
+      - -usr/share/man
+      - -usr/share/bug
+      - -usr/share/gdb
+      - -usr/share/emacs*
+      - -usr/share/lintian
 
 apps:
   steam:
@@ -230,7 +238,7 @@ apps:
       ALWAYS_USE_PULSEAUDIO: 1
       DISABLE_WAYLAND: 1
     plugs:
-      - shared-memory
+      - shmem
       - desktop
       - desktop-legacy
       - wayland
