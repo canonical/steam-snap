@@ -114,15 +114,6 @@ hooks:
 environment:
   LD_LIBRARY_PATH: $SNAP/usr/lib/i386-linux-gnu:$SNAP/lib/i386-linux-gnu:$SNAP/usr/lib/i386-linux-gnu/pulseaudio${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}
 
-package-repositories:
-  - type: apt
-    components: [steam]
-    suites: [stable]
-    architectures: [i386, amd64]
-    key-id: BA1816EF8E75005FCF5E27A1F24AEA9FB05498B7
-    key-server: keyserver.ubuntu.com
-    url: http://repo.steampowered.com/steam/
-
 parts:
   launcher:
     plugin: nil
