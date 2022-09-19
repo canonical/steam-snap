@@ -202,6 +202,27 @@ parts:
     prime:
       - -*
 
+  mangohud:
+    source: https://github.com/flightlessmango/MangoHud.git
+    plugin: meson
+    organize:
+      snap/steam/current/usr: usr
+    meson-parameters:
+      - --prefix=/usr
+    build-packages:
+      - glslang-dev
+      - glslang-tools
+      - libdbus-1-dev
+      - libgl-dev
+      - libglvnd-dev
+      - libx11-dev
+      - libxnvctrl-dev
+      - mesa-common-dev
+      - python3-mako
+    prime:
+      - usr/bin/mangohud
+      - usr/lib/*/mangohud/*MangoHud*.so
+
   gamemode:
     after: [meson-deps]
     source: https://github.com/ashuntu/gamemode.git
