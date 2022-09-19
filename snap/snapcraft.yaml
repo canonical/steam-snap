@@ -221,7 +221,7 @@ parts:
       - python3-mako
     prime:
       - usr/bin/mangohud
-      - usr/lib/*/mangohud/*MangoHud*.so
+      - usr/lib/*/mangohud/*.so
 
   gamemode:
     after: [meson-deps]
