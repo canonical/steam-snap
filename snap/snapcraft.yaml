@@ -207,9 +207,22 @@ parts:
     plugin: meson
     organize:
       snap/steam/current/usr: usr
-    meson-parameters:
-      - --prefix=/usr
+    # meson-parameters:
+    #   - --prefix=/usr
+    #   - --libdir $SNAP/usr/lib/i386-linux-gnu
+    build-environment:
+      - CC: gcc -m32
+      - CXX: g++ -m32
+      - PKG_CONFIG_PATH: $SNAPCRAFT_STAGE/usr/lib/i386-linux-gnu/pkgconfig:$SNAPCRAFT_STAGE/usr/lib/i386-linux-gnu/pkgconfig:$SNAPCRAFT_STAGE/usr/lib/pkgconfig
+    override-build: |
+      cd $SNAPCRAFT_PART_SRC
+      meson build32 --libdir $SNAPCRAFT_STAGE/usr/lib/i386-linux-gnu --prefix=/usr
+      ninja -C build32 install
     build-packages:
+      - gcc
+      - gcc-multilib
+      - g++
+      - g++-multilib
       - glslang-dev
       - glslang-tools
       - libdbus-1-dev
@@ -218,10 +231,9 @@ parts:
       - libx11-dev
       - libxnvctrl-dev
       - mesa-common-dev
+      - meson
+      - ninja-build
       - python3-mako
-    prime:
-      - usr/bin/mangohud
-      - usr/lib/*/mangohud/*.so
 
   gamemode:
     after: [meson-deps]
@@ -361,6 +373,7 @@ apps:
       TMPDIR: $XDG_RUNTIME_DIR
       ALWAYS_USE_PULSEAUDIO: 1
       DISABLE_WAYLAND: 1
+      PKG_CONFIG_PATH: $SNAP/usr/lib/i386-linux-gnu/pkgconfig:$SNAP/usr/lib/i386-linux-nu/pkgconfig:$SNAP/usr/lib/pkgconfig
     plugs:
       - shmem
       - desktop
