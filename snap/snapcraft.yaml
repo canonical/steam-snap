@@ -207,17 +207,14 @@ parts:
     plugin: meson
     organize:
       snap/steam/current/usr: usr
-    # meson-parameters:
-    #   - --prefix=/usr
-    #   - --libdir $SNAP/usr/lib/i386-linux-gnu
     build-environment:
       - CC: gcc -m32
       - CXX: g++ -m32
-      - PKG_CONFIG_PATH: $SNAPCRAFT_STAGE/usr/lib/i386-linux-gnu/pkgconfig:$SNAPCRAFT_STAGE/usr/lib/i386-linux-gnu/pkgconfig:$SNAPCRAFT_STAGE/usr/lib/pkgconfig
-    override-build: |
-      cd $SNAPCRAFT_PART_SRC
-      meson build32 --libdir $SNAPCRAFT_STAGE/usr/lib/i386-linux-gnu --prefix=/usr
-      ninja -C build32 install
+      - PKG_CONFIG_PATH: /usr/lib/i386-linux-gnu/pkgconfig:/usr/lib/i386-linux-gnu/pkgconfig:/usr/lib/pkgconfig
+    meson-parameters:
+      - --prefix=/usr
+      - --libdir lib/i386-linux-gnu
+      - -Dappend_libdir_mangohud=false
     build-packages:
       - gcc
       - gcc-multilib
