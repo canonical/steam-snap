@@ -14,6 +14,26 @@ compression: lzo
 assumes:
   - snapd2.55.4
 
+package-repositories:
+  - type: apt
+    url: http://repo.steampowered.com/steam/
+    suites: [stable]
+    components: [steam]
+    architectures: [amd64, i386]
+    key-id: BA1816EF8E75005FCF5E27A1F24AEA9FB05498B7
+  - type: apt
+    # FIXME: We need to enable both 32-bit and 64-bit architectures
+    # for this PPA, but Snapcraft doesn't let us do that with the
+    # short syntax. So use the full version instead.
+
+    # ppa: kisak/kisak-mesa
+    url: http://ppa.launchpad.net/kisak/kisak-mesa/ubuntu
+    suites: [focal]
+    components: [main]
+    architectures: [amd64, i386]
+    key-id: EB8B81E14DA65431D7504EA8F63F0F2B90935439
+    key-server: keyserver.ubuntu.com
+
 layout:
   /usr/lib/steam:
     bind: $SNAP/lib/steam
@@ -59,6 +79,8 @@ layout:
     bind-file: $SNAP/usr/lib/i386-linux-gnu/libvulkan_radeon.so
   /usr/lib/x86_64-linux-gnu/libvulkan_radeon.so:
     bind-file: $SNAP/usr/lib/x86_64-linux-gnu/libvulkan_radeon.so
+  /etc/ld.so.cache:
+    bind-file: $SNAP_DATA/etc/ld.so.cache
 
 plugs:
   gtk-3-themes:
@@ -84,17 +106,13 @@ plugs:
     interface: shared-memory
     private: true
 
+hooks:
+  post-refresh:
+    plugs:
+      - opengl
+
 environment:
   LD_LIBRARY_PATH: $SNAP/usr/lib/i386-linux-gnu:$SNAP/lib/i386-linux-gnu:$SNAP/usr/lib/i386-linux-gnu/pulseaudio${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}
-
-package-repositories:
-  - type: apt
-    components: [steam]
-    suites: [stable]
-    architectures: [i386, amd64]
-    key-id: BA1816EF8E75005FCF5E27A1F24AEA9FB05498B7
-    key-server: keyserver.ubuntu.com
-    url: http://repo.steampowered.com/steam/
 
 parts:
   launcher:
@@ -175,9 +193,10 @@ parts:
       - fontconfig:i386
       - fontconfig:amd64
       - pciutils
-      - vulkan-tools # For testing
+      - vulkan-tools # For testing/debugging
+      - mesa-utils # For testing/debugging
       - lsof
-
+      - locales-all
     override-build: |
       craftctl default
       # Set the snap version from the .deb package version
@@ -208,7 +227,7 @@ apps:
       #LIBGL_DEBUG: verbose
       TMPDIR: $XDG_RUNTIME_DIR
       ALWAYS_USE_PULSEAUDIO: 1
-
+      DISABLE_WAYLAND: 1
     plugs:
       - shmem
       - desktop

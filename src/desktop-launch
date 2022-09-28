@@ -41,7 +41,7 @@ REALHOME=$(getent passwd $UID | cut -d ':' -f 6)
 export SNAP_DESKTOP_RUNTIME=$SNAP
 
 # Set config folder to local path
-export XDG_CONFIG_HOME="$SNAP_USER_DATA/.config"
+export XDG_CONFIG_HOME="$SNAP_USER_COMMON/.config"
 ensure_dir_exists "$XDG_CONFIG_HOME"
 chmod 700 "$XDG_CONFIG_HOME"
 
@@ -55,6 +55,13 @@ if [[ -f "$XDG_CONFIG_HOME/user-dirs.dirs.md5sum" ]]; then
 else
   # shellcheck disable=SC2034
   needs_update=true
+fi
+
+# If the user has saves in the old $SNAP_USER_DATA/.config, move them
+# to $SNAP_USER_COMMON/.config
+if [[ -d $SNAP_USER_DATA/.config ]]; then
+  mv -n $SNAP_USER_DATA/.config/* $XDG_CONFIG_HOME
+  rm -r $SNAP_USER_DATA/.config
 fi
 
 if [ "$SNAP_ARCH" = "amd64" ]; then
@@ -145,7 +152,7 @@ export XLOCALEDIR="$SNAP_DESKTOP_RUNTIME/usr/share/X11/locale"
 
 # Set XCursors path
 export XCURSOR_PATH="$SNAP_DESKTOP_RUNTIME/usr/share/icons"
-prepend_dir XCURSOR_PATH "$SNAP/data-dir/icons"
+prepend_dir XCURSOR_PATH "$SNAP/share/icons"
 
 # Mesa Libs for OpenGL support
 append_dir LD_LIBRARY_PATH "$SNAP_DESKTOP_RUNTIME/usr/lib/$ARCH/mesa"
