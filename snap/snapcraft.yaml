@@ -107,7 +107,7 @@ plugs:
     private: true
 
 hooks:
-  post-refresh:
+  configure:
     plugs:
       - opengl
 
