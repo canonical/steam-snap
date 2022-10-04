@@ -4,37 +4,78 @@ about: Create a report about a problem with the Snap
 title: ''
 labels: bug
 assignees: ''
-
 ---
 
+<!--
+BEFORE SUBMITTING A BUG REPORT:
+- Check that an existing (or resolved) issue doesn't already exist for your problem  (https://github.com/canonical/steam-snap/issues)
+- Check the wiki for solutions/troubleshooting tips (https://github.com/canonical/steam-snap/wiki)
+- Make sure your problem doesn't occur in the deb/'native' version of Steam
+
+If you're not sure, submit an issue anyway, we're glad to help!
+-->
+
 **Describe the bug**
-A clear and concise description of what the bug is. Make sure you've refreshed the Steam Snap with `snap refresh steam` to use the most recent version before submitting a report.
+<!--
+Give a clear and concise description of the bug or problem you are experiencing. It may be worthwhile to make sure you've refreshed the Snap to the most recent version with `snap refresh steam` before submitting a report.
+-->
 
 **To Reproduce**
+<!--
+Enumerate the steps you took to produce the undesired behavior; replace the example list with your own.
+In some cases, it may be worth making sure that you can *re*produce the behavior multiple times.
+-->
 Steps to reproduce the behavior:
 1. Go to '...'
-2. Click on '....'
-3. Scroll down to '....'
+2. Click on '...'
+3. Scroll down to '...'
 4. See error/undesired behavior
 
 **Expected behavior**
-A clear and concise description of what you expected to happen.
+<!--
+Give a clear and concise description of what you expected to (or should) happen.
+-->
 
 **Screenshots**
-If applicable, add screenshots to help explain your problem.
+<!--
+If applicable, provide screenshots of the problem.
+Remove this section if not applicable.
+-->
 
 **Environment**  
-*Please provide the output of the following commands:*  
+<!--
+Replace 'your output' below with the output of the commands listed.
+-->
 
 `snap info steam`  
 ```
-output
+your output
 ```
 
 `snap version`
 ```
-output
+your output
 ```
 
+<!--
+Include information about your system below, if applicable.
+Feel free to add any other system information you think is relevant.
+-->
+
+Distro & version:  
+CPU:  
+GPU:  
+GPU Driver Version:  
+
+**Logs**
+<!--
+Add any errors/warnings output to the terminal (if applicable).
+Run Steam from the terminal with `snap run steam` to easily see output.
+Remove this section if not applicable.
+-->
+
 **Additional context**
-Add any other context about the problem here.
+<!--
+Add any additional logs, setup information, or otherwise useful information to note about the problem.
+Remove this section if not applicable.
+-->
