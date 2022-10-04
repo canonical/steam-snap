@@ -65,6 +65,7 @@ Feel free to add any other system information you think is relevant.
 Distro & version:  
 CPU:  
 GPU:  
+GPU Driver Version:  
 
 **Logs**
 <!--
