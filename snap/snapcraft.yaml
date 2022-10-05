@@ -28,7 +28,7 @@ package-repositories:
 
     # ppa: kisak/kisak-mesa
     url: http://ppa.launchpad.net/kisak/kisak-mesa/ubuntu
-    suites: [focal]
+    suites: [jammy]
     components: [main]
     architectures: [amd64, i386]
     key-id: EB8B81E14DA65431D7504EA8F63F0F2B90935439
