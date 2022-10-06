@@ -39,12 +39,6 @@ layout:
     bind: $SNAP/lib/steam
   /usr/share/zenity:
     bind: $SNAP/usr/share/zenity
-  /usr/share/themes:
-    bind: $SNAP/share/themes
-  /usr/share/icons:
-    bind: $SNAP/share/icons
-  /usr/share/sounds:
-    bind: $SNAP/share/sounds
   /usr/share/libdrm:
     bind: $SNAP/usr/share/libdrm
   /usr/lib/i386-linux-gnu/dri:
