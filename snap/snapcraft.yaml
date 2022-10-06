@@ -172,7 +172,47 @@ parts:
       - usr/lib/*/pulseaudio
       - usr/share/alsa
 
+  ninja:
+    plugin: nil
+    source: https://github.com/ninja-build/ninja.git
+    source-tag: 'v1.11.0'
+    override-build: |
+      rm -rf build
+      rm -f ninja
+      rm -f ninja_bootstrap
+      sed -i 's_^#!/usr/bin/env python$_#!/usr/bin/env python3_g' configure.py
+      ./configure.py --bootstrap
+      mv ninja ninja_bootstrap
+      rm -rf build
+      ./ninja_bootstrap
+      rm -f ninja_bootstrap
+      mkdir -p $CRAFT_PART_INSTALL/usr/bin
+      mv ninja $CRAFT_PART_INSTALL/usr/bin/
+    build-packages:
+      - python3
+    prime:
+      - -*
+
+  meson-deps:
+    after: [ ninja ]
+    plugin: nil
+    source: https://github.com/mesonbuild/meson.git
+    source-tag: '0.62.2'
+    override-build: |
+      python3 -m pip install .
+      mkdir -p $CRAFT_PART_INSTALL/usr/lib/python3/dist-packages
+      rm -rf $CRAFT_PART_INSTALL/usr/lib/python3/dist-packages/meson*
+      python3 -m pip install --target=$CRAFT_PART_INSTALL/usr .
+      mv $CRAFT_PART_INSTALL/usr/meson* $CRAFT_PART_INSTALL/usr/lib/python3/dist-packages/
+      sed -i "s%^#!/usr/bin/python3$%#!/usr/bin/env python3%g" /usr/local/bin/meson
+      sed -i "s%^#!/usr/bin/python3$%#!/usr/bin/env python3%g" $CRAFT_PART_INSTALL/usr/bin/meson
+    build-packages:
+      - python3-pip
+    prime:
+      - -*
+
   gamemode:
+    after: [ meson-deps ]
     source: https://github.com/ashuntu/gamemode.git
     source-branch: 'add-snap-support'
     plugin: meson
