@@ -36,23 +36,15 @@ package-repositories:
 
 layout:
   /usr/lib/steam:
-    bind: $SNAP/lib/steam
+    bind: $SNAP/usr/lib/steam
   /usr/share/zenity:
     bind: $SNAP/usr/share/zenity
   /usr/share/libdrm:
     bind: $SNAP/usr/share/libdrm
-  /usr/lib/i386-linux-gnu/dri:
-    bind: $SNAP/usr/lib/i386-linux-gnu/dri
+  /usr/lib/i386-linux-gnu:
+    bind: $SNAP/usr/lib/i386-linux-gnu
   /usr/lib/x86_64-linux-gnu/dri:
     bind: $SNAP/usr/lib/x86_64-linux-gnu/dri
-  /usr/lib/i386-linux-gnu/mesa:
-    bind: $SNAP/usr/lib/i386-linux-gnu/mesa
-  /usr/lib/x86_64-linux-gnu/mesa:
-    bind: $SNAP/usr/lib/x86_64-linux-gnu/mesa
-  /usr/lib/i386-linux-gnu/mesa-egl:
-    bind: $SNAP/usr/lib/i386-linux-gnu/mesa-egl
-  /usr/lib/x86_64-linux-gnu/mesa-egl:
-    bind: $SNAP/usr/lib/x86_64-linux-gnu/mesa-egl
   /usr/share/glvnd/egl_vendor.d:
     bind: $SNAP/usr/share/glvnd/egl_vendor.d
   /usr/lib/x86_64-linux-gnu/alsa-lib:
@@ -61,16 +53,10 @@ layout:
     bind: $SNAP/usr/share/alsa
   /usr/share/vulkan:
     bind: $SNAP/usr/share/vulkan
-  /usr/lib/i386-linux-gnu/libvulkan_intel.so:
-    bind-file: $SNAP/usr/lib/i386-linux-gnu/libvulkan_intel.so
   /usr/lib/x86_64-linux-gnu/libvulkan_intel.so:
     bind-file: $SNAP/usr/lib/x86_64-linux-gnu/libvulkan_intel.so
-  /usr/lib/i386-linux-gnu/libvulkan_lvp.so:
-    bind-file: $SNAP/usr/lib/i386-linux-gnu/libvulkan_lvp.so
   /usr/lib/x86_64-linux-gnu/libvulkan_lvp.so:
     bind-file: $SNAP/usr/lib/x86_64-linux-gnu/libvulkan_lvp.so
-  /usr/lib/i386-linux-gnu/libvulkan_radeon.so:
-    bind-file: $SNAP/usr/lib/i386-linux-gnu/libvulkan_radeon.so
   /usr/lib/x86_64-linux-gnu/libvulkan_radeon.so:
     bind-file: $SNAP/usr/lib/x86_64-linux-gnu/libvulkan_radeon.so
   /usr/lib/x86_64-linux-gnu/libxcb-dri3.so.0.0.0:
@@ -83,16 +69,6 @@ layout:
     symlink: $SNAP/usr/lib/x86_64-linux-gnu/libxcb.so.1.1.0
   /usr/lib/x86_64-linux-gnu/libxcb.so.1:
     symlink: $SNAP/usr/lib/x86_64-linux-gnu/libxcb.so.1.1.0
-  /usr/lib/i386-linux-gnu/libxcb-dri3.so.0.0.0:
-    bind-file: $SNAP/usr/lib/i386-linux-gnu/libxcb-dri3.so.0.0.0
-  /usr/lib/i386-linux-gnu/libxcb-dri3.so.0:
-    symlink: $SNAP/usr/lib/i386-linux-gnu/libxcb-dri3.so.0.0.0
-  /usr/lib/i386-linux-gnu/libxcb.so.1.1.0:
-    bind-file: $SNAP/usr/lib/i386-linux-gnu/libxcb.so.1.1.0
-  /usr/lib/i386-linux-gnu/libxcb.so:
-    symlink: $SNAP/usr/lib/i386-linux-gnu/libxcb.so.1.1.0
-  /usr/lib/i386-linux-gnu/libxcb.so.1:
-    symlink: $SNAP/usr/lib/i386-linux-gnu/libxcb.so.1.1.0
   /etc/ld.so.cache:
     bind-file: $SNAP_DATA/etc/ld.so.cache
 
@@ -287,6 +263,12 @@ parts:
       - -usr/share/gdb
       - -usr/share/emacs*
       - -usr/share/lintian
+    build-snaps: [core22]
+    override-prime: |
+      craftctl default
+      set -eux
+      cp -a /snap/core22/current/usr/lib/i386-linux-gnu/* usr/lib/i386-linux-gnu/
+
 
 apps:
   steam:
