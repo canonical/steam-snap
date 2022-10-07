@@ -9,7 +9,7 @@ grade: stable
 confinement: strict
 architectures:
   - build-on: amd64
-base: core20
+base: core22
 compression: lzo
 assumes:
   - snapd2.55.4
@@ -28,7 +28,7 @@ package-repositories:
 
     # ppa: kisak/kisak-mesa
     url: http://ppa.launchpad.net/kisak/kisak-mesa/ubuntu
-    suites: [focal]
+    suites: [jammy]
     components: [main]
     architectures: [amd64, i386]
     key-id: EB8B81E14DA65431D7504EA8F63F0F2B90935439
@@ -36,49 +36,39 @@ package-repositories:
 
 layout:
   /usr/lib/steam:
-    bind: $SNAP/lib/steam
+    bind: $SNAP/usr/lib/steam
   /usr/share/zenity:
     bind: $SNAP/usr/share/zenity
-  /usr/share/themes:
-    bind: $SNAP/share/themes
-  /usr/share/icons:
-    bind: $SNAP/share/icons
-  /usr/share/sounds:
-    bind: $SNAP/share/sounds
   /usr/share/libdrm:
     bind: $SNAP/usr/share/libdrm
-  /usr/lib/i386-linux-gnu/dri:
-    bind: $SNAP/usr/lib/i386-linux-gnu/dri
+  /usr/lib/i386-linux-gnu:
+    bind: $SNAP/usr/lib/i386-linux-gnu
   /usr/lib/x86_64-linux-gnu/dri:
     bind: $SNAP/usr/lib/x86_64-linux-gnu/dri
-  /usr/lib/i386-linux-gnu/mesa:
-    bind: $SNAP/usr/lib/i386-linux-gnu/mesa
-  /usr/lib/x86_64-linux-gnu/mesa:
-    bind: $SNAP/usr/lib/x86_64-linux-gnu/mesa
-  /usr/lib/i386-linux-gnu/mesa-egl:
-    bind: $SNAP/usr/lib/i386-linux-gnu/mesa-egl
-  /usr/lib/x86_64-linux-gnu/mesa-egl:
-    bind: $SNAP/usr/lib/x86_64-linux-gnu/mesa-egl
   /usr/share/glvnd/egl_vendor.d:
     bind: $SNAP/usr/share/glvnd/egl_vendor.d
-  /usr/lib/$SNAPCRAFT_ARCH_TRIPLET/alsa-lib:
-    bind: $SNAP/usr/lib/$SNAPCRAFT_ARCH_TRIPLET/alsa-lib
+  /usr/lib/x86_64-linux-gnu/alsa-lib:
+    bind: $SNAP/usr/lib/x86_64-linux-gnu/alsa-lib
   /usr/share/alsa:
     bind: $SNAP/usr/share/alsa
   /usr/share/vulkan:
     bind: $SNAP/usr/share/vulkan
-  /usr/lib/i386-linux-gnu/libvulkan_intel.so:
-    bind-file: $SNAP/usr/lib/i386-linux-gnu/libvulkan_intel.so
   /usr/lib/x86_64-linux-gnu/libvulkan_intel.so:
     bind-file: $SNAP/usr/lib/x86_64-linux-gnu/libvulkan_intel.so
-  /usr/lib/i386-linux-gnu/libvulkan_lvp.so:
-    bind-file: $SNAP/usr/lib/i386-linux-gnu/libvulkan_lvp.so
   /usr/lib/x86_64-linux-gnu/libvulkan_lvp.so:
     bind-file: $SNAP/usr/lib/x86_64-linux-gnu/libvulkan_lvp.so
-  /usr/lib/i386-linux-gnu/libvulkan_radeon.so:
-    bind-file: $SNAP/usr/lib/i386-linux-gnu/libvulkan_radeon.so
   /usr/lib/x86_64-linux-gnu/libvulkan_radeon.so:
     bind-file: $SNAP/usr/lib/x86_64-linux-gnu/libvulkan_radeon.so
+  /usr/lib/x86_64-linux-gnu/libxcb-dri3.so.0.0.0:
+    bind-file: $SNAP/usr/lib/x86_64-linux-gnu/libxcb-dri3.so.0.0.0
+  /usr/lib/x86_64-linux-gnu/libxcb-dri3.so.0:
+    symlink: $SNAP/usr/lib/x86_64-linux-gnu/libxcb-dri3.so.0.0.0
+  /usr/lib/x86_64-linux-gnu/libxcb.so.1.1.0:
+    bind-file: $SNAP/usr/lib/x86_64-linux-gnu/libxcb.so.1.1.0
+  /usr/lib/x86_64-linux-gnu/libxcb.so:
+    symlink: $SNAP/usr/lib/x86_64-linux-gnu/libxcb.so.1.1.0
+  /usr/lib/x86_64-linux-gnu/libxcb.so.1:
+    symlink: $SNAP/usr/lib/x86_64-linux-gnu/libxcb.so.1.1.0
   /etc/ld.so.cache:
     bind-file: $SNAP_DATA/etc/ld.so.cache
 
@@ -102,11 +92,12 @@ plugs:
       - $HOME/Steam
   desktop:
     mount-host-font-cache: false
-  shared-memory:
+  shmem:
+    interface: shared-memory
     private: true
 
 hooks:
-  post-refresh:
+  configure:
     plugs:
       - opengl
 
@@ -118,9 +109,9 @@ parts:
     plugin: nil
     source : ./src
     override-build: |
-      mkdir -p $SNAPCRAFT_PART_INSTALL/bin
-      cp steam-snap.sh $SNAPCRAFT_PART_INSTALL/bin/
-      cp desktop-launch $SNAPCRAFT_PART_INSTALL/bin/
+      mkdir -p $CRAFT_PART_INSTALL/bin
+      cp steam-snap.sh $CRAFT_PART_INSTALL/bin/
+      cp desktop-launch $CRAFT_PART_INSTALL/bin/
 
   alsa-mixin:
     plugin: dump
@@ -143,31 +134,61 @@ parts:
       - etc/asound.conf
       - snap/command-chain/alsa-launch
       - usr/bin/yad*
-      - usr/lib/$SNAPCRAFT_ARCH_TRIPLET/alsa-lib
-      - usr/lib/$SNAPCRAFT_ARCH_TRIPLET/libasound*
-      - usr/lib/$SNAPCRAFT_ARCH_TRIPLET/libasyncns*
-      - usr/lib/$SNAPCRAFT_ARCH_TRIPLET/libdnsfile*
-      - usr/lib/$SNAPCRAFT_ARCH_TRIPLET/libFLAC*
-      - usr/lib/$SNAPCRAFT_ARCH_TRIPLET/libjack*
-      - usr/lib/$SNAPCRAFT_ARCH_TRIPLET/libpulse*
-      - usr/lib/$SNAPCRAFT_ARCH_TRIPLET/libsamplerate*
-      - usr/lib/$SNAPCRAFT_ARCH_TRIPLET/libsndfile*
-      - usr/lib/$SNAPCRAFT_ARCH_TRIPLET/libspeex*
-      - usr/lib/$SNAPCRAFT_ARCH_TRIPLET/libvorbis*
-      - usr/lib/$SNAPCRAFT_ARCH_TRIPLET/pulseaudio
+      - usr/lib/*/alsa-lib
+      - usr/lib/*/libasound*
+      - usr/lib/*/libasyncns*
+      - usr/lib/*/libdnsfile*
+      - usr/lib/*/libFLAC*
+      - usr/lib/*/libjack*
+      - usr/lib/*/libpulse*
+      - usr/lib/*/libsamplerate*
+      - usr/lib/*/libsndfile*
+      - usr/lib/*/libspeex*
+      - usr/lib/*/libvorbis*
+      - usr/lib/*/pulseaudio
       - usr/share/alsa
 
-  enable-i386:
-    after: [ launcher ]
+  ninja:
     plugin: nil
+    source: https://github.com/ninja-build/ninja.git
+    source-tag: 'v1.11.0'
     override-build: |
-      snapcraftctl build
-      if [ "$SNAPCRAFT_ARCH_TRIPLET" = "x86_64-linux-gnu" ]; then
-        dpkg --add-architecture i386
-      fi
-      apt update
+      rm -rf build
+      rm -f ninja
+      rm -f ninja_bootstrap
+      sed -i 's_^#!/usr/bin/env python$_#!/usr/bin/env python3_g' configure.py
+      ./configure.py --bootstrap
+      mv ninja ninja_bootstrap
+      rm -rf build
+      ./ninja_bootstrap
+      rm -f ninja_bootstrap
+      mkdir -p $CRAFT_PART_INSTALL/usr/bin
+      mv ninja $CRAFT_PART_INSTALL/usr/bin/
+    build-packages:
+      - python3
+    prime:
+      - -*
+
+  meson-deps:
+    after: [ ninja ]
+    plugin: nil
+    source: https://github.com/mesonbuild/meson.git
+    source-tag: '0.62.2'
+    override-build: |
+      python3 -m pip install .
+      mkdir -p $CRAFT_PART_INSTALL/usr/lib/python3/dist-packages
+      rm -rf $CRAFT_PART_INSTALL/usr/lib/python3/dist-packages/meson*
+      python3 -m pip install --target=$CRAFT_PART_INSTALL/usr .
+      mv $CRAFT_PART_INSTALL/usr/meson* $CRAFT_PART_INSTALL/usr/lib/python3/dist-packages/
+      sed -i "s%^#!/usr/bin/python3$%#!/usr/bin/env python3%g" /usr/local/bin/meson
+      sed -i "s%^#!/usr/bin/python3$%#!/usr/bin/env python3%g" $CRAFT_PART_INSTALL/usr/bin/meson
+    build-packages:
+      - python3-pip
+    prime:
+      - -*
 
   gamemode:
+    after: [ meson-deps ]
     source: https://github.com/ashuntu/gamemode.git
     source-branch: 'add-snap-support'
     plugin: meson
@@ -188,18 +209,23 @@ parts:
     source: https://github.com/ValveSoftware/steam-devices.git
 
   steam:
-    after: [ enable-i386, gamemode ]
     plugin: nil
     #source: http://repo.steampowered.com/steam/archive/precise/steam_latest.deb
     build-packages:
       - dpkg-dev
+      - dirmngr # Needed for launchpad builds
     stage-packages:
       - steam-launcher
       - steam-libs-amd64
       - steam-libs-i386
       - libappindicator3-1
+      - libxcb-dri3-0:amd64
+      - libxcb-dri3-0:i386
+      - libpci3
       - libvkd3d1:i386
       - libvkd3d1:amd64
+      - libvulkan1:i386
+      - libvulkan1:amd64
       - zlib1g:i386
       - zlib1g:amd64
       - mesa-va-drivers:i386
@@ -209,7 +235,6 @@ parts:
       - mesa-vulkan-drivers:i386
       - va-driver-all:amd64
       - va-driver-all:i386
-      - va-driver:i386
       - libvdpau-va-gl1:amd64
       - xdg-utils
       - fontconfig-config
@@ -221,17 +246,29 @@ parts:
       - lsof
       - locales-all
     override-build: |
-      snapcraftctl build
+      craftctl default
       # Set the snap version from the .deb package version
-      snapcraftctl set-version $(dpkg-parsechangelog -l $SNAPCRAFT_PART_INSTALL/usr/share/doc/steam-launcher/changelog.all.gz -S Version | sed -e s/1://g)
+      craftctl set version=$(dpkg-parsechangelog -l $CRAFT_PART_INSTALL/usr/share/doc/steam-launcher/changelog.all.gz -S Version | sed -e s/1://g)
       # Copy over the icon
-      cp $SNAPCRAFT_PART_INSTALL/usr/share/icons/hicolor/256x256/apps/steam.png $SNAPCRAFT_PART_INSTALL/steam.png
-      mkdir -p $SNAPCRAFT_PART_INSTALL/meta/gui
-      ln -s ../../steam.png $SNAPCRAFT_PART_INSTALL/meta/gui/icon.png
+      cp $CRAFT_PART_INSTALL/usr/share/icons/hicolor/256x256/apps/steam.png $CRAFT_PART_INSTALL/steam.png
+      mkdir -p $CRAFT_PART_INSTALL/meta/gui
+      ln -s ../../steam.png $CRAFT_PART_INSTALL/meta/gui/icon.png
       # Install the desktop file, with the icon field munged
-      sed 's|Icon=steam|Icon=${SNAP}/steam.png|g' $SNAPCRAFT_PART_INSTALL/usr/share/applications/steam.desktop > $SNAPCRAFT_PART_INSTALL/steam.desktop
+      sed 's|Icon=steam|Icon=${SNAP}/steam.png|g' $CRAFT_PART_INSTALL/usr/share/applications/steam.desktop > $CRAFT_PART_INSTALL/steam.desktop
     prime:
       - -etc/fonts
+      - -usr/share/doc
+      - -usr/share/man
+      - -usr/share/bug
+      - -usr/share/gdb
+      - -usr/share/emacs*
+      - -usr/share/lintian
+    build-snaps: [core22]
+    override-prime: |
+      craftctl default
+      set -eux
+      cp -a /snap/core22/current/usr/lib/i386-linux-gnu/* usr/lib/i386-linux-gnu/
+
 
 apps:
   steam:
@@ -246,7 +283,7 @@ apps:
       ALWAYS_USE_PULSEAUDIO: 1
       DISABLE_WAYLAND: 1
     plugs:
-      - shared-memory
+      - shmem
       - desktop
       - desktop-legacy
       - wayland
