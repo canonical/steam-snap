@@ -26,12 +26,12 @@ package-repositories:
     # for this PPA, but Snapcraft doesn't let us do that with the
     # short syntax. So use the full version instead.
 
-    # ppa: kisak/kisak-mesa
-    url: http://ppa.launchpad.net/kisak/kisak-mesa/ubuntu
+    # ppa: oibaf/graphics-drivers
+    url: http://ppa.launchpad.net/oibaf/graphics-drivers/ubuntu
     suites: [jammy]
     components: [main]
     architectures: [amd64, i386]
-    key-id: EB8B81E14DA65431D7504EA8F63F0F2B90935439
+    key-id: 5ABCE68FF4633EA42E219156957D2708A03A4626
     key-server: keyserver.ubuntu.com
 
 layout:
