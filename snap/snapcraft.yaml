@@ -256,7 +256,7 @@ parts:
       # Install the desktop file, with the icon field munged
       sed 's|Icon=steam|Icon=${SNAP}/steam.png|g' $CRAFT_PART_INSTALL/usr/share/applications/steam.desktop > $CRAFT_PART_INSTALL/steam.desktop
     prime:
-      - etc/fonts
+      - -etc/fonts
       - -usr/share/doc
       - -usr/share/man
       - -usr/share/bug
