@@ -281,12 +281,6 @@ export FONTCONFIG_FILE="$SNAP_DESKTOP_RUNTIME/etc/fonts/fonts.conf"
 
 function make_user_fontconfig {
   echo "<fontconfig>"
-  if [ -d "$REALHOME/.local/share/fonts" ]; then
-    echo "  <dir>$REALHOME/.local/share/fonts</dir>"
-  fi
-  if [ -d "$REALHOME/.fonts" ]; then
-    echo "  <dir>$REALHOME/.fonts</dir>"
-  fi
   for ((i = 0; i < ${#data_dirs_array[@]}; i++)); do
     if [ -d "${data_dirs_array[$i]}/fonts" ]; then
       echo "  <dir>${data_dirs_array[$i]}/fonts</dir>"
