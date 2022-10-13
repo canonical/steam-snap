@@ -203,6 +203,7 @@ parts:
       - -*
 
   mangohud:
+    after: [ meson-deps ]
     source: https://github.com/flightlessmango/MangoHud.git
     plugin: meson
     organize:
@@ -213,7 +214,7 @@ parts:
       - PKG_CONFIG_PATH: /usr/lib/i386-linux-gnu/pkgconfig:/usr/lib/i386-linux-gnu/pkgconfig:/usr/lib/pkgconfig
     meson-parameters:
       - --prefix=/usr
-      - --libdir lib/i386-linux-gnu
+      - --libdir=lib/i386-linux-gnu
       - -Dappend_libdir_mangohud=false
     build-packages:
       - gcc
@@ -228,8 +229,6 @@ parts:
       - libx11-dev
       - libxnvctrl-dev
       - mesa-common-dev
-      - meson
-      - ninja-build
       - python3-mako
 
   gamemode:
