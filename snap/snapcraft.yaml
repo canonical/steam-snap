@@ -112,7 +112,7 @@ parts:
       mkdir -p $CRAFT_PART_INSTALL/bin
       cp steam-snap.sh $CRAFT_PART_INSTALL/bin/
       cp desktop-launch $CRAFT_PART_INSTALL/bin/
-      cp steamreport.py $CRAFT_PART_INSTALL/bin/
+      cp steamreport $CRAFT_PART_INSTALL/bin/
 
   alsa-mixin:
     plugin: dump

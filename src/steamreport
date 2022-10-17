@@ -1,0 +1,106 @@
+#!/usr/bin/python3
+
+import os
+import sys
+import webbrowser
+import json
+import argparse
+
+body_suffix = "<!--Copy error logs from Steam/the game itself below-->"
+
+def dict_to_string(d, n = 0):
+    """Convert a dict to yaml-like string."""
+    s = ""
+    for key in d:
+        s += f"{'    ' * n}{key}: "
+        if (type(d[key]) is dict):
+            s += f"\n{dict_to_string(d[key], n + 1)}"
+        else:
+            s += d[key]
+            s += "\n"
+    return s
+
+def gather_data():
+    """Gathers system information, returning a data object."""
+    data = {}
+
+    # os-release
+    os_release = {}
+    with open("/var/lib/snapd/hostfs/etc/os-release", "r") as reader:
+        for line in reader:
+            line = line.strip()
+
+            if (not line):
+                continue
+
+            key, val = line.split("=", 1)
+            os_release[key] = val
+
+    data["os_release"] = {
+        "name": os_release["NAME"],
+        "version": os_release["VERSION"],
+    }
+
+    # SNAP_REVISION
+    data["snap_info"] = {
+        "revision": os.environ["SNAP_REVISION"]
+    }
+
+    # glxinfo -B
+    glxinfo = {}
+    for line in os.popen("glxinfo -B").read().split("\n"):
+        line = line.strip()
+        if (not line): continue
+        key, val = line.split(":", 1)
+        glxinfo[key] = val
+
+    data["glxinfo"] = {
+        "gpu": glxinfo["OpenGL vendor string"],
+        "gpu_version": glxinfo["OpenGL core profile version string"]
+    }
+
+    return data
+
+def submit_data(data):
+    """Open web-browser and fill in system information."""
+    url = "https://github.com/canonical/steam-snap/discussions/new?category=game-reports"
+    url += f"&title=Report: {args.game.capitalize()}"
+    url += f"&body=```\n{dict_to_string(data)}```\n".replace("\n", "%0A")
+    url += body_suffix
+    print("Opening web browser...")
+    webbrowser.open_new_tab(url)
+
+# Parse commandline arguments
+parser = argparse.ArgumentParser()
+parser.add_argument(
+    "game",
+    help="Name of the game to report",
+    default="GAME_NAME",
+    nargs="?"
+)
+parser.add_argument(
+    "--no-submit", "-n",
+    help="Do not open web browser to submit issue.",
+    const=True,
+    action="store_const"
+)
+args = parser.parse_args()
+
+# Test environment
+if (not os.environ.get("SNAP")):
+    sys.exit(
+        "Script must be ran from inside a Snap environment.\n" +
+        "Run `snap run --shell steam`, then `steamreport`."
+    )
+
+if (os.system("snapctl is-connected system-observe")):
+    sys.exit(
+        "This script relies on the system-observe Snap plug.\n" +
+        "Outside of the snap, run `snap connect steam:system-observe`."
+    )
+
+# Gather and submit data
+data = gather_data()
+print(dict_to_string(data))
+if (not args.no_submit):
+    submit_data(data)
