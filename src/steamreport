@@ -6,7 +6,10 @@ import webbrowser
 import json
 import argparse
 
-body_suffix = "<!--Copy error logs from Steam/the game itself below-->"
+DISCUSSION_URL = "https://github.com/canonical/steam-snap/discussions/new?category=game-reports"
+WIKI_URL = "https://github.com/canonical/steam-snap/wiki/Troubleshooting#submitting-a-game-report"
+
+BODY_SUFFIX = "<!--Copy error logs from Steam/the game itself below-->"
 
 def dict_to_string(d, n = 0):
     """Convert a dict to yaml-like string."""
@@ -63,15 +66,17 @@ def gather_data():
 
 def submit_data(data):
     """Open web-browser and fill in system information."""
-    url = "https://github.com/canonical/steam-snap/discussions/new?category=game-reports"
+    url = DISCUSSION_URL
     url += f"&title=Report: {args.game.capitalize()}"
     url += f"&body=```\n{dict_to_string(data)}```\n".replace("\n", "%0A")
-    url += body_suffix
+    url += BODY_SUFFIX
     print("Opening web browser...")
     webbrowser.open_new_tab(url)
 
 # Parse commandline arguments
-parser = argparse.ArgumentParser()
+parser = argparse.ArgumentParser(
+    description=f"Visit {WIKI_URL} for more information."
+)
 parser.add_argument(
     "game",
     help="Name of the game to report",
@@ -80,7 +85,7 @@ parser.add_argument(
 )
 parser.add_argument(
     "--no-submit", "-n",
-    help="Do not open web browser to submit issue.",
+    help="Do not open web browser to a new discussion post.",
     const=True,
     action="store_const"
 )
