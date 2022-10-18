@@ -5,6 +5,7 @@ import sys
 import webbrowser
 import json
 import argparse
+import json
 
 DISCUSSION_URL = "https://github.com/canonical/steam-snap/discussions/new?category=game-reports"
 WIKI_URL = "https://github.com/canonical/steam-snap/wiki/Troubleshooting#submitting-a-game-report"
@@ -52,11 +53,23 @@ def gather_data():
         line = line.strip()
         if (not line): continue
         key, val = line.split(":", 1)
-        glxinfo[key] = val
+        glxinfo[key.strip()] = val.strip()
 
     data["glxinfo"] = {
         "gpu": glxinfo["OpenGL vendor string"],
         "gpu_version": glxinfo["OpenGL core profile version string"]
+    }
+
+    # lscpu
+    lscpu = {}
+    for line in os.popen("lscpu").read().split("\n"):
+        line = line.strip()
+        if (not line): continue
+        key, val = line.split(":", 1)
+        lscpu[key.strip()] = val.strip()
+
+    data["lscpu"] = {
+        "model_name": lscpu["Model name"]
     }
 
     return data
