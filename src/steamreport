@@ -56,7 +56,7 @@ def gather_data():
         glxinfo[key.strip()] = val.strip()
 
     data["glxinfo"] = {
-        "gpu": glxinfo["OpenGL vendor string"],
+        "gpu": glxinfo["OpenGL renderer string"],
         "gpu_version": glxinfo["OpenGL core profile version string"]
     }
 
