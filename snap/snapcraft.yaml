@@ -112,6 +112,7 @@ parts:
       mkdir -p $CRAFT_PART_INSTALL/bin
       cp steam-snap.sh $CRAFT_PART_INSTALL/bin/
       cp desktop-launch $CRAFT_PART_INSTALL/bin/
+      cp steamreport $CRAFT_PART_INSTALL/bin/
 
   alsa-mixin:
     plugin: dump
@@ -269,7 +270,6 @@ parts:
       set -eux
       cp -a /snap/core22/current/usr/lib/i386-linux-gnu/* usr/lib/i386-linux-gnu/
 
-
 apps:
   steam:
     command-chain: [ snap/command-chain/alsa-launch, bin/desktop-launch ]
@@ -305,3 +305,11 @@ apps:
       - fuse-support
       - steam-support
       - removable-media
+  report:
+    command: bin/steamreport
+    plugs:
+      - system-observe
+      - hardware-observe
+      - opengl
+      - x11
+      - desktop
