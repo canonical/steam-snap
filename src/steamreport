@@ -19,29 +19,26 @@ def dict_to_string(d, n = 0):
         if (type(d[key]) is dict):
             s += f"\n{dict_to_string(d[key], n + 1)}"
         else:
-            s += d[key]
-            s += "\n"
+            s += f"{d[key]}\n"
     return s
 
 def gather_data():
     """Gathers system information, returning a data object."""
     data = {}
 
-    # os-release
+    # /etc/os-release
     os_release = {}
     with open("/var/lib/snapd/hostfs/etc/os-release", "r") as reader:
         for line in reader:
             line = line.strip()
-
-            if (not line):
-                continue
+            if (not line): continue
 
             key, val = line.split("=", 1)
             os_release[key] = val
 
     data["os_release"] = {
         "name": os_release["NAME"],
-        "version": os_release["VERSION"],
+        "version": os_release["VERSION"]
     }
 
     # SNAP_REVISION
