@@ -114,6 +114,12 @@ if (os.system("snapctl is-connected system-observe")):
         "Outside of the snap, run `snap connect steam:system-observe`."
     )
 
+if (os.system("snapctl is-connected hardware-observe")):
+    sys.exit(
+        "This script relies on the hardware-observe Snap plug.\n" +
+        "Outside of the snap, run `snap connect steam:hardware-observe`."
+    )
+
 # Gather and submit data
 data = gather_data()
 print(dict_to_string(data))

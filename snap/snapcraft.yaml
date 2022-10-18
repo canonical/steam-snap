@@ -113,6 +113,8 @@ parts:
       cp steam-snap.sh $CRAFT_PART_INSTALL/bin/
       cp desktop-launch $CRAFT_PART_INSTALL/bin/
       cp steamreport $CRAFT_PART_INSTALL/bin/
+    stage-packages:
+      - lshw
 
   alsa-mixin:
     plugin: dump
@@ -309,6 +311,7 @@ apps:
     command: bin/steamreport
     plugs:
       - system-observe
+      - hardware-observe
       - opengl
       - x11
       - desktop
