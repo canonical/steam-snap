@@ -42,9 +42,10 @@ def gather_data():
         "version": os_release["VERSION"]
     }
 
-    # SNAP_REVISION
+    # snap info
     data["snap_info"] = {
-        "revision": os.environ["SNAP_REVISION"]
+        "steam_revision": os.environ["SNAP_REVISION"],
+        "snapd_revision": os.popen("readlink /snap/snapd/current").read().strip()
     }
 
     # glxinfo -B
