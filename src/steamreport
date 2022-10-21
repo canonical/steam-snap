@@ -45,6 +45,7 @@ def gather_data():
 
                     key, val = line.split("=", 1)
                     os_release[key] = val
+            break
         except FileNotFoundError:
             continue
 
