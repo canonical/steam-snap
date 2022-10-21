@@ -31,13 +31,22 @@ def gather_data():
 
     # /etc/os-release
     os_release = defaultdict(default)
-    with open("/var/lib/snapd/hostfs/etc/os-release", "r") as reader:
-        for line in reader:
-            line = line.strip()
-            if (not line): continue
+    os_release_lookup = [
+        "/var/lib/snapd/hostfs/etc/os-release", # system-observe host os-release
+        "/etc/os-release",                      # usual system os-release
+    ]
 
-            key, val = line.split("=", 1)
-            os_release[key] = val
+    for path in os_release_lookup:
+        try:
+            with open(path, "r") as reader:
+                for line in reader:
+                    line = line.strip()
+                    if (not line): continue
+
+                    key, val = line.split("=", 1)
+                    os_release[key] = val
+        except FileNotFoundError:
+            continue
 
     if (args.verbose):
         data["os_release"] = dict(os_release)
@@ -49,7 +58,7 @@ def gather_data():
 
     # snap info
     data["snap_info"] = {
-        "steam_revision": os.environ["SNAP_REVISION"],
+        "steam_revision": os.environ.get("SNAP_REVISION"),
         "snapd_revision": os.popen("readlink /snap/snapd/current").read().strip()
     }
 
