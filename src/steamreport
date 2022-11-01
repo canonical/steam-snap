@@ -150,8 +150,9 @@ args = parser.parse_args()
 if (not args.force):
     if (not os.environ.get("SNAP")):
         sys.exit(
-            "Script must be ran from inside a Snap environment.\n" +
-            "Run `snap run --shell steam`, then `steamreport`."
+            "This script must be ran from inside a Snap environment.\n" +
+            "Run `snap run steam.report`, or\n" +
+            "run `snap run --shell steam`, then `steamreport`."
         )
 
     if (os.system("snapctl is-connected system-observe")):
