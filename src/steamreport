@@ -18,11 +18,12 @@ def dict_to_string(d, n = 0):
     """Convert a dict to yaml-like string."""
     s = ""
     for key in d:
-        s += f"{'    ' * n}{key}: "
+        line = f"{'    ' * n}{key}: "
         if (type(d[key]) is dict):
-            s += f"\n{dict_to_string(d[key], n + 1)}"
+            line += f"\n{dict_to_string(d[key], n + 1)}"
         else:
-            s += f"{d[key]}\n"
+            line += f"{' ' * (24 - len(line))}{d[key]}\n"
+        s += line
     return s
 
 def gather_data():
@@ -62,6 +63,16 @@ def gather_data():
         "steam_revision": os.environ.get("SNAP_REVISION"),
         "snapd_revision": os.popen("readlink /snap/snapd/current").read().strip()
     }
+
+    # lspci
+    lspci = defaultdict(default)
+    for line in os.popen("lspci | grep VGA").read().split("\n"):
+        line = line.strip()
+        if (not line): continue
+        key, val = line.split(" ", 1)
+        lspci[key.strip()] = val.strip().removeprefix("VGA compatible controller: ")
+
+    data["lspci"] = dict(lspci)
 
     # glxinfo -B
     glxinfo = defaultdict(default)
