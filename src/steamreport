@@ -110,7 +110,7 @@ def gather_data():
 def submit_data(data):
     """Open web-browser and fill in system information."""
     url = DISCUSSION_URL
-    url += f"&title=Report: {args.title.capitalize()}"
+    url += f"&title=Report: {args.title.title()}"
     url += f"&body=```\n{dict_to_string(data)}```\n".replace("\n", "%0A")
     url += BODY_SUFFIX
     print("Opening web browser...")
