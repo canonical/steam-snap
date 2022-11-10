@@ -25,6 +25,12 @@ $SNAP/usr/lib
 $SNAP/usr/lib/x86_64-linux-gnu/dri
 $SNAP/usr/lib/i386-linux-gnu/dri
 $SNAP/usr/lib/i386-linux-gnu/pulseaudio
+$SNAP/graphics/lib
+$SNAP/graphics/usr/lib
+$SNAP/graphics/usr/lib/i386-linux-gnu
+$SNAP/graphics/usr/lib/x86_64-linux-gnu
+$SNAP/graphics/usr/lib/i386-linux-gnu/dri
+$SNAP/graphics/usr/lib/x86_64-linux-gnu/dri
 /lib/x86_64-linux-gnu
 /lib/i386-linux-gnu
 /usr/lib/x86_64-linux-gnu
