@@ -67,7 +67,7 @@ plugs:
   gaming-mesa:
     interface: content
     target: $SNAP/graphics
-    default-provider: gaming-graphics-core22/oibaf-latest/edge
+    default-provider: gaming-graphics-core22
   gtk-3-themes:
     interface: content
     target: $SNAP/share/themes
