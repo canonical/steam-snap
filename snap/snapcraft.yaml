@@ -1,9 +1,9 @@
 name: steam
 summary: Launcher for the Steam software distribution service
 description: |
- Steam is a software distribution service with an online store, automated
- installation, automatic updates, achievements, SteamCloud synchronized
- savegame and screenshot functionality, and many social features.
+  Steam is a software distribution service with an online store, automated
+  installation, automatic updates, achievements, SteamCloud synchronized
+  savegame and screenshot functionality, and many social features.
 adopt-info: steam
 grade: stable
 confinement: strict
@@ -13,6 +13,16 @@ base: core22
 compression: lzo
 assumes:
   - snapd2.55.4
+
+lint:
+  # Snapcraft's `ldd` lint can't handle 32-bit things,
+  # So just make it quiet and also make builds a surprising amount faster
+  ignore:
+    - library:
+        - lib/i386-linux-gnu/**
+        - usr/lib/i386-linux-gnu/**
+        - lib32/**
+        - usr/lib32/**
 
 package-repositories:
   - type: apt
@@ -103,7 +113,7 @@ environment:
 parts:
   launcher:
     plugin: nil
-    source : ./src
+    source: ./src
     override-build: |
       mkdir -p $CRAFT_PART_INSTALL/bin
       cp steam-snap.sh $CRAFT_PART_INSTALL/bin/
@@ -148,7 +158,7 @@ parts:
   ninja:
     plugin: nil
     source: https://github.com/ninja-build/ninja.git
-    source-tag: 'v1.11.0'
+    source-tag: "v1.11.0"
     override-build: |
       rm -rf build
       rm -f ninja
@@ -167,10 +177,10 @@ parts:
       - -*
 
   meson-deps:
-    after: [ ninja ]
+    after: [ninja]
     plugin: nil
     source: https://github.com/mesonbuild/meson.git
-    source-tag: '0.62.2'
+    source-tag: "0.62.2"
     override-build: |
       python3 -m pip install .
       mkdir -p $CRAFT_PART_INSTALL/usr/lib/python3/dist-packages
@@ -185,9 +195,9 @@ parts:
       - -*
 
   gamemode:
-    after: [ meson-deps ]
+    after: [meson-deps]
     source: https://github.com/ashuntu/gamemode.git
-    source-branch: 'add-snap-support'
+    source-branch: "add-snap-support"
     plugin: meson
     organize:
       snap/steam/current/usr: usr
@@ -280,7 +290,7 @@ parts:
 
 apps:
   steam:
-    command-chain: [ snap/command-chain/alsa-launch, bin/desktop-launch ]
+    command-chain: [snap/command-chain/alsa-launch, bin/desktop-launch]
     #command: bin/steam-snap.sh
     command: usr/lib/steam/bin_steam.sh -no-cef-sandbox
     desktop: steam.desktop
