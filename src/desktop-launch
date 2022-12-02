@@ -296,6 +296,14 @@ function make_user_fontconfig {
   # https://forum.snapcraft.io/t/snap-package-cannot-read-fonts-conf/16657
   echo '  <include ignore_missing="yes">/etc/fonts/conf.d</include>'
   echo '  <include ignore_missing="yes">conf.d</include>'
+  # Add the Steam font configs
+  echo "  <include ignore_missing=\"yes\">$SNAP_USER_COMMON/.local/share/Steam/bin/panorama/etc/fonts/fonts.conf</include>"
+  echo "  <include ignore_missing=\"yes\">$SNAP_USER_COMMON/.local/share/Steam/bin/panorama/etc/fonts/fonts.d</include>"
+  echo "  <include ignore_missing=\"yes\">$SNAP_USER_COMMON/fontconfig/.config/fontconfig/fonts.conf</include>"
+  # And the steam fonts themselves
+  echo "  <dir>$SNAP_USER_COMMON/.local/share/Steam/clientui/fonts</dir>"
+  echo "  <dir>$SNAP_USER_COMMON/.local/share/Steam/tenfoot/resources/fonts</dir>"
+  echo "  <dir>$SNAP_USER_COMMON/.local/share/Steam/resource/fonts</dir>"
   # We need to include a user-writable cachedir first to support
   # caching of per-user fonts.
   echo '  <cachedir prefix="xdg">fontconfig</cachedir>'
