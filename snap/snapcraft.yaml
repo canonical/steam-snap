@@ -252,6 +252,7 @@ parts:
       - mesa-utils # For testing/debugging
       - lsof
       - locales-all
+      - usbutils # Allows finding controllers etc
     override-build: |
       craftctl default
       # Set the snap version from the .deb package version
