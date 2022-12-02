@@ -14,6 +14,16 @@ compression: lzo
 assumes:
   - snapd2.55.4
 
+lint:
+  # Snapcraft's `ldd` lint can't handle 32-bit things,
+  # So just make it quiet and also make builds a surprising amount faster
+  ignore:
+    - library:
+        - lib/i386-linux-gnu/**
+        - usr/lib/i386-linux-gnu/**
+        - lib32/**
+        - usr/lib32/**
+
 package-repositories:
   - type: apt
     url: http://repo.steampowered.com/steam/
