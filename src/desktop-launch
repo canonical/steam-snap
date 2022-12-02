@@ -275,42 +275,8 @@ fi
 # Keep an array of data dirs, for looping through them
 IFS=':' read -r -a data_dirs_array <<< "$XDG_DATA_DIRS"
 
-# Font Config and themes
-export FONTCONFIG_PATH="$SNAP_DESKTOP_RUNTIME/etc/fonts"
-export FONTCONFIG_FILE="$SNAP_DESKTOP_RUNTIME/etc/fonts/fonts.conf"
-
-function make_user_fontconfig {
-  echo "<fontconfig>"
-  if [ -d "$REALHOME/.local/share/fonts" ]; then
-    echo "  <dir>$REALHOME/.local/share/fonts</dir>"
-  fi
-  if [ -d "$REALHOME/.fonts" ]; then
-    echo "  <dir>$REALHOME/.fonts</dir>"
-  fi
-  for ((i = 0; i < ${#data_dirs_array[@]}; i++)); do
-    if [ -d "${data_dirs_array[$i]}/fonts" ]; then
-      echo "  <dir>${data_dirs_array[$i]}/fonts</dir>"
-    fi
-  done
-  # fix font render for modified fonts, that discussed on Snapcraft Forum:
-  # https://forum.snapcraft.io/t/snap-package-cannot-read-fonts-conf/16657
-  echo '  <include ignore_missing="yes">/etc/fonts/conf.d</include>'
-  echo '  <include ignore_missing="yes">conf.d</include>'
-  # We need to include a user-writable cachedir first to support
-  # caching of per-user fonts.
-  echo '  <cachedir prefix="xdg">fontconfig</cachedir>'
-  echo "  <cachedir>$SNAP_COMMON/fontconfig</cachedir>"
-  echo "</fontconfig>"
-}
-
 if [ "$needs_update" = true ]; then
-  rm -rf "$XDG_DATA_HOME"/{fontconfig,fonts,fonts-*,themes,.themes}
-
-  # This fontconfig fragment is installed in a location that is
-  # included by the system fontconfig configuration: namely the
-  # etc/fonts/conf.d/50-user.conf file.
-  ensure_dir_exists "$XDG_CONFIG_HOME/fontconfig"
-  async_exec make_user_fontconfig > "$XDG_CONFIG_HOME/fontconfig/fonts.conf"
+  rm -rf "$XDG_DATA_HOME"/{themes,.themes}
 fi
 
 ##############################
