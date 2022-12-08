@@ -211,6 +211,12 @@ parts:
       - usr/bin/gamemoderun
       - usr/lib/*/libgamemode*.so.*
 
+  debug-tools:
+    plugin: nil
+    stage-packages:
+      - vulkan-tools
+      - mesa-utils
+
   steam-devices:
     plugin: dump
     source: https://github.com/ValveSoftware/steam-devices.git
