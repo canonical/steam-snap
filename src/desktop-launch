@@ -159,13 +159,25 @@ append_dir LD_LIBRARY_PATH "$SNAP_DESKTOP_RUNTIME/usr/lib/$ARCH/mesa"
 append_dir LD_LIBRARY_PATH "$SNAP_DESKTOP_RUNTIME/usr/lib/$ARCH/mesa-egl"
 append_dir LD_LIBRARY_PATH "$SNAP_DESKTOP_RUNTIME/usr/lib/x86_64-linux-gnu/mesa"
 append_dir LD_LIBRARY_PATH "$SNAP_DESKTOP_RUNTIME/usr/lib/x86_64-linux-gnu/mesa-egl"
+# append_dir LD_LIBRARY_PATH "$SNAP_DESKTOP_RUNTIME/graphics/usr/lib/$ARCH/mesa"
+# append_dir LD_LIBRARY_PATH "$SNAP_DESKTOP_RUNTIME/graphics/usr/lib/$ARCH/mesa-egl"
+# append_dir LD_LIBRARY_PATH "$SNAP_DESKTOP_RUNTIME/graphics/usr/lib/x86_64-linux-gnu/mesa"
+# append_dir LD_LIBRARY_PATH "$SNAP_DESKTOP_RUNTIME/graphics/usr/lib/x86_64-linux-gnu/mesa-egl"
+
+append_dir LD_LIBRARY_PATH "$SNAP_DESKTOP_RUNTIME/graphics/usr/lib/$ARCH"
+append_dir LD_LIBRARY_PATH "$SNAP_DESKTOP_RUNTIME/graphics/usr/lib/x86_64-linux-gnu"
 
 # Tell libGL and libva where to find the drivers
 export LIBGL_DRIVERS_PATH="$SNAP_DESKTOP_RUNTIME/usr/lib/$ARCH/dri"
 append_dir LIBGL_DRIVERS_PATH "$SNAP_DESKTOP_RUNTIME/usr/lib/x86_64-linux-gnu/dri"
+append_dir LIBGL_DRIVERS_PATH "$SNAP_DESKTOP_RUNTIME/graphics/usr/lib/$ARCH/dri"
+append_dir LIBGL_DRIVERS_PATH "$SNAP_DESKTOP_RUNTIME/graphics/usr/lib/x86_64-linux-gnu/dri"
 append_dir LD_LIBRARY_PATH "$LIBGL_DRIVERS_PATH"
+
 append_dir LIBVA_DRIVERS_PATH "$SNAP_DESKTOP_RUNTIME/usr/lib/$ARCH/dri"
 append_dir LIBVA_DRIVERS_PATH "$SNAP_DESKTOP_RUNTIME/usr/lib/x86_64-linux-gnu/dri"
+append_dir LIBVA_DRIVERS_PATH "$SNAP_DESKTOP_RUNTIME/graphics/usr/lib/$ARCH/dri"
+append_dir LIBVA_DRIVERS_PATH "$SNAP_DESKTOP_RUNTIME/graphics/usr/lib/x86_64-linux-gnu/dri"
 
 # Set where the VDPAU drivers are located
 export VDPAU_DRIVER_PATH="/usr/lib/$ARCH/vdpau/"

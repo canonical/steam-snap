@@ -31,26 +31,17 @@ package-repositories:
     components: [steam]
     architectures: [amd64, i386]
     key-id: BA1816EF8E75005FCF5E27A1F24AEA9FB05498B7
-  - type: apt
-    # FIXME: We need to enable both 32-bit and 64-bit architectures
-    # for this PPA, but Snapcraft doesn't let us do that with the
-    # short syntax. So use the full version instead.
-
-    # ppa: oibaf/graphics-drivers
-    url: http://ppa.launchpad.net/oibaf/graphics-drivers/ubuntu
-    suites: [jammy]
-    components: [main]
-    architectures: [amd64, i386]
-    key-id: 5ABCE68FF4633EA42E219156957D2708A03A4626
-    key-server: keyserver.ubuntu.com
 
 layout:
   /usr/lib/steam:
     bind: $SNAP/usr/lib/steam
   /usr/share/zenity:
     bind: $SNAP/usr/share/zenity
+  # https://discourse.ubuntu.com/t/the-graphics-core20-snap-interface/23000
   /usr/share/libdrm:
-    bind: $SNAP/usr/share/libdrm
+    bind: $SNAP/graphics/libdrm
+  /usr/share/drirc.d:
+    bind: $SNAP/graphics/usr/share/drirc.d
   /usr/lib/i386-linux-gnu:
     bind: $SNAP/usr/lib/i386-linux-gnu
   /usr/lib/x86_64-linux-gnu/dri:
@@ -83,6 +74,10 @@ layout:
     bind-file: $SNAP_DATA/etc/ld.so.cache
 
 plugs:
+  gaming-mesa:
+    interface: content
+    target: $SNAP/graphics
+    default-provider: gaming-graphics-core22
   gtk-3-themes:
     interface: content
     target: $SNAP/share/themes
@@ -112,7 +107,8 @@ hooks:
       - opengl
 
 environment:
-  LD_LIBRARY_PATH: $SNAP/usr/lib/i386-linux-gnu:$SNAP/lib/i386-linux-gnu:$SNAP/usr/lib/i386-linux-gnu/pulseaudio${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}
+  LD_LIBRARY_PATH: $SNAP/graphics/lib:$SNAP/graphics/usr/lib:$SNAP/usr/lib/i386-linux-gnu:$SNAP/lib/i386-linux-gnu:$SNAP/usr/lib/i386-linux-gnu/pulseaudio${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}
+  LIBGL_DRIVERS_PATH: $SNAP/graphics/lib/i386-linux-gnu/dri:$SNAP/graphics/lib/x86_64-linux-gnu/dri:$SNAP/graphics/usr/lib/i386-linux-gnu/dri:$SNAP/graphics/usr/lib/x86_64-linux-gnu/dri:${LIBGL_DRIVERS_PATH:+:$LIBGL_DRIVERS_PATH}
 
 parts:
   launcher:
@@ -215,6 +211,12 @@ parts:
       - usr/bin/gamemoderun
       - usr/lib/*/libgamemode*.so.*
 
+  debug-tools:
+    plugin: nil
+    stage-packages:
+      - vulkan-tools
+      - mesa-utils
+
   steam-devices:
     plugin: dump
     source: https://github.com/ValveSoftware/steam-devices.git
@@ -233,27 +235,15 @@ parts:
       - libxcb-dri3-0:amd64
       - libxcb-dri3-0:i386
       - libpci3
-      - libvkd3d1:i386
-      - libvkd3d1:amd64
       - libvulkan1:i386
       - libvulkan1:amd64
       - zlib1g:i386
       - zlib1g:amd64
-      - mesa-va-drivers:i386
-      - mesa-vdpau-drivers:amd64
-      - mesa-vdpau-drivers:i386
-      - mesa-vulkan-drivers:amd64
-      - mesa-vulkan-drivers:i386
-      - va-driver-all:amd64
-      - va-driver-all:i386
-      - libvdpau-va-gl1:amd64
       - xdg-utils
       - fontconfig-config
       - fontconfig:i386
       - fontconfig:amd64
       - pciutils
-      - vulkan-tools # For testing/debugging
-      - mesa-utils # For testing/debugging
       - lsof
       - locales-all
       - usbutils # Allows finding controllers etc
@@ -280,6 +270,18 @@ parts:
       craftctl default
       set -eux
       cp -a /snap/core22/current/usr/lib/i386-linux-gnu/* usr/lib/i386-linux-gnu/
+
+  cleanup:
+    after: [ steam ]
+    plugin: nil
+    build-snaps:
+      - gaming-graphics-core22/oibaf-latest/edge
+    override-prime: |
+      set -eux
+      cd /snap/gaming-graphics-core22/current/usr/lib
+      find . -type f,l -exec rm -f $CRAFT_PRIME/usr/lib/{} \;
+      cd /snap/gaming-graphics-core22/current/usr/share
+      find . -type f,l -exec rm -f $CRAFT_PRIME/usr/share/{} \;
 
 apps:
   steam:
