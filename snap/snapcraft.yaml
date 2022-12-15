@@ -319,6 +319,7 @@ apps:
       - steam-support
       - removable-media
       - uinput
+      - upower-observe
   report:
     command: bin/steamreport
     plugs:
