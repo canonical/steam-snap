@@ -271,6 +271,19 @@ parts:
       set -eux
       cp -a /snap/core22/current/usr/lib/i386-linux-gnu/* usr/lib/i386-linux-gnu/
 
+  yaru-skin:
+    plugin: nil
+    source: https://github.com/Jupi007/Yaru-for-Steam.git
+    source-type: git
+    stage-packages:
+      - fonts-ubuntu
+    override-build: |
+      mkdir -p $CRAFT_PART_INSTALL/usr/share/Steam/skins
+      ./install.py -t $CRAFT_PART_INSTALL/usr/share/Steam/skins -w full -n Yaru
+    prime:
+      - usr/share/fonts/truetype/ubuntu
+      - usr/share/Steam/skins
+
   cleanup:
     after: [ steam ]
     plugin: nil
