@@ -272,7 +272,7 @@ parts:
       cp -a /snap/core22/current/usr/lib/i386-linux-gnu/* usr/lib/i386-linux-gnu/
 
   cleanup:
-    after: [ steam ]
+    after: [steam]
     plugin: nil
     build-snaps:
       - gaming-graphics-core22/oibaf-latest/edge
@@ -318,6 +318,7 @@ apps:
       - fuse-support
       - steam-support
       - removable-media
+      - uinput
   report:
     command: bin/steamreport
     plugs:
