@@ -273,7 +273,7 @@ parts:
 
   yaru-skin:
     plugin: nil
-    source: https://github.com/Jupi007/Yaru-for-Steam.git
+    source: https://github.com/ubuntu/yaru-for-steam.git
     source-type: git
     stage-packages:
       - fonts-ubuntu
