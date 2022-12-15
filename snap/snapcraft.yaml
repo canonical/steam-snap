@@ -359,6 +359,7 @@ apps:
       - fuse-support
       - steam-support
       - removable-media
+      - uinput
       - upower-observe
   report:
     command-chain: [bin/desktop-launch]
