@@ -362,7 +362,7 @@ apps:
       - desktop
   glxgears:
     command-chain: [bin/desktop-launch]
-    command: usr/bin/glxinfo
+    command: usr/bin/glxgears
     plugs:
       - opengl
       - x11
