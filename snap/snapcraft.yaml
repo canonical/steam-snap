@@ -52,16 +52,14 @@ layout:
     bind: $SNAP/usr/lib/x86_64-linux-gnu/alsa-lib
   /usr/share/alsa:
     bind: $SNAP/usr/share/alsa
-  /usr/share/vulkan:
-    bind: $SNAP/graphics/usr/share/vulkan
   /usr/lib/x86_64-linux-gnu/libvulkan_intel.so:
-    bind-file: $SNAP/graphics/usr/lib/x86_64-linux-gnu/libvulkan_intel.so
+    symlink: $SNAP/graphics/usr/lib/x86_64-linux-gnu/libvulkan_intel.so
   /usr/lib/x86_64-linux-gnu/libvulkan_lvp.so:
-    bind-file: $SNAP/graphics/usr/lib/x86_64-linux-gnu/libvulkan_lvp.so
+    symlink: $SNAP/graphics/usr/lib/x86_64-linux-gnu/libvulkan_lvp.so
   /usr/lib/x86_64-linux-gnu/libvulkan_radeon.so:
-    bind-file: $SNAP/graphics/usr/lib/x86_64-linux-gnu/libvulkan_radeon.so
+    symlink: $SNAP/graphics/usr/lib/x86_64-linux-gnu/libvulkan_radeon.so
   /usr/lib/x86_64-linux-gnu/libxcb-dri3.so.0.0.0:
-    bind-file: $SNAP/graphics/usr/lib/x86_64-linux-gnu/libxcb-dri3.so.0.0.0
+    symlink: $SNAP/graphics/usr/lib/x86_64-linux-gnu/libxcb-dri3.so.0.0.0
   /usr/lib/x86_64-linux-gnu/libxcb-dri3.so.0:
     symlink: $SNAP/graphics/usr/lib/x86_64-linux-gnu/libxcb-dri3.so.0.0.0
   /usr/lib/x86_64-linux-gnu/libxcb.so.1.1.0:
