@@ -215,6 +215,13 @@ parts:
       - vulkan-tools
       - mesa-utils
 
+  tests:
+    plugin: dump
+    source: tests
+    override-build: |
+      mkdir -p $CRAFT_PART_INSTALL/tests
+      cp -rp * $CRAFT_PART_INSTALL/tests/
+
   steam-devices:
     plugin: dump
     source: https://github.com/ValveSoftware/steam-devices.git
@@ -363,6 +370,13 @@ apps:
   glxgears:
     command-chain: [bin/desktop-launch]
     command: usr/bin/glxgears
+    plugs:
+      - opengl
+      - x11
+      - desktop
+  test:
+    command-chain: [bin/desktop-launch]
+    command: tests/run.sh
     plugs:
       - opengl
       - x11

@@ -1,0 +1,4 @@
+#!/bin/bash
+
+glxinfo | grep "direct rendering: Yes" 2>&1> /dev/null
+exit $?
