@@ -45,31 +45,31 @@ layout:
   /usr/lib/i386-linux-gnu:
     bind: $SNAP/usr/lib/i386-linux-gnu
   /usr/lib/x86_64-linux-gnu/dri:
-    bind: $SNAP/usr/lib/x86_64-linux-gnu/dri
+    bind: $SNAP/graphics/usr/lib/x86_64-linux-gnu/dri
   /usr/share/glvnd/egl_vendor.d:
-    bind: $SNAP/usr/share/glvnd/egl_vendor.d
+    bind: $SNAP/graphics/usr/share/glvnd/egl_vendor.d
   /usr/lib/x86_64-linux-gnu/alsa-lib:
     bind: $SNAP/usr/lib/x86_64-linux-gnu/alsa-lib
   /usr/share/alsa:
     bind: $SNAP/usr/share/alsa
   /usr/share/vulkan:
-    bind: $SNAP/usr/share/vulkan
+    bind: $SNAP/graphics/usr/share/vulkan
   /usr/lib/x86_64-linux-gnu/libvulkan_intel.so:
-    bind-file: $SNAP/usr/lib/x86_64-linux-gnu/libvulkan_intel.so
+    bind-file: $SNAP/graphics/usr/lib/x86_64-linux-gnu/libvulkan_intel.so
   /usr/lib/x86_64-linux-gnu/libvulkan_lvp.so:
-    bind-file: $SNAP/usr/lib/x86_64-linux-gnu/libvulkan_lvp.so
+    bind-file: $SNAP/graphics/usr/lib/x86_64-linux-gnu/libvulkan_lvp.so
   /usr/lib/x86_64-linux-gnu/libvulkan_radeon.so:
-    bind-file: $SNAP/usr/lib/x86_64-linux-gnu/libvulkan_radeon.so
+    bind-file: $SNAP/graphics/usr/lib/x86_64-linux-gnu/libvulkan_radeon.so
   /usr/lib/x86_64-linux-gnu/libxcb-dri3.so.0.0.0:
-    bind-file: $SNAP/usr/lib/x86_64-linux-gnu/libxcb-dri3.so.0.0.0
+    bind-file: $SNAP/graphics/usr/lib/x86_64-linux-gnu/libxcb-dri3.so.0.0.0
   /usr/lib/x86_64-linux-gnu/libxcb-dri3.so.0:
-    symlink: $SNAP/usr/lib/x86_64-linux-gnu/libxcb-dri3.so.0.0.0
+    symlink: $SNAP/graphics/usr/lib/x86_64-linux-gnu/libxcb-dri3.so.0.0.0
   /usr/lib/x86_64-linux-gnu/libxcb.so.1.1.0:
-    bind-file: $SNAP/usr/lib/x86_64-linux-gnu/libxcb.so.1.1.0
+    bind-file: $SNAP/graphics/usr/lib/x86_64-linux-gnu/libxcb.so.1.1.0
   /usr/lib/x86_64-linux-gnu/libxcb.so:
-    symlink: $SNAP/usr/lib/x86_64-linux-gnu/libxcb.so.1.1.0
+    symlink: $SNAP/graphics/usr/lib/x86_64-linux-gnu/libxcb.so.1.1.0
   /usr/lib/x86_64-linux-gnu/libxcb.so.1:
-    symlink: $SNAP/usr/lib/x86_64-linux-gnu/libxcb.so.1.1.0
+    symlink: $SNAP/graphics/usr/lib/x86_64-linux-gnu/libxcb.so.1.1.0
   /etc/ld.so.cache:
     bind-file: $SNAP_DATA/etc/ld.so.cache
 
