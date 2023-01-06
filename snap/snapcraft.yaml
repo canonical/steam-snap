@@ -340,3 +340,27 @@ apps:
       - opengl
       - x11
       - desktop
+  vulkaninfo:
+    command: usr/bin/vulkaninfo
+    plugs:
+      - opengl
+      - x11
+      - desktop
+  vkcube:
+    command: usr/bin/vkcube
+    plugs:
+      - opengl
+      - x11
+      - desktop
+  glxinfo:
+    command: usr/bin/glxinfo
+    plugs:
+      - opengl
+      - x11
+      - desktop
+  glxgears:
+    command: usr/bin/glxinfo
+    plugs:
+      - opengl
+      - x11
+      - desktop
