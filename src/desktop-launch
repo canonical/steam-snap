@@ -6,6 +6,13 @@
 # shellcheck disable=SC2034
 START=$(date +%s.%N)
 
+if ! snapctl is-connected "gaming-mesa"; then
+  echo "ERROR: not connected to the gaming-mesa content interface."
+  echo "To connect:"
+  echo "sudo snap connect steam:gaming-mesa gaming-graphics-core22"
+  exit 1
+fi
+
 # ensure_dir_exists calls `mkdir -p` if the given path is not a directory.
 # This speeds up execution time by avoiding unnecessary calls to mkdir.
 #
@@ -188,7 +195,7 @@ if [ -e "/var/lib/snapd/lib/gl/vdpau/libvdpau_nvidia.so" ]; then
 fi
 
 # Export Vulkan ICD filename paths
-export VK_ICD_FILENAMES="/var/lib/snapd/lib/vulkan/icd.d/nvidia_icd.json:$SNAP/usr/share/vulkan/icd.d/radeon_icd.x86_64.json:$SNAP/usr/share/vulkan/icd.d/intel_icd.x86_64.json"
+export VK_ICD_FILENAMES="/var/lib/snapd/lib/vulkan/icd.d/nvidia_icd.json:$SNAP/graphics/usr/share/vulkan/icd.d/radeon_icd.x86_64.json:$SNAP/graphics/usr/share/vulkan/icd.d/intel_icd.x86_64.json"
 
 # Workaround in snapd for proprietary nVidia drivers mounts the drivers in
 # /var/lib/snapd/lib/gl that needs to be in LD_LIBRARY_PATH

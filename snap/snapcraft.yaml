@@ -45,31 +45,29 @@ layout:
   /usr/lib/i386-linux-gnu:
     bind: $SNAP/usr/lib/i386-linux-gnu
   /usr/lib/x86_64-linux-gnu/dri:
-    bind: $SNAP/usr/lib/x86_64-linux-gnu/dri
+    bind: $SNAP/graphics/usr/lib/x86_64-linux-gnu/dri
   /usr/share/glvnd/egl_vendor.d:
-    bind: $SNAP/usr/share/glvnd/egl_vendor.d
+    bind: $SNAP/graphics/usr/share/glvnd/egl_vendor.d
   /usr/lib/x86_64-linux-gnu/alsa-lib:
     bind: $SNAP/usr/lib/x86_64-linux-gnu/alsa-lib
   /usr/share/alsa:
     bind: $SNAP/usr/share/alsa
-  /usr/share/vulkan:
-    bind: $SNAP/usr/share/vulkan
   /usr/lib/x86_64-linux-gnu/libvulkan_intel.so:
-    bind-file: $SNAP/usr/lib/x86_64-linux-gnu/libvulkan_intel.so
+    symlink: $SNAP/graphics/usr/lib/x86_64-linux-gnu/libvulkan_intel.so
   /usr/lib/x86_64-linux-gnu/libvulkan_lvp.so:
-    bind-file: $SNAP/usr/lib/x86_64-linux-gnu/libvulkan_lvp.so
+    symlink: $SNAP/graphics/usr/lib/x86_64-linux-gnu/libvulkan_lvp.so
   /usr/lib/x86_64-linux-gnu/libvulkan_radeon.so:
-    bind-file: $SNAP/usr/lib/x86_64-linux-gnu/libvulkan_radeon.so
+    symlink: $SNAP/graphics/usr/lib/x86_64-linux-gnu/libvulkan_radeon.so
   /usr/lib/x86_64-linux-gnu/libxcb-dri3.so.0.0.0:
-    bind-file: $SNAP/usr/lib/x86_64-linux-gnu/libxcb-dri3.so.0.0.0
+    symlink: $SNAP/graphics/usr/lib/x86_64-linux-gnu/libxcb-dri3.so.0.0.0
   /usr/lib/x86_64-linux-gnu/libxcb-dri3.so.0:
-    symlink: $SNAP/usr/lib/x86_64-linux-gnu/libxcb-dri3.so.0.0.0
+    symlink: $SNAP/graphics/usr/lib/x86_64-linux-gnu/libxcb-dri3.so.0.0.0
   /usr/lib/x86_64-linux-gnu/libxcb.so.1.1.0:
-    bind-file: $SNAP/usr/lib/x86_64-linux-gnu/libxcb.so.1.1.0
+    symlink: $SNAP/graphics/usr/lib/x86_64-linux-gnu/libxcb.so.1.1.0
   /usr/lib/x86_64-linux-gnu/libxcb.so:
-    symlink: $SNAP/usr/lib/x86_64-linux-gnu/libxcb.so.1.1.0
+    symlink: $SNAP/graphics/usr/lib/x86_64-linux-gnu/libxcb.so.1.1.0
   /usr/lib/x86_64-linux-gnu/libxcb.so.1:
-    symlink: $SNAP/usr/lib/x86_64-linux-gnu/libxcb.so.1.1.0
+    symlink: $SNAP/graphics/usr/lib/x86_64-linux-gnu/libxcb.so.1.1.0
   /etc/ld.so.cache:
     bind-file: $SNAP_DATA/etc/ld.so.cache
 
@@ -217,6 +215,13 @@ parts:
       - vulkan-tools
       - mesa-utils
 
+  tests:
+    plugin: dump
+    source: tests
+    override-build: |
+      mkdir -p $CRAFT_PART_INSTALL/tests
+      cp -rp * $CRAFT_PART_INSTALL/tests/
+
   steam-devices:
     plugin: dump
     source: https://github.com/ValveSoftware/steam-devices.git
@@ -333,10 +338,46 @@ apps:
       - removable-media
       - upower-observe
   report:
+    command-chain: [bin/desktop-launch]
     command: bin/steamreport
     plugs:
       - system-observe
       - hardware-observe
+      - opengl
+      - x11
+      - desktop
+  vulkaninfo:
+    command-chain: [bin/desktop-launch]
+    command: usr/bin/vulkaninfo
+    plugs:
+      - opengl
+      - x11
+      - desktop
+  vkcube:
+    command-chain: [bin/desktop-launch]
+    command: usr/bin/vkcube
+    plugs:
+      - opengl
+      - x11
+      - desktop
+  glxinfo:
+    command-chain: [bin/desktop-launch]
+    command: usr/bin/glxinfo
+    plugs:
+      - opengl
+      - x11
+      - desktop
+  glxgears:
+    command-chain: [bin/desktop-launch]
+    command: usr/bin/glxgears
+    plugs:
+      - opengl
+      - x11
+      - desktop
+  test:
+    command-chain: [bin/desktop-launch]
+    command: tests/run.sh
+    plugs:
       - opengl
       - x11
       - desktop

@@ -1,0 +1,4 @@
+#!/bin/bash
+
+vulkaninfo --json|jq .VkPhysicalDeviceProperties 2>&1> /dev/null
+exit $?
