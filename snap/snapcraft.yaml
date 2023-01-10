@@ -281,10 +281,15 @@ parts:
       - -usr/share/gdb
       - -usr/share/emacs*
       - -usr/share/lintian
+      - -usr/share/drirc.d
+      - -usr/share/vulkan
+      - -usr/share/Xsession.d
       - -usr/lib/*/dri
-      - usr/lib/*/libxml2*
-      - usr/lib/*/libicu*
-      - usr/lib/*/libwayland*
+      - -usr/lib/*/vdpau
+      - -usr/lib/*/libvkd3d*
+      - -usr/lib/*/libvulkan*
+      - -usr/lib/*/libVk*
+      - -usr/lib/*/libLLVM*
 
     build-snaps: [core22]
     override-prime: |
