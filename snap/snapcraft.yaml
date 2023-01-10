@@ -270,6 +270,7 @@ parts:
       - -usr/share/gdb
       - -usr/share/emacs*
       - -usr/share/lintian
+      - -usr/lib/*/dri
     build-snaps: [core22]
     override-prime: |
       craftctl default
