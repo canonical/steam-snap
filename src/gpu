@@ -1,0 +1,41 @@
+#!/usr/bin/python3
+
+import os
+
+NVIDIA_ENV = "__NV_PRIME_RENDER_OFFLOAD=1 __GLX_VENDOR_LIBRARY_NAME=nvidia __VK_LAYER_NV_optimus=NVIDIA_only"
+
+def main():
+    lshw = os.popen("lshw -numeric -c display").read()
+
+    gpus = {}
+    gpu_text = lshw.split("*-display")
+    env_string = ""
+
+    for text in gpu_text:
+        data_arr = [t.strip() for t in text.split("\n")]
+        data = {}
+        for d in data_arr:
+            if ": " in d:
+                s = d.split(": ")
+                data[s[0].replace(" ", "_")] = s[1]
+
+        if data:
+            gpus[data["physical_id"]] = data
+            pci = data["bus_info"]\
+                .replace("@", "-")\
+                .replace(":", "_")\
+                .replace(".", "_")
+
+            if "nvidia" in data["vendor"].lower():
+                env_string = f"DRI_PRIME={pci} {NVIDIA_ENV} "
+                break
+
+            elif "amd" in data["vendor"].lower():
+                env_string = f"DRI_PRIME={pci} "
+                break
+
+    print(env_string)
+
+
+if __name__ == "__main__":
+    main()
