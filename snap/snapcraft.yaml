@@ -124,6 +124,10 @@ parts:
       cp glxinfo $CRAFT_PART_INSTALL/bin/
       cp glxgears $CRAFT_PART_INSTALL/bin/
       cp gpu $CRAFT_PART_INSTALL/bin/
+      cp vulkaninfo $CRAFT_PART_INSTALL/bin/
+      cp vkcube $CRAFT_PART_INSTALL/bin/
+      cp glxinfo $CRAFT_PART_INSTALL/bin/
+      cp glxgears $CRAFT_PART_INSTALL/bin/
 
   alsa-mixin:
     plugin: dump
