@@ -42,10 +42,6 @@ layout:
     bind: $SNAP/graphics/libdrm
   /usr/share/drirc.d:
     bind: $SNAP/graphics/usr/share/drirc.d
-  /usr/lib/i386-linux-gnu:
-    bind: $SNAP/usr/lib/i386-linux-gnu
-  /usr/lib/x86_64-linux-gnu/dri:
-    bind: $SNAP/graphics/usr/lib/x86_64-linux-gnu/dri
   /usr/share/glvnd/egl_vendor.d:
     bind: $SNAP/graphics/usr/share/glvnd/egl_vendor.d
   /usr/lib/x86_64-linux-gnu/alsa-lib:
@@ -54,10 +50,16 @@ layout:
     bind: $SNAP/usr/share/alsa
   /usr/lib/x86_64-linux-gnu/libvulkan_intel.so:
     symlink: $SNAP/graphics/usr/lib/x86_64-linux-gnu/libvulkan_intel.so
+  /usr/lib/i386-linux-gnu/libvulkan_intel.so:
+    symlink: $SNAP/graphics/usr/lib/i386-linux-gnu/libvulkan_intel.so
   /usr/lib/x86_64-linux-gnu/libvulkan_lvp.so:
     symlink: $SNAP/graphics/usr/lib/x86_64-linux-gnu/libvulkan_lvp.so
+  /usr/lib/i386-linux-gnu/libvulkan_lvp.so:
+    symlink: $SNAP/graphics/usr/lib/i386-linux-gnu/libvulkan_lvp.so
   /usr/lib/x86_64-linux-gnu/libvulkan_radeon.so:
     symlink: $SNAP/graphics/usr/lib/x86_64-linux-gnu/libvulkan_radeon.so
+  /usr/lib/i386-linux-gnu/libvulkan_radeon.so:
+    symlink: $SNAP/graphics/usr/lib/i386-linux-gnu/libvulkan_radeon.so
   /usr/lib/x86_64-linux-gnu/libxcb-dri3.so.0.0.0:
     symlink: $SNAP/graphics/usr/lib/x86_64-linux-gnu/libxcb-dri3.so.0.0.0
   /usr/lib/x86_64-linux-gnu/libxcb-dri3.so.0:
@@ -105,8 +107,8 @@ hooks:
       - opengl
 
 environment:
-  LD_LIBRARY_PATH: $SNAP/graphics/lib:$SNAP/graphics/usr/lib:$SNAP/usr/lib/i386-linux-gnu:$SNAP/lib/i386-linux-gnu:$SNAP/usr/lib/i386-linux-gnu/pulseaudio${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}
-  LIBGL_DRIVERS_PATH: $SNAP/graphics/lib/i386-linux-gnu/dri:$SNAP/graphics/lib/x86_64-linux-gnu/dri:$SNAP/graphics/usr/lib/i386-linux-gnu/dri:$SNAP/graphics/usr/lib/x86_64-linux-gnu/dri:${LIBGL_DRIVERS_PATH:+:$LIBGL_DRIVERS_PATH}
+  LD_LIBRARY_PATH: $SNAP/graphics/lib/i386-linux-gnu:$SNAP/graphics/usr/lib:$SNAP/usr/lib/i386-linux-gnu:$SNAP/lib/i386-linux-gnu:$SNAP/usr/lib/i386-linux-gnu/pulseaudio${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}
+  LIBGL_DRIVERS_PATH: $SNAP/graphics/usr/lib/i386-linux-gnu/dri:$SNAP/graphics/usr/lib/x86_64-linux-gnu/dri:${LIBGL_DRIVERS_PATH:+:$LIBGL_DRIVERS_PATH}
 
 parts:
   launcher:
@@ -290,7 +292,6 @@ parts:
       - -usr/lib/*/libvulkan*
       - -usr/lib/*/libVk*
       - -usr/lib/*/libLLVM*
-
     build-snaps: [core22]
     override-prime: |
       craftctl default
