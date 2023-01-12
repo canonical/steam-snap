@@ -315,7 +315,7 @@ parts:
     after: [steam]
     plugin: nil
     build-snaps:
-      - gaming-graphics-core22/oibaf-latest/edge
+      - gaming-graphics-core22/kisak-fresh/candidate
     override-prime: |
       set -eux
       cd /snap/gaming-graphics-core22/current/usr/lib
