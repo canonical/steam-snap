@@ -1,27 +1,26 @@
 #!/usr/bin/python3
 
-import json
 import os
 
 NVIDIA_ENV = "__NV_PRIME_RENDER_OFFLOAD=1 __GLX_VENDOR_LIBRARY_NAME=nvidia __VK_LAYER_NV_optimus=NVIDIA_only"
 
 def main():
-    lshw = os.popen("lshw -json -numeric -c display 2> /dev/null").read()
-    gpus = json.loads(lshw)
+    lspci = os.popen("lspci | grep VGA").read()
+    gpus = lspci.splitlines()
     env_string = ""
 
     for gpu in gpus:
-        pci = gpu["businfo"]\
-            .replace("@", "-")\
+        split = gpu.split(" VGA compatible controller: ")
+        pci = f"pci-0000_{split[0]}"\
             .replace(":", "_")\
-            .replace(".", "_")
+            .replace(".", "_")\
 
-        if "nvidia" in gpu["vendor"].lower():
-            env_string = f"DRI_PRIME={pci} {NVIDIA_ENV} "
+        if "nvidia" in split[1].lower():
+            env_string = f"DRI_PRIME={pci} {NVIDIA_ENV}"
             break
 
-        elif "amd" in gpu["vendor"].lower():
-            env_string = f"DRI_PRIME={pci} "
+        elif "amd" in split[1].lower():
+            env_string = f"DRI_PRIME={pci}"
             break
 
     print(env_string)

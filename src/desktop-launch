@@ -329,4 +329,9 @@ if [ -n "$SNAP_DESKTOP_DEBUG" ]; then
   echo "Now running: exec $*"
 fi
 
-exec "$@"
+# Check for GPUs
+
+gpu_env=$($SNAP/bin/gpu)
+echo "Running with $gpu_env"
+
+eval "$gpu_env exec $@"
