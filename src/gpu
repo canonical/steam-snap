@@ -1,28 +1,31 @@
 #!/usr/bin/python3
 
 import os
+import re
 
-NVIDIA_ENV = "__NV_PRIME_RENDER_OFFLOAD=1 __GLX_VENDOR_LIBRARY_NAME=nvidia __VK_LAYER_NV_optimus=NVIDIA_only"
+NVIDIA_ENV = (
+    "__NV_PRIME_RENDER_OFFLOAD=1 "
+    "__GLX_VENDOR_LIBRARY_NAME=nvidia "
+    "__VK_LAYER_NV_optimus=NVIDIA_only"
+)
 
 def main():
     lspci = os.popen("lspci | grep VGA").read()
-    gpus = lspci.splitlines()
+    gpus = {}
     env_string = ""
 
-    for gpu in gpus:
+    for gpu in lspci.splitlines():
         split = gpu.split(" VGA compatible controller: ")
         pci = f"pci-0000_{split[0]}"\
             .replace(":", "_")\
             .replace(".", "_")\
 
         if "nvidia" in split[1].lower():
-            env_string = f"DRI_PRIME={pci} {NVIDIA_ENV}"
-            break
+            gpus[int(re.sub(r"[^0-9]+", "", pci))] = f"DRI_PRIME={pci} {NVIDIA_ENV}"
+        else:
+            gpus[int(re.sub(r"[^0-9]+", "", pci))] = f"DRI_PRIME={pci}"
 
-        elif "amd" in split[1].lower():
-            env_string = f"DRI_PRIME={pci}"
-            break
-
+    env_string = gpus[max(list(gpus.keys()))]
     print(env_string)
 
 
