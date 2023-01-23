@@ -333,7 +333,7 @@ parts:
 
 apps:
   steam:
-    command-chain: [snap/command-chain/alsa-launch, bin/desktop-launch, bin/gpu]
+    command-chain: [snap/command-chain/alsa-launch, bin/desktop-launch]
     #command: bin/steam-snap.sh
     command: usr/lib/steam/bin_steam.sh -no-cef-sandbox
     desktop: steam.desktop
