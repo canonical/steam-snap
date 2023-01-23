@@ -1,32 +1,76 @@
 #!/usr/bin/python3
 
+import json
 import os
 import re
+import argparse
+import subprocess
+import sys
 
-NVIDIA_ENV = (
-    "__NV_PRIME_RENDER_OFFLOAD=1 "
-    "__GLX_VENDOR_LIBRARY_NAME=nvidia "
-    "__VK_LAYER_NV_optimus=NVIDIA_only"
-)
+NVIDIA_ENV = {
+    "__NV_PRIME_RENDER_OFFLOAD": 1,
+    "__GLX_VENDOR_LIBRARY_NAME": "nvidia",
+    "__VK_LAYER_NV_optimus": "NVIDIA_only",
+}
 
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--gpu", "-g",
+        help="Select a GPU to use"
+    )
+    parser.add_argument(
+        "--list", "-l",
+        help="List available GPUs",
+        const=True,
+        action="store_const"
+    )
+    parser.add_argument(
+        "--json", "-j",
+        help="List all data in json format",
+        const=True,
+        action="store_const"
+    )
+    args, nonargs = parser.parse_known_args()
+
     lspci = os.popen("lspci | grep VGA").read()
     gpus = {}
-    env_string = ""
+    max_pci = -1
 
     for gpu in lspci.splitlines():
         split = gpu.split(" VGA compatible controller: ")
         pci = f"pci-0000_{split[0]}"\
             .replace(":", "_")\
-            .replace(".", "_")\
+            .replace(".", "_")
+        pci_num = int(re.sub(r"[^0-9]+", "", pci))
 
+        max_pci = max(max_pci, pci_num)
+        gpus[pci_num] = {}
+        gpus[pci_num]["gpu"] = split[1]
+        gpus[pci_num]["env"] = {"DRI_PRIME": pci}
         if "nvidia" in split[1].lower():
-            gpus[int(re.sub(r"[^0-9]+", "", pci))] = f"DRI_PRIME={pci} {NVIDIA_ENV}"
-        else:
-            gpus[int(re.sub(r"[^0-9]+", "", pci))] = f"DRI_PRIME={pci}"
+            gpus[pci_num]["env"].update(NVIDIA_ENV)
 
-    env_string = gpus[max(list(gpus.keys()))]
-    print(env_string)
+    if args.list:
+        [print(f"{k:6}: {v['gpu']}") for k, v in gpus.items()]
+        return
+
+    if args.json:
+        print(json.dumps(gpus, indent=4))
+        return
+
+    if args.gpu:
+        max_pci = int(args.gpu)
+
+    if max_pci >= 0:
+        if max_pci not in gpus:
+            print("Invalid GPU ID, use --list to show valid IDs.")
+            return
+        for k, v in gpus[max_pci]["env"].items():
+            os.environ[k] = str(v)
+
+    if nonargs:
+        subprocess.call(nonargs)
 
 
 if __name__ == "__main__":

@@ -129,6 +129,8 @@ parts:
       cp glxinfo $CRAFT_PART_INSTALL/bin/
       cp glxgears $CRAFT_PART_INSTALL/bin/
       cp gpu $CRAFT_PART_INSTALL/bin/
+      cp gpuenv $CRAFT_PART_INSTALL/bin/
+      cp steam-snap.sh $CRAFT_PART_INSTALL/bin/
 
   alsa-mixin:
     plugin: dump
@@ -331,7 +333,7 @@ parts:
 
 apps:
   steam:
-    command-chain: [snap/command-chain/alsa-launch, bin/desktop-launch]
+    command-chain: [snap/command-chain/alsa-launch, bin/desktop-launch, bin/gpu]
     #command: bin/steam-snap.sh
     command: usr/lib/steam/bin_steam.sh -no-cef-sandbox
     desktop: steam.desktop
@@ -365,6 +367,12 @@ apps:
       - steam-support
       - removable-media
       - upower-observe
+  gpu:
+    command-chain: [bin/desktop-launch]
+    command: bin/gpu
+    plugs:
+      - system-observe
+      - hardware-observe
   report:
     command-chain: [bin/desktop-launch]
     command: bin/steamreport
