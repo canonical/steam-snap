@@ -129,7 +129,6 @@ parts:
       cp glxinfo $CRAFT_PART_INSTALL/bin/
       cp glxgears $CRAFT_PART_INSTALL/bin/
       cp gpu $CRAFT_PART_INSTALL/bin/
-      cp gpuenv $CRAFT_PART_INSTALL/bin/
       cp steam-snap.sh $CRAFT_PART_INSTALL/bin/
 
   alsa-mixin:
