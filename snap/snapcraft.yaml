@@ -231,6 +231,18 @@ parts:
       - mesa-common-dev
       - python3-mako
 
+  mangohud64:
+    after: [ meson-deps, mangohud ]
+    source: https://github.com/flightlessmango/MangoHud.git
+    plugin: meson
+    organize:
+      snap/steam/current/usr: usr
+    meson-parameters:
+      - --prefix=/usr
+    stage:
+      - -usr/bin/mangohud
+      - -usr/share/vulkan/implicit_layer.d/MangoHud.json
+
   gamemode:
     after: [meson-deps]
     source: https://github.com/ashuntu/gamemode.git
