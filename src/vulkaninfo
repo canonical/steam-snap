@@ -1,4 +1,13 @@
 #!/bin/bash
 
-exec $SNAP/graphics/usr/bin/vulkaninfo "$@"
-exit $?
+set -e
+
+# vulkaninfo --json always saves a file so we have to do this sadly...
+mkdir -p $SNAP_USER_COMMON
+vulkaninfo --json -o $SNAP_USER_COMMON/vkinfodump.json
+# Find if any level has some physical device property info
+jq -e 'any(paths; .[-1] == "VkPhysicalDeviceProperties")' "$SNAP_USER_COMMON/vkinfodump.json" 2>&1> /dev/null
+result=$?
+rm $SNAP_USER_COMMON/vkinfodump.json
+
+exit $result
