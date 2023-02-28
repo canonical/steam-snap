@@ -13,6 +13,9 @@ if [ ! -L $STEAMCONFIG/Steam/steamapps ]; then
     if [ -x $REALHOME/.local/share/Steam/steam.sh ]; then
         ln -s $REALHOME/.local/share/Steam/steamapps $STEAMCONFIG/Steam
         ln -s $REALHOME/.local/share/Steam/config/libraryfolders.vdf $STEAMCONFIG/Steam/config/
+    elif [ -x $REALHOME/.steam/debian-installation/steam.sh ]; then
+        ln -s $REALHOME/.steam/debian-installation/steamapps $STEAMCONFIG/Steam
+        ln -s $REALHOME/.steam/debian-installation/config/libraryfolders.vdf $STEAMCONFIG/Steam/config/
     fi
 fi
 
