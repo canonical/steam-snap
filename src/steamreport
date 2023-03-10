@@ -105,6 +105,10 @@ def gather_data():
             "model_name": lscpu["Model name"]
         }
 
+    # XDG_DESKTOP_SESSION & DESKTOP_SESSION
+    data["xdg_current_desktop"] = os.environ.get("XDG_CURRENT_DESKTOP")
+    data["desktop_session"] = os.environ.get("DESKTOP_SESSION")
+
     return data
 
 def submit_data(data):
