@@ -48,6 +48,8 @@ layout:
     bind: $SNAP/usr/lib/x86_64-linux-gnu/alsa-lib
   /usr/share/alsa:
     bind: $SNAP/usr/share/alsa
+  /usr/share/X11/xkb:
+    bind: $SNAP/usr/share/X11/xkb
   /usr/lib/x86_64-linux-gnu/libvulkan_intel.so:
     symlink: $SNAP/graphics/usr/lib/x86_64-linux-gnu/libvulkan_intel.so
   /usr/lib/i386-linux-gnu/libvulkan_intel.so:
