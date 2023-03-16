@@ -260,6 +260,7 @@ parts:
       - zlib1g:i386
       - zlib1g:amd64
       - xdg-utils
+      - xdg-user-dirs
       - fontconfig-config
       - fontconfig:i386
       - fontconfig:amd64
