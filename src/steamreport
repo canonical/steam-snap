@@ -66,11 +66,14 @@ def gather_data():
 
     # lspci
     lspci = defaultdict(default)
-    for line in os.popen("lspci | grep VGA").read().split("\n"):
+    for line in os.popen("lspci | grep -E '(VGA)|(3D controller)'").read().split("\n"):
         line = line.strip()
         if (not line): continue
         key, val = line.split(" ", 1)
-        lspci[key.strip()] = val.strip().removeprefix("VGA compatible controller: ")
+        val = val.strip()\
+            .removeprefix("VGA compatible controller: ")\
+            .removeprefix("3D controller: ")
+        lspci[key.strip()] = val
 
     data["lspci"] = dict(lspci)
 
