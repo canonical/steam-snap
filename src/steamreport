@@ -5,11 +5,114 @@ import sys
 import webbrowser
 import argparse
 from collections import defaultdict
+import requests
 
 DISCUSSION_URL = "https://github.com/canonical/steam-snap/discussions/new?category=game-reports"
 WIKI_URL = "https://github.com/canonical/steam-snap/wiki/Troubleshooting#submitting-a-game-report"
+GRAPHQL_URL = "https://api.github.com/graphql"
+TOKEN_URL = "https://github.com/settings/tokens/new"
+
+DISCUSSION_CATEGORY_ID = "DIC_kwDOC5Gtms4CR-_9"
 
 BODY_SUFFIX = "<!--Copy error logs from Steam/the game itself below-->"
+
+def summary():
+    """Summarize discussion data based on labels"""
+    if "GITHUB_ACCESS_TOKEN" not in os.environ:
+        print("Please set the environment variable GITHUB_ACCESS_TOKEN to a valid token")
+        print(f"Generate a token here: {TOKEN_URL}")
+        return
+
+    print("Gathering most recent 100 reports...")
+
+    PDB_RATINGS = [
+        "pdb-borked",
+        "pdb-bronze",
+        "pdb-silver",
+        "pdb-gold",
+        "pdb-platinum",
+        "pdb-native",
+    ]
+    RATINGS = [
+        "borked",
+        "bronze",
+        "silver",
+        "gold",
+        "platinum",
+        "",
+    ]
+
+    access_token = os.environ["GITHUB_ACCESS_TOKEN"]
+    headers = {
+        "Authorization": f"token {access_token}",
+        "Content-Type": "application/json"
+    }
+    response = requests.post(GRAPHQL_URL, headers=headers, json={"query":"""
+        query {
+            repository(owner: "canonical", name: "steam-snap") {
+                discussions(first: 100, categoryId: "%s") {
+                    nodes {
+                        title
+                        labels(first: 10) {
+                            nodes {
+                                name
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    """ % (DISCUSSION_CATEGORY_ID)})
+    discussions = response.json()["data"]["repository"]["discussions"]
+
+    total_count = 0
+    counts = {rating: 0 for rating in RATINGS if rating}
+    comparisons = {
+        "worse": 0,
+        "expected": 0,
+        "better": 0
+    }
+
+    for discussion in discussions["nodes"]:
+        labels = discussion["labels"]["nodes"]
+        rating = len(RATINGS) - 1
+        pdb_rating = len(PDB_RATINGS) - 1
+        valid = False
+
+        for label in labels:
+            if label["name"] in counts:
+                counts[label["name"]] += 1
+                valid = True
+                total_count += 1
+            if label["name"] in RATINGS:
+                rating = min(rating, RATINGS.index(label["name"]))
+            if label["name"] in PDB_RATINGS:
+                pdb_rating = min(pdb_rating, PDB_RATINGS.index(label["name"]))
+
+        if valid:
+            if rating > pdb_rating:
+                comparisons["better"] += 1
+            elif rating < pdb_rating:
+                comparisons["worse"] += 1
+            else:
+                comparisons["expected"] += 1
+
+    print(f"Valid reports: {total_count}\n")
+
+    print("Grade Counts")
+    print("------------")
+    print(f"{'Grade':<12} {'Count':<6} {'Percent'}")
+    for count in counts.items():
+        perc = round(count[1] * 100 / total_count, 2)
+        print(f"{count[0].title():<12} {count[1]:<6} {perc:>5} %")
+    print()
+
+    print("Comparisons to ProtonDB")
+    print("-----------------------")
+    print(f"{'Performance':<12} {'Count':<6} {'Percent':<8}")
+    for comparison in comparisons.items():
+        perc = round(comparison[1] * 100 / total_count, 2)
+        print(f"{comparison[0].title():<12} {comparison[1]:<6} {perc:>5} %")
 
 def default():
     return "ERROR"
@@ -66,7 +169,7 @@ def gather_data():
 
     # lspci
     lspci = defaultdict(default)
-    for line in os.popen("lspci | grep -E '(VGA)|(3D controller)'").read().split("\n"):
+    for line in os.popen("lspci | grep -E 'VGA|3D controller'").read().split("\n"):
         line = line.strip()
         if (not line): continue
         key, val = line.split(" ", 1)
@@ -151,7 +254,17 @@ parser.add_argument(
     const=True,
     action="store_const"
 )
+parser.add_argument(
+    "--summary", "-s",
+    help="Display summary of discussion posts. Requires a GitHub key defined in GITHUB_ACCESS_TOKEN.",
+    const=True,
+    action="store_const"
+)
 args = parser.parse_args()
+
+if (args.summary):
+    summary()
+    sys.exit()
 
 # Test environment
 if (not args.force):
