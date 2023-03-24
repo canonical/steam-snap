@@ -18,6 +18,7 @@ BODY_SUFFIX = "<!--Copy error logs from Steam/the game itself below-->"
 
 def summary():
     """Summarize discussion data based on labels"""
+
     if "GITHUB_ACCESS_TOKEN" not in os.environ:
         print("Please set the environment variable GITHUB_ACCESS_TOKEN to a valid token")
         print(f"Generate a token here: {TOKEN_URL}")
@@ -114,25 +115,29 @@ def summary():
         perc = round(comparison[1] * 100 / total_count, 2)
         print(f"{comparison[0].title():<12} {comparison[1]:<6} {perc:>5} %")
 
+
 def default():
     return "ERROR"
 
+
 def dict_to_string(d, n = 0):
     """Convert a dict to yaml-like string."""
+
     s = ""
     for key in d:
         line = f"{'    ' * n}{key}: "
-        if (type(d[key]) is dict):
+        if type(d[key]) is dict:
             line += f"\n{dict_to_string(d[key], n + 1)}"
         else:
             line += f"{' ' * (24 - len(line))}{d[key]}\n"
         s += line
     return s
 
+
 def gather_data():
     """Gathers system information, returning a data object."""
-    data = {}
 
+    data = {}
     # /etc/os-release
     os_release = defaultdict(default)
     os_release_lookup = [
@@ -153,7 +158,7 @@ def gather_data():
         except FileNotFoundError:
             continue
 
-    if (args.verbose):
+    if args.verbose:
         data["os_release"] = dict(os_release)
     else:
         data["os_release"] = {
@@ -171,7 +176,7 @@ def gather_data():
     lspci = defaultdict(default)
     for line in os.popen("lspci | grep -E 'VGA|3D controller'").read().split("\n"):
         line = line.strip()
-        if (not line): continue
+        if not line: continue
         key, val = line.split(" ", 1)
         val = val.strip()\
             .removeprefix("VGA compatible controller: ")\
@@ -184,11 +189,11 @@ def gather_data():
     glxinfo = defaultdict(default)
     for line in os.popen("glxinfo -B").read().split("\n"):
         line = line.strip()
-        if (not line): continue
+        if not line: continue
         key, val = line.split(":", 1)
         glxinfo[key.strip()] = val.strip()
 
-    if (args.verbose):
+    if args.verbose:
         data["glxinfo"] = dict(glxinfo)
     else:
         data["glxinfo"] = {
@@ -204,7 +209,7 @@ def gather_data():
         key, val = line.split(":", 1)
         lscpu[key.strip()] = val.strip()
 
-    if (args.verbose):
+    if args.verbose:
         data["lscpu"] = dict(lscpu)
     else:
         data["lscpu"] = {
@@ -217,14 +222,17 @@ def gather_data():
 
     return data
 
+
 def submit_data(data):
     """Open web-browser and fill in system information."""
+
     url = DISCUSSION_URL
     url += f"&title=Report: {args.title.title()}"
     url += f"&body=```\n{dict_to_string(data)}```\n".replace("\n", "%0A")
     url += BODY_SUFFIX
     print("Opening web browser...")
     webbrowser.open_new_tab(url)
+
 
 # Parse commandline arguments
 parser = argparse.ArgumentParser(
@@ -262,25 +270,25 @@ parser.add_argument(
 )
 args = parser.parse_args()
 
-if (args.summary):
+if args.summary:
     summary()
     sys.exit()
 
 # Test environment
-if (not args.force):
-    if (not os.environ.get("SNAP")):
+if not args.force:
+    if not os.environ.get("SNAP"):
         sys.exit(
             "This script must be ran from inside a Snap environment.\n" +
             "Run `snap run steam.report`."
         )
 
-    if (os.system("snapctl is-connected system-observe")):
+    if os.system("snapctl is-connected system-observe"):
         sys.exit(
             "This script relies on the system-observe Snap plug.\n" +
             "Outside of the snap, run `snap connect steam:system-observe`."
         )
 
-    if (os.system("snapctl is-connected hardware-observe")):
+    if os.system("snapctl is-connected hardware-observe"):
         sys.exit(
             "This script relies on the hardware-observe Snap plug.\n" +
             "Outside of the snap, run `snap connect steam:hardware-observe`."
@@ -289,5 +297,5 @@ if (not args.force):
 # Gather and submit data
 data = gather_data()
 print(dict_to_string(data))
-if (not args.no_submit):
+if not args.no_submit:
     submit_data(data)
