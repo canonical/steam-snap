@@ -74,6 +74,11 @@ layout:
     symlink: $SNAP/graphics/usr/lib/x86_64-linux-gnu/libxcb.so.1.1.0
   /etc/ld.so.cache:
     bind-file: $SNAP_DATA/etc/ld.so.cache
+  # These layouts quiet errors sent to stdout, but aren't strickly necessary
+  /usr/share/fonts/truetype/freefont/FreeSerif.ttf:
+    bind-file: $SNAP/usr/share/fonts/truetype/freefont/FreeSerif.ttf
+  /usr/share/fonts/X11/misc/7x13-ISO8859-1.pcf.gz:
+    bind-file: $SNAP/usr/share/fonts/X11/misc/7x13-ISO8859-1.pcf.gz
 
 plugs:
   gaming-mesa:
@@ -264,6 +269,8 @@ parts:
       - fontconfig-config
       - fontconfig:i386
       - fontconfig:amd64
+      - fonts-freefont-ttf
+      - xfonts-base
       - pciutils
       - lsof
       - locales-all
