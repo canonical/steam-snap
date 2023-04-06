@@ -362,6 +362,7 @@ apps:
       - steam-support
       - removable-media
       - upower-observe
+      - uinput
   report:
     command-chain: [bin/desktop-launch]
     command: bin/steamreport
