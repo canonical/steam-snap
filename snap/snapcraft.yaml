@@ -212,7 +212,7 @@ parts:
     build-environment:
       - CC: gcc -m32
       - CXX: g++ -m32
-      - PKG_CONFIG_PATH: /usr/lib/i386-linux-gnu/pkgconfig:/usr/lib/i386-linux-gnu/pkgconfig:/usr/lib/pkgconfig
+      - PKG_CONFIG_PATH: /usr/lib/i386-linux-gnu/pkgconfig:/usr/lib/x86_64-linux-gnu/pkgconfig:/usr/lib/pkgconfig
     meson-parameters:
       - --prefix=/usr
       - --libdir=lib/i386-linux-gnu
@@ -385,7 +385,7 @@ apps:
       TMPDIR: $XDG_RUNTIME_DIR
       ALWAYS_USE_PULSEAUDIO: 1
       DISABLE_WAYLAND: 1
-      PKG_CONFIG_PATH: $SNAP/usr/lib/i386-linux-gnu/pkgconfig:$SNAP/usr/lib/i386-linux-gnu/pkgconfig:$SNAP/usr/lib/pkgconfig
+      PKG_CONFIG_PATH: $SNAP/usr/lib/i386-linux-gnu/pkgconfig:$SNAP/usr/lib/x86_64-linux-gnu/pkgconfig:$SNAP/usr/lib/pkgconfig
     plugs:
       - shmem
       - desktop
