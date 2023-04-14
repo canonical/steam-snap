@@ -203,7 +203,7 @@ parts:
       - -*
 
   mangohud:
-    after: [ meson-deps ]
+    after: [meson-deps]
     source: https://github.com/flightlessmango/MangoHud.git
     source-tag: "v0.6.8"
     plugin: meson
@@ -233,7 +233,7 @@ parts:
       - python3-mako
 
   mangohud64:
-    after: [ meson-deps, mangohud ]
+    after: [meson-deps, mangohud]
     source: https://github.com/flightlessmango/MangoHud.git
     source-tag: "v0.6.8"
     plugin: meson
@@ -385,7 +385,7 @@ apps:
       TMPDIR: $XDG_RUNTIME_DIR
       ALWAYS_USE_PULSEAUDIO: 1
       DISABLE_WAYLAND: 1
-      PKG_CONFIG_PATH: $SNAP/usr/lib/i386-linux-gnu/pkgconfig:$SNAP/usr/lib/i386-linux-nu/pkgconfig:$SNAP/usr/lib/pkgconfig
+      PKG_CONFIG_PATH: $SNAP/usr/lib/i386-linux-gnu/pkgconfig:$SNAP/usr/lib/i386-linux-gnu/pkgconfig:$SNAP/usr/lib/pkgconfig
     plugs:
       - shmem
       - desktop
