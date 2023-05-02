@@ -74,6 +74,8 @@ layout:
     symlink: $SNAP/graphics/usr/lib/x86_64-linux-gnu/libxcb.so.1.1.0
   /etc/ld.so.cache:
     bind-file: $SNAP_DATA/etc/ld.so.cache
+  /etc/fonts:
+    bind: $SNAP/etc/fonts
 
 plugs:
   gaming-mesa:
@@ -279,7 +281,6 @@ parts:
       # Install the desktop file, with the icon field munged
       sed 's|Icon=steam|Icon=${SNAP}/steam.png|g' $CRAFT_PART_INSTALL/usr/share/applications/steam.desktop > $CRAFT_PART_INSTALL/steam.desktop
     prime:
-      - -etc/fonts
       - -usr/share/doc
       - -usr/share/man
       - -usr/share/bug
@@ -325,6 +326,7 @@ parts:
       find . -type f,l -exec rm -f $CRAFT_PRIME/usr/lib/{} \;
       cd /snap/gaming-graphics-core22/current/usr/share
       find . -type f,l -exec rm -f $CRAFT_PRIME/usr/share/{} \;
+
 
 apps:
   steam:
