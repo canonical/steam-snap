@@ -42,40 +42,17 @@ layout:
     bind: $SNAP/graphics/usr/share/libdrm
   /usr/share/drirc.d:
     bind: $SNAP/graphics/usr/share/drirc.d
-  /usr/share/glvnd/egl_vendor.d:
-    bind: $SNAP/graphics/usr/share/glvnd/egl_vendor.d
   /usr/lib/x86_64-linux-gnu/alsa-lib:
     bind: $SNAP/usr/lib/x86_64-linux-gnu/alsa-lib
   /usr/share/alsa:
     bind: $SNAP/usr/share/alsa
-  /usr/share/X11/xkb:
-    bind: $SNAP/usr/share/X11/xkb
-  /usr/lib/x86_64-linux-gnu/libvulkan_intel.so:
-    symlink: $SNAP/graphics/usr/lib/x86_64-linux-gnu/libvulkan_intel.so
-  /usr/lib/i386-linux-gnu/libvulkan_intel.so:
-    symlink: $SNAP/graphics/usr/lib/i386-linux-gnu/libvulkan_intel.so
-  /usr/lib/x86_64-linux-gnu/libvulkan_lvp.so:
-    symlink: $SNAP/graphics/usr/lib/x86_64-linux-gnu/libvulkan_lvp.so
-  /usr/lib/i386-linux-gnu/libvulkan_lvp.so:
-    symlink: $SNAP/graphics/usr/lib/i386-linux-gnu/libvulkan_lvp.so
-  /usr/lib/x86_64-linux-gnu/libvulkan_radeon.so:
-    symlink: $SNAP/graphics/usr/lib/x86_64-linux-gnu/libvulkan_radeon.so
-  /usr/lib/i386-linux-gnu/libvulkan_radeon.so:
-    symlink: $SNAP/graphics/usr/lib/i386-linux-gnu/libvulkan_radeon.so
-  /usr/lib/x86_64-linux-gnu/libxcb-dri3.so.0.0.0:
-    symlink: $SNAP/graphics/usr/lib/x86_64-linux-gnu/libxcb-dri3.so.0.0.0
-  /usr/lib/x86_64-linux-gnu/libxcb-dri3.so.0:
-    symlink: $SNAP/graphics/usr/lib/x86_64-linux-gnu/libxcb-dri3.so.0.0.0
-  /usr/lib/x86_64-linux-gnu/libxcb.so.1.1.0:
-    symlink: $SNAP/graphics/usr/lib/x86_64-linux-gnu/libxcb.so.1.1.0
-  /usr/lib/x86_64-linux-gnu/libxcb.so:
-    symlink: $SNAP/graphics/usr/lib/x86_64-linux-gnu/libxcb.so.1.1.0
-  /usr/lib/x86_64-linux-gnu/libxcb.so.1:
-    symlink: $SNAP/graphics/usr/lib/x86_64-linux-gnu/libxcb.so.1.1.0
   /etc/ld.so.cache:
     bind-file: $SNAP_DATA/etc/ld.so.cache
   /etc/fonts:
     bind: $SNAP/etc/fonts
+
+### !!! ATTENTION - Do not put environment variables like LD_LIBRARY_PATH or graphics ones in the snapcraft.yaml
+### under environment! This are handled in the launch script src/desktop-launch, and duplicating them in both makes things confusing.
 
 plugs:
   gaming-mesa:
@@ -109,10 +86,6 @@ hooks:
   configure:
     plugs:
       - opengl
-
-environment:
-  LD_LIBRARY_PATH: $SNAP/graphics/lib/i386-linux-gnu:$SNAP/graphics/usr/lib:$SNAP/usr/lib/i386-linux-gnu:$SNAP/lib/i386-linux-gnu:$SNAP/usr/lib/i386-linux-gnu/pulseaudio${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}
-  LIBGL_DRIVERS_PATH: $SNAP/graphics/usr/lib/i386-linux-gnu/dri:$SNAP/graphics/usr/lib/x86_64-linux-gnu/dri:${LIBGL_DRIVERS_PATH:+:$LIBGL_DRIVERS_PATH}
 
 parts:
   launcher:
