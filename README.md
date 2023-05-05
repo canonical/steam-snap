@@ -3,8 +3,6 @@
 This is a snap of Valve's [Steam client][1]. It is intended to run on any system that supports snapd, providing a consistent environment to
 run the games separate from the underlying host operating system.
 
-*Currently in beta.*
-
 ## Building locally
 
 To build this snap locally, you need [Snapcraft][2].  The project can
