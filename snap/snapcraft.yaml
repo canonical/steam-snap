@@ -42,14 +42,8 @@ layout:
     bind: $SNAP/graphics/usr/share/libdrm
   /usr/share/drirc.d:
     bind: $SNAP/graphics/usr/share/drirc.d
-  /usr/lib/x86_64-linux-gnu/alsa-lib:
-    bind: $SNAP/usr/lib/x86_64-linux-gnu/alsa-lib
-  /usr/share/alsa:
-    bind: $SNAP/usr/share/alsa
   /etc/ld.so.cache:
     bind-file: $SNAP_DATA/etc/ld.so.cache
-  /etc/fonts:
-    bind: $SNAP/etc/fonts
 
 ### !!! ATTENTION - Do not put environment variables like LD_LIBRARY_PATH or graphics ones in the snapcraft.yaml
 ### under environment! This are handled in the launch script src/desktop-launch, and duplicating them in both makes things confusing.

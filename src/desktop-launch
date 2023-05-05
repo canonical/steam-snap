@@ -153,6 +153,10 @@ export XLOCALEDIR="$SNAP_DESKTOP_RUNTIME/usr/share/X11/locale"
 export XCURSOR_PATH="$SNAP_DESKTOP_RUNTIME/usr/share/icons"
 prepend_dir XCURSOR_PATH "$SNAP/share/icons"
 
+### Fonts
+
+export FONTCONFIG_PATH="$SNAP/etc/fonts"
+
 #### Setting up graphics content snap paths
 
 GRAPHICS_CORE_LIB="$SNAP_DESKTOP_RUNTIME/graphics/usr/lib"
