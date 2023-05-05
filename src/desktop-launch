@@ -184,14 +184,6 @@ append_dir __EGL_VENDOR_LIBRARY_DIRS "$GRAPHICS_CORE_SHARE/glvnd/egl_vendor.d"
 append_dir LIBVA_DRIVERS_PATH "$GRAPHICS_CORE_LIB/i386-linux-gnu/dri"
 append_dir LIBVA_DRIVERS_PATH "$GRAPHICS_CORE_LIB/x86_64-linux-gnu/dri"
 
-# Set where the VDPAU drivers are located
-export VDPAU_DRIVER_PATH="$GRAPHICS_CORE_LIB/i386-linux-gnu/vdpau/"
-if [ -e "/var/lib/snapd/lib/gl/vdpau/libvdpau_nvidia.so" ]; then
-  export VDPAU_DRIVER_PATH="/var/lib/snapd/lib/gl/vdpau"
-  # Prevent picking VA-API (Intel/AMD) over NVIDIA VDPAU; on PRIME systems for example
-  unset LIBVA_DRIVERS_PATH
-fi
-
 # Export Vulkan ICD filename paths
 export VK_ICD_FILENAMES="/var/lib/snapd/lib/vulkan/icd.d/nvidia_icd.json:$GRAPHICS_CORE_SHARE/vulkan/icd.d/radeon_icd.x86_64.json:$GRAPHICS_CORE_SHARE/vulkan/icd.d/radeon_icd.i686.json:$GRAPHICS_CORE_SHARE/vulkan/icd.d/intel_icd.x86_64.json:$GRAPHICS_CORE_SHARE/vulkan/icd.d/intel_icd.i686.json"
 
