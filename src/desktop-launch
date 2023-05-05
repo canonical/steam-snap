@@ -184,8 +184,18 @@ append_dir __EGL_VENDOR_LIBRARY_DIRS "$GRAPHICS_CORE_SHARE/glvnd/egl_vendor.d"
 append_dir LIBVA_DRIVERS_PATH "$GRAPHICS_CORE_LIB/i386-linux-gnu/dri"
 append_dir LIBVA_DRIVERS_PATH "$GRAPHICS_CORE_LIB/x86_64-linux-gnu/dri"
 
+### Fix for Vulkan ICD paths being hardcoded under root
+
+VULKAN_OVERRIDES=$SNAP_USER_COMMON/.vulkan/icd.d
+mkdir -p $VULKAN_OVERRIDES
+
+ICDs=$GRAPHICS_CORE_SHARE/vulkan/icd.d/; 
+for f in $(ls $ICDs); do 
+  cat "$ICDs/$f" | jq '.ICD.library_path=$prefix+.ICD.library_path' --arg prefix "$SNAP/graphics" > "$VULKAN_OVERRIDES/$f"
+done
+
 # Export Vulkan ICD filename paths
-export VK_ICD_FILENAMES="/var/lib/snapd/lib/vulkan/icd.d/nvidia_icd.json:$GRAPHICS_CORE_SHARE/vulkan/icd.d/radeon_icd.x86_64.json:$GRAPHICS_CORE_SHARE/vulkan/icd.d/radeon_icd.i686.json:$GRAPHICS_CORE_SHARE/vulkan/icd.d/intel_icd.x86_64.json:$GRAPHICS_CORE_SHARE/vulkan/icd.d/intel_icd.i686.json"
+export VK_ICD_FILENAMES="/var/lib/snapd/lib/vulkan/icd.d/nvidia_icd.json:$VULKAN_OVERRIDES/radeon_icd.x86_64.json:$VULKAN_OVERRIDES/radeon_icd.i686.json:$VULKAN_OVERRIDES/intel_icd.x86_64.json:$VULKAN_OVERRIDES/intel_icd.i686.json"
 
 # Workaround in snapd for proprietary nVidia drivers mounts the drivers in
 # /var/lib/snapd/lib/gl that needs to be in LD_LIBRARY_PATH
