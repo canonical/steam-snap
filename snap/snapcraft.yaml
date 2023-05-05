@@ -33,10 +33,6 @@ package-repositories:
     key-id: BA1816EF8E75005FCF5E27A1F24AEA9FB05498B7
 
 layout:
-  /usr/lib/steam:
-    bind: $SNAP/usr/lib/steam
-  /usr/share/zenity:
-    bind: $SNAP/usr/share/zenity
   # https://discourse.ubuntu.com/t/the-graphics-core20-snap-interface/23000
   /usr/share/libdrm:
     bind: $SNAP/graphics/usr/share/libdrm
