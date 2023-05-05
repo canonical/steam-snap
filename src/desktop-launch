@@ -156,6 +156,7 @@ prepend_dir XCURSOR_PATH "$SNAP/share/icons"
 #### Setting up graphics content snap paths
 
 GRAPHICS_CORE_LIB="$SNAP_DESKTOP_RUNTIME/graphics/usr/lib"
+GRAPHICS_CORE_SHARE="$SNAP_DESKTOP_RUNTIME/graphics/usr/share"
 
 # Mesa Libs for OpenGL support
 append_dir LD_LIBRARY_PATH "$GRAPHICS_CORE_LIB/i386-linux-gnu/mesa"
@@ -165,13 +166,16 @@ append_dir LD_LIBRARY_PATH "$GRAPHICS_CORE_LIB/x86_64-linux-gnu/mesa-egl"
 append_dir LD_LIBRARY_PATH "$GRAPHICS_CORE_LIB/i386-linux-gnu"
 append_dir LD_LIBRARY_PATH "$GRAPHICS_CORE_LIB/x86_64-linux-gnu"
 
+# Ensure nvidia driver libs are loaded
+prepend_dir LD_LIBRARY_PATH "/var/lib/snapd/lib/gl/"
+
 # Tell libGL and libva where to find the drivers
 export LIBGL_DRIVERS_PATH="$GRAPHICS_CORE_LIB/i386-linux-gnu/dri"
 append_dir LIBGL_DRIVERS_PATH "$GRAPHICS_CORE_LIB/x86_64-linux-gnu/dri"
 
 # EGL vendor files on glvnd enabled systems
 prepend_dir __EGL_VENDOR_LIBRARY_DIRS "/var/lib/snapd/lib/glvnd/egl_vendor.d"
-append_dir __EGL_VENDOR_LIBRARY_DIRS "$SNAP_DESKTOP_RUNTIME/graphics/usr/share/glvnd/egl_vendor.d"
+append_dir __EGL_VENDOR_LIBRARY_DIRS "$GRAPHICS_CORE_SHARE/glvnd/egl_vendor.d"
 
 append_dir LIBVA_DRIVERS_PATH "$GRAPHICS_CORE_LIB/i386-linux-gnu/dri"
 append_dir LIBVA_DRIVERS_PATH "$GRAPHICS_CORE_LIB/x86_64-linux-gnu/dri"
@@ -185,7 +189,7 @@ if [ -e "/var/lib/snapd/lib/gl/vdpau/libvdpau_nvidia.so" ]; then
 fi
 
 # Export Vulkan ICD filename paths
-export VK_ICD_FILENAMES="/var/lib/snapd/lib/vulkan/icd.d/nvidia_icd.json:$SNAP/graphics/usr/share/vulkan/icd.d/radeon_icd.x86_64.json:$SNAP/graphics/usr/share/vulkan/icd.d/radeon_icd.i686.json:$SNAP/graphics/usr/share/vulkan/icd.d/intel_icd.x86_64.json:$SNAP/graphics/usr/share/vulkan/icd.d/intel_icd.i686.json"
+export VK_ICD_FILENAMES="/var/lib/snapd/lib/vulkan/icd.d/nvidia_icd.json:$GRAPHICS_CORE_SHARE/vulkan/icd.d/radeon_icd.x86_64.json:$GRAPHICS_CORE_SHARE/vulkan/icd.d/radeon_icd.i686.json:$GRAPHICS_CORE_SHARE/vulkan/icd.d/intel_icd.x86_64.json:$GRAPHICS_CORE_SHARE/vulkan/icd.d/intel_icd.i686.json"
 
 # Workaround in snapd for proprietary nVidia drivers mounts the drivers in
 # /var/lib/snapd/lib/gl that needs to be in LD_LIBRARY_PATH
@@ -193,6 +197,12 @@ export VK_ICD_FILENAMES="/var/lib/snapd/lib/vulkan/icd.d/nvidia_icd.json:$SNAP/g
 # Ref.: https://bugs.launchpad.net/snappy/+bug/1588192
 append_dir LD_LIBRARY_PATH "/var/lib/snapd/lib/gl"
 append_dir LD_LIBRARY_PATH "/var/lib/snapd/lib/gl/vdpau"
+
+
+### Audio stuff
+
+append_dir LD_LIBRARY_PATH "$SNAP/usr/lib/x86_64-linux-gnu/alsa-lib"
+append_dir LD_LIBRARY_PATH "$SNAP/usr/share/alsa"
 
 # Unity7 export (workaround for https://launchpad.net/bugs/1638405)
 append_dir LD_LIBRARY_PATH "$SNAP_DESKTOP_RUNTIME/usr/lib/i386-linux-gnu/libunity"
