@@ -188,7 +188,7 @@ parts:
     after: [ninja]
     plugin: nil
     source: https://github.com/mesonbuild/meson.git
-    source-tag: "0.62.2"
+    source-tag: "1.0.1"
     override-build: |
       python3 -m pip install .
       mkdir -p $CRAFT_PART_INSTALL/usr/lib/python3/dist-packages
@@ -201,6 +201,51 @@ parts:
       - python3-pip
     prime:
       - -*
+
+  mangohud:
+    after: [meson-deps]
+    source: https://github.com/flightlessmango/MangoHud.git
+    source-tag: "v0.6.9-1"
+    plugin: meson
+    organize:
+      snap/steam/current/usr: usr
+    build-environment:
+      - CC: gcc -m32
+      - CXX: g++ -m32
+      - PKG_CONFIG_PATH: /usr/lib/i386-linux-gnu/pkgconfig:/usr/lib/x86_64-linux-gnu/pkgconfig:/usr/lib/pkgconfig
+    meson-parameters:
+      - --prefix=/usr
+      - --libdir=lib/i386-linux-gnu
+      - -Dappend_libdir_mangohud=false
+    build-packages:
+      - gcc
+      - gcc-multilib
+      - g++
+      - g++-multilib
+      - glslang-dev
+      - glslang-tools
+      - libdbus-1-dev
+      - libgl-dev
+      - libglvnd-dev
+      - libx11-dev
+      - libxnvctrl-dev
+      - mesa-common-dev
+      - python3-mako
+
+  mangohud64:
+    after: [meson-deps, mangohud]
+    source: https://github.com/flightlessmango/MangoHud.git
+    source-tag: "v0.6.9-1"
+    plugin: meson
+    organize:
+      snap/steam/current/usr: usr
+    meson-parameters:
+      - --prefix=/usr
+      - -Dappend_libdir_mangohud=false
+    stage:
+      - -usr/bin/mangohud
+      - -usr/share/vulkan/implicit_layer.d/MangoHud.json
+      - -usr/share/vulkan/implicit_layer.d/libMangoApp.json
 
   gamemode:
     after: [meson-deps]
@@ -340,6 +385,7 @@ apps:
       TMPDIR: $XDG_RUNTIME_DIR
       ALWAYS_USE_PULSEAUDIO: 1
       DISABLE_WAYLAND: 1
+      PKG_CONFIG_PATH: $SNAP/usr/lib/i386-linux-gnu/pkgconfig:$SNAP/usr/lib/x86_64-linux-gnu/pkgconfig:$SNAP/usr/lib/pkgconfig
     plugs:
       - shmem
       - desktop
