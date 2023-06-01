@@ -40,6 +40,9 @@ layout:
     bind: $SNAP/graphics/usr/share/drirc.d
   /etc/ld.so.cache:
     bind-file: $SNAP_DATA/etc/ld.so.cache
+  # Needed for a first install, obnoxiously hard to work around
+  /usr/lib/steam:
+    bind: $SNAP/usr/lib/steam
 
 ### !!! ATTENTION - Do not put environment variables like LD_LIBRARY_PATH or graphics ones in the snapcraft.yaml
 ### under environment! This are handled in the launch script src/desktop-launch, and duplicating them in both makes things confusing.
@@ -289,7 +292,6 @@ parts:
       find . -type f,l -exec rm -f $CRAFT_PRIME/usr/lib/{} \;
       cd /snap/gaming-graphics-core22/current/usr/share
       find . -type f,l -exec rm -f $CRAFT_PRIME/usr/share/{} \;
-
 
 apps:
   steam:
