@@ -43,6 +43,8 @@ layout:
   # Needed for a first install, obnoxiously hard to work around
   /usr/lib/steam:
     bind: $SNAP/usr/lib/steam
+  /usr/share/zenity:
+    bind: $SNAP/usr/share/zenity
 
 ### !!! ATTENTION - Do not put environment variables like LD_LIBRARY_PATH or graphics ones in the snapcraft.yaml
 ### under environment! This are handled in the launch script src/desktop-launch, and duplicating them in both makes things confusing.
