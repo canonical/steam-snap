@@ -1,4 +1,13 @@
 #!/bin/bash
 
-vulkaninfo --json 2>/dev/null | jq .VkPhysicalDeviceProperties 2>&1> /dev/null
-exit $?
+set -e
+
+# To properly get an exit status from jq we need to save to a file first
+mkdir -p $SNAP_USER_COMMON
+vulkaninfo --json -o $SNAP_USER_COMMON/vkinfodump.json
+# Find if any level has some physical device property info
+jq -e 'any(paths; .[-1] == "VkPhysicalDeviceProperties")' "$SNAP_USER_COMMON/vkinfodump.json" 2>&1> /dev/null
+result=$?
+rm $SNAP_USER_COMMON/vkinfodump.json
+
+exit $result
