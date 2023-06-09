@@ -399,6 +399,7 @@ apps:
       - system-observe
       - joystick
       - network
+      - network-bind
       - opengl
       - audio-playback
       - audio-record
