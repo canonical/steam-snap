@@ -38,6 +38,10 @@ layout:
     bind: $SNAP/graphics/usr/share/libdrm
   /usr/share/drirc.d:
     bind: $SNAP/graphics/usr/share/drirc.d
+  /usr/share/alsa:
+    bind: $SNAP/usr/share/alsa
+  /usr/share/X11/xkb:
+    bind: $SNAP/usr/share/X11/xkb
   /etc/ld.so.cache:
     bind-file: $SNAP_DATA/etc/ld.so.cache
   # Needed for a first install, obnoxiously hard to work around
