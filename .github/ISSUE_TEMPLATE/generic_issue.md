@@ -1,5 +1,5 @@
 ---
-name: Generic issue
+name: Generic Issue
 about: For issues that are not bugs or features
 title: ''
 labels: []
