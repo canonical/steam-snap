@@ -120,13 +120,7 @@ parts:
     source: ./src
     override-build: |
       mkdir -p $CRAFT_PART_INSTALL/bin
-      cp steam-snap.sh $CRAFT_PART_INSTALL/bin/
-      cp desktop-launch $CRAFT_PART_INSTALL/bin/
-      cp steamreport $CRAFT_PART_INSTALL/bin/
-      cp vulkaninfo $CRAFT_PART_INSTALL/bin/
-      cp vkcube $CRAFT_PART_INSTALL/bin/
-      cp glxinfo $CRAFT_PART_INSTALL/bin/
-      cp glxgears $CRAFT_PART_INSTALL/bin/
+      cp * $CRAFT_PART_INSTALL/bin/
 
   alsa-mixin:
     plugin: dump
@@ -452,6 +446,13 @@ apps:
   test:
     command-chain: [bin/desktop-launch]
     command: tests/run.sh
+    plugs:
+      - opengl
+      - x11
+      - desktop
+  nvidia32:
+    command-chain: [bin/desktop-launch]
+    command: bin/nvidia32
     plugs:
       - opengl
       - x11
