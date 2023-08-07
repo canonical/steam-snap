@@ -1,15 +1,11 @@
 #!/bin/bash
 
-# opengl_version=$(glxinfo -B | grep "OpenGL version string: " | sed "s/OpenGL version string: //")
-# echo "Found OpenGL version: $opengl_version"
-
 nvidia_version=$(modinfo /usr/lib/modules/$(uname -r)/kernel/nvidia*/nvidia.ko 2> /dev/null | grep -m 1 "^version:" | sed "s/version:\s*//")
 if [[ ! $nvidia_version ]]; then
     nvidia_version=$(modinfo /usr/lib/modules/$(uname -r)/updates/dkms/nvidia.ko 2> /dev/null | grep -m 1 "^version:" | sed "s/version:\s*//")
 fi
 
 if [[ $nvidia_version ]]; then
-    #nvidia_version=$(echo ${opengl_version,,} | sed 's/.*nvidia \(.*\)/\1/')
     nvidia_version_major=$(echo $nvidia_version | sed "s/\..*//")
     echo "Found NVIDIA version: $nvidia_version"
 
