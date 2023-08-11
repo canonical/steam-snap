@@ -1,27 +1,76 @@
-#!/bin/bash
+#!/usr/bin/python3
 
-nvidia_version=$(modinfo /usr/lib/modules/$(uname -r)/kernel/nvidia*/nvidia.ko 2> /dev/null | grep -m 1 "^version:" | sed "s/version:\s*//")
-if [[ ! $nvidia_version ]]; then
-    nvidia_version=$(modinfo /usr/lib/modules/$(uname -r)/updates/dkms/nvidia.ko 2> /dev/null | grep -m 1 "^version:" | sed "s/version:\s*//")
-fi
+import gi
+gi.require_version("Gtk", "3.0")
+from gi.repository import Gtk
+import os
 
-if [[ $nvidia_version ]]; then
-    nvidia_version_major=$(echo $nvidia_version | sed "s/\..*//")
-    echo "Found NVIDIA version: $nvidia_version"
-
-    if [[ -f "/var/lib/snapd/hostfs/usr/lib/x86_64-linux-gnu/libnvidia-glcore.so.$nvidia_version" ]]\
-            && [[ ! -f "/var/lib/snapd/hostfs/usr/lib/i386-linux-gnu/libnvidia-glcore.so.$nvidia_version" ]]; then
-        echo "NVIDIA 32-bit libraries not found"
-        title="32-bit NVIDIA libraries not found"
-        text="<b>32-bit NVIDIA driver files were not found on your host system.</b>
+TITLE = "NVIDIA 32-bit Not Found"
+TEXT = """<b>32-bit NVIDIA driver files were not found on your host system.</b>
 It is recommended that you install them for the best experience.
 
-See <a href='https://github.com/canonical/steam-snap/wiki/FAQ#32-bit-driver'>https://github.com/canonical/steam-snap/wiki/FAQ#32-bit-driver</a> for more info.
+See <a href="https://github.com/canonical/steam-snap/wiki/FAQ#32-bit-driver">https://github.com/canonical/steam-snap/wiki/FAQ#32-bit-driver</a> for more information.
 
-To install, run:<tt>
-    sudo dpkg --add-architecture i386
+To install, run:
+<tt>    sudo dpkg --add-architecture i386
     sudo apt update
-    sudo apt install libnvidia-gl-$nvidia_version_major:i386</tt>"
-        yad --title "$title" --text "$text" --button gtk-ok:0 --center --on-top --selectable-labels
-    fi
-fi
+    sudo apt install libnvidia-gl-{}:i386</tt>
+"""
+
+def nvidia_version():
+    """Try to find NVIDIA driver version from modinfo.
+    """
+    nvidia_version = os.popen(
+        "modinfo /usr/lib/modules/$(uname -r)/kernel/nvidia*/nvidia.ko 2> /dev/null"
+        " | grep -m 1 '^version:'"
+        " | sed 's/version:\s*//'"
+        ).read().splitlines()[0]
+    if not nvidia_version:
+        nvidia_version = os.popen(
+            "modinfo /usr/lib/modules/$(uname -r)/updates/dkms/nvidia.ko 2> /dev/null"
+            " | grep -m 1 '^version:'"
+            " | sed 's/version:\s*//'"
+        ).read().splitlines()[0]
+    nvidia_version_major = nvidia_version.split(".")[0]
+    return (nvidia_version, nvidia_version_major)
+
+
+def nvidia_missing():
+    """Returns whether NVIDIA 32 is missing or not.
+    """
+    version = nvidia_version()[0]
+    if not version:
+        return False
+
+    print(f"Found NVIDIA version: {version}")
+    return os.path.exists(f"/var/lib/snapd/hostfs/usr/lib/x86_64-linux-gnu/libnvidia-glcore.so.{version}")\
+        and not os.path.exists(f"/var/lib/snapd/hostfs/usr/lib/i386-linux-gnu/libnvidia-glcore.so.{version}")
+
+
+class NvidiaWindow(Gtk.Window):
+    def __init__(self):
+        super().__init__(title=TITLE)
+        self.set_resizable(False)
+        self.set_border_width(10)
+        self.set_position(Gtk.WindowPosition.CENTER)
+
+        self.vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
+        self.vbox.set_spacing(10)
+        self.add(self.vbox)
+
+        self.label = Gtk.Label()
+        self.label.set_markup(TEXT.format(nvidia_version()[1]))
+        self.label.set_selectable(True)
+        self.vbox.pack_start(self.label, True, True, 0)
+
+        self.btn = Gtk.Button(label="Ok")
+        self.btn.connect("clicked", lambda x: self.close())
+        self.vbox.pack_start(self.btn, True, True, 0)
+
+
+if nvidia_missing():
+    win = NvidiaWindow()
+    win.connect("destroy", Gtk.main_quit)
+    win.show_all()
+    win.label.select_region(0, 0) # the label starts selected, so unselect it
+    Gtk.main()
