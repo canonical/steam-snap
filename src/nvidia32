@@ -11,11 +11,10 @@ It is recommended that you install them for the best experience.
 
 See <a href="https://github.com/canonical/steam-snap/wiki/FAQ#32-bit-driver">https://github.com/canonical/steam-snap/wiki/FAQ#32-bit-driver</a> for more information.
 
-To install, run:
-<tt>    sudo dpkg --add-architecture i386
-    sudo apt update
-    sudo apt install libnvidia-gl-{}:i386</tt>
-"""
+To install, run:"""
+COMMAND = """sudo dpkg --add-architecture i386
+sudo apt update
+sudo apt install libnvidia-gl-{}:i386"""
 
 def nvidia_version():
     """Try to find NVIDIA driver version from modinfo.
@@ -24,13 +23,15 @@ def nvidia_version():
         "modinfo /usr/lib/modules/$(uname -r)/kernel/nvidia*/nvidia.ko 2> /dev/null"
         " | grep -m 1 '^version:'"
         " | sed 's/version:\s*//'"
-        ).read().splitlines()[0]
+        ).read().splitlines()[0].strip()
     if not nvidia_version:
         nvidia_version = os.popen(
             "modinfo /usr/lib/modules/$(uname -r)/updates/dkms/nvidia.ko 2> /dev/null"
             " | grep -m 1 '^version:'"
             " | sed 's/version:\s*//'"
-        ).read().splitlines()[0]
+        ).read().splitlines()[0].strip()
+    if not nvidia_version:
+        return ()
     nvidia_version_major = nvidia_version.split(".")[0]
     return (nvidia_version, nvidia_version_major)
 
@@ -38,13 +39,13 @@ def nvidia_version():
 def nvidia_missing():
     """Returns whether NVIDIA 32 is missing or not.
     """
-    version = nvidia_version()[0]
+    version = nvidia_version()
     if not version:
         return False
 
-    print(f"Found NVIDIA version: {version}")
-    return os.path.exists(f"/var/lib/snapd/hostfs/usr/lib/x86_64-linux-gnu/libnvidia-glcore.so.{version}")\
-        and not os.path.exists(f"/var/lib/snapd/hostfs/usr/lib/i386-linux-gnu/libnvidia-glcore.so.{version}")
+    print(f"Found NVIDIA version: {version[0]}")
+    return os.path.exists(f"/var/lib/snapd/hostfs/usr/lib/x86_64-linux-gnu/libnvidia-glcore.so.{version[0]}")\
+        and not os.path.exists(f"/var/lib/snapd/hostfs/usr/lib/i386-linux-gnu/libnvidia-glcore.so.{version[0]}")
 
 
 class NvidiaWindow(Gtk.Window):
@@ -59,9 +60,15 @@ class NvidiaWindow(Gtk.Window):
         self.add(self.vbox)
 
         self.label = Gtk.Label()
-        self.label.set_markup(TEXT.format(nvidia_version()[1]))
-        self.label.set_selectable(True)
+        self.label.set_markup(TEXT)
         self.vbox.pack_start(self.label, True, True, 0)
+
+        textview = Gtk.TextView()
+        textview.set_editable(False)
+        textview.set_monospace(True)
+        textbuffer = textview.get_buffer()
+        textbuffer.set_text(COMMAND.format(nvidia_version()[1]))
+        self.vbox.pack_start(textview, True, True, 0)
 
         self.btn = Gtk.Button(label="Ok")
         self.btn.connect("clicked", lambda x: self.close())
@@ -72,5 +79,4 @@ if nvidia_missing():
     win = NvidiaWindow()
     win.connect("destroy", Gtk.main_quit)
     win.show_all()
-    win.label.select_region(0, 0) # the label starts selected, so unselect it
     Gtk.main()
