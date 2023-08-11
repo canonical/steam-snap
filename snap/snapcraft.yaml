@@ -121,6 +121,9 @@ parts:
     override-build: |
       mkdir -p $CRAFT_PART_INSTALL/bin
       cp * $CRAFT_PART_INSTALL/bin/
+    stage-packages:
+      - python3-gi
+      - gir1.2-gtk-3.0
 
   alsa-mixin:
     plugin: dump
@@ -380,6 +383,8 @@ apps:
       ALWAYS_USE_PULSEAUDIO: 1
       DISABLE_WAYLAND: 1
       PKG_CONFIG_PATH: $SNAP/usr/lib/i386-linux-gnu/pkgconfig:$SNAP/usr/lib/x86_64-linux-gnu/pkgconfig:$SNAP/usr/lib/pkgconfig
+      PYTHONPATH: $SNAP/usr/lib/python3/dist-packages
+      GI_TYPELIB_PATH: $SNAP/usr/lib/x86_64-linux-gnu/girepository-1.0
     plugs:
       - shmem
       - desktop
