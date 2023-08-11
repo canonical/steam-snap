@@ -50,10 +50,13 @@ def nvidia_missing():
 
 class NvidiaWindow(Gtk.Window):
     def __init__(self):
-        super().__init__(title=TITLE)
+        super().__init__()
         self.set_resizable(False)
         self.set_border_width(10)
         self.set_position(Gtk.WindowPosition.CENTER)
+
+        header = Gtk.HeaderBar(title=TITLE)
+        self.set_titlebar(header)
 
         self.vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         self.vbox.set_spacing(10)
