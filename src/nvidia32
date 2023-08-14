@@ -4,6 +4,7 @@ import gi
 gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk
 import os
+import argparse
 
 TITLE = "NVIDIA 32-bit Not Found"
 TEXT = """<b>32-bit NVIDIA driver files were not found on your host system.</b>
@@ -15,6 +16,19 @@ To install, run:"""
 COMMAND = """sudo dpkg --add-architecture i386
 sudo apt update
 sudo apt install libnvidia-gl-{}:i386"""
+
+DO_NOT_SHOW_PATH = os.path.expandvars("$SNAP_USER_COMMON/.nvidia32")
+
+def do_not_show_file(do_not_show: bool):
+    """Ok button press.
+
+    `do_not_show`: whether the Do not show again checkbox is checked or not
+    """
+    if do_not_show:
+        open(DO_NOT_SHOW_PATH, "a").close()
+    elif os.path.exists(DO_NOT_SHOW_PATH):
+        os.remove(DO_NOT_SHOW_PATH)
+
 
 def nvidia_version():
     """Try to find NVIDIA driver version from modinfo.
@@ -45,8 +59,10 @@ def nvidia_missing():
         return False
 
     print(f"Found NVIDIA version: {version[0]}")
-    return os.path.exists(f"/var/lib/snapd/hostfs/usr/lib/x86_64-linux-gnu/libnvidia-glcore.so.{version[0]}")\
+    needs_32 = os.path.exists(f"/var/lib/snapd/hostfs/usr/lib/x86_64-linux-gnu/libnvidia-glcore.so.{version[0]}")\
         and not os.path.exists(f"/var/lib/snapd/hostfs/usr/lib/i386-linux-gnu/libnvidia-glcore.so.{version[0]}")
+    print(f"Need NVIDIA 32-bit: {needs_32}")
+    return needs_32
 
 
 class NvidiaWindow(Gtk.Window):
@@ -60,28 +76,60 @@ class NvidiaWindow(Gtk.Window):
         header = Gtk.HeaderBar(title=TITLE)
         self.set_titlebar(header)
 
-        self.vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
-        self.vbox.set_spacing(10)
-        self.add(self.vbox)
+        self.grid = Gtk.Grid()
+        self.grid.set_row_spacing(10)
+        self.grid.set_column_spacing(10)
+        self.add(self.grid)
 
         self.label = Gtk.Label()
         self.label.set_markup(TEXT)
-        self.vbox.pack_start(self.label, True, True, 0)
+        self.grid.attach(self.label, 0, 0, 2, 1)
 
-        textview = Gtk.TextView()
-        textview.set_editable(False)
-        textview.set_monospace(True)
-        textbuffer = textview.get_buffer()
+        self.textview = Gtk.TextView()
+        self.textview.set_editable(False)
+        self.textview.set_monospace(True)
+        textbuffer = self.textview.get_buffer()
         textbuffer.set_text(COMMAND.format(nvidia_version()[1]))
-        self.vbox.pack_start(textview, True, True, 0)
+        self.grid.attach_next_to(self.textview, self.label, Gtk.PositionType.BOTTOM, 2, 1)
+
+        self.checkbox = Gtk.CheckButton()
+        self.checkbox.set_label("Do not show again")
+        self.checkbox.set_halign(Gtk.Align.END)
+        self.grid.attach_next_to(self.checkbox, self.textview, Gtk.PositionType.BOTTOM, 1, 1)
 
         self.btn = Gtk.Button(label="Ok")
-        self.btn.connect("clicked", lambda x: self.close())
-        self.vbox.pack_start(self.btn, True, True, 0)
+        self.btn.connect("clicked", lambda x: self.button_ok(self.checkbox.get_active()))
+        self.grid.attach_next_to(self.btn, self.checkbox, Gtk.PositionType.RIGHT, 1, 1)
 
 
-if nvidia_missing():
-    win = NvidiaWindow()
-    win.connect("destroy", Gtk.main_quit)
-    win.show_all()
-    Gtk.main()
+    def button_ok(self, toggled: bool):
+        do_not_show_file(toggled)
+        self.close()
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--reset",
+        help="Show the dialog again if you selected 'Do not show again'",
+        action="store_true"
+    )
+    parser.add_argument(
+        "--show",
+        help="Show the dialog regardless of conditions met",
+        action="store_true"
+    )
+    args = parser.parse_args()
+
+    if args.reset:
+        do_not_show_file(False)
+
+    if args.show or (nvidia_missing() and not os.path.exists(DO_NOT_SHOW_PATH)):
+        win = NvidiaWindow()
+        win.connect("destroy", Gtk.main_quit)
+        win.show_all()
+        Gtk.main()
+
+
+if __name__ == "__main__":
+    main()
