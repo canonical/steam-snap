@@ -19,19 +19,20 @@ sudo apt install libnvidia-gl-{}:i386"""
 def nvidia_version():
     """Try to find NVIDIA driver version from modinfo.
     """
-    nvidia_version = os.popen(
+    modinfo = os.popen(
+        "modinfo /usr/lib/modules/$(uname -r)/updates/dkms/nvidia.ko 2> /dev/null"
+        " | grep -m 1 '^version:'"
+        " | sed 's/version:\s*//'"
+    ).read().splitlines()
+    modinfo = modinfo or os.popen(
         "modinfo /usr/lib/modules/$(uname -r)/kernel/nvidia*/nvidia.ko 2> /dev/null"
         " | grep -m 1 '^version:'"
         " | sed 's/version:\s*//'"
-        ).read().splitlines()[0].strip()
-    if not nvidia_version:
-        nvidia_version = os.popen(
-            "modinfo /usr/lib/modules/$(uname -r)/updates/dkms/nvidia.ko 2> /dev/null"
-            " | grep -m 1 '^version:'"
-            " | sed 's/version:\s*//'"
-        ).read().splitlines()[0].strip()
-    if not nvidia_version:
+    ).read().splitlines()
+
+    if not modinfo:
         return ()
+    nvidia_version = modinfo[0].strip()
     nvidia_version_major = nvidia_version.split(".")[0]
     return (nvidia_version, nvidia_version_major)
 
