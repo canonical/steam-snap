@@ -2,7 +2,8 @@
 
 import gi
 gi.require_version("Gtk", "3.0")
-from gi.repository import Gtk
+gi.require_version("GdkPixbuf", "2.0")
+from gi.repository import Gtk, Gdk, GdkPixbuf
 import os
 import argparse
 
@@ -10,9 +11,7 @@ TITLE = "NVIDIA 32-bit Not Found"
 TEXT = """<b>32-bit NVIDIA driver files were not found on your host system.</b>
 It is recommended that you install them for the best experience.
 
-See <a href="https://github.com/canonical/steam-snap/wiki/FAQ#32-bit-driver">https://github.com/canonical/steam-snap/wiki/FAQ#32-bit-driver</a> for more information.
-
-To install, run:"""
+See <a href="https://github.com/canonical/steam-snap/wiki/FAQ#32-bit-driver">https://github.com/canonical/steam-snap/wiki/FAQ#32-bit-driver</a> for more information."""
 COMMAND = """sudo dpkg --add-architecture i386
 sudo apt update
 sudo apt install libnvidia-gl-{}:i386"""
@@ -32,6 +31,8 @@ def do_not_show_file(do_not_show: bool):
 
 def nvidia_version():
     """Try to find NVIDIA driver version from modinfo.
+
+    Returns a tuple of the full NVIDIA version triplet and NVIDIA major version.
     """
     modinfo = os.popen(
         "modinfo /usr/lib/modules/$(uname -r)/updates/dkms/nvidia.ko 2> /dev/null"
@@ -81,22 +82,43 @@ class NvidiaWindow(Gtk.Window):
         self.grid.set_column_spacing(10)
         self.add(self.grid)
 
+        # main text
         self.label = Gtk.Label()
         self.label.set_markup(TEXT)
         self.grid.attach(self.label, 0, 0, 2, 1)
 
+        # run prompt
+        self.run_label = Gtk.Label()
+        self.run_label.set_margin_top(20)
+        self.run_label.set_markup("To install, run:")
+        self.run_label.set_halign(Gtk.Align.START)
+        self.grid.attach_next_to(self.run_label, self.label, Gtk.PositionType.BOTTOM, 1, 1)
+
+        # copy button
+        self.copy_btn = Gtk.Button.new_from_icon_name("edit-copy-symbolic", Gtk.IconSize.MENU)
+        self.copy_btn.set_margin_top(20)
+        self.copy_btn.connect("clicked", lambda x: self.button_copy())
+        self.copy_btn.set_halign(Gtk.Align.END)
+        self.grid.attach_next_to(self.copy_btn, self.run_label, Gtk.PositionType.RIGHT, 1, 1)
+
+        # command text
         self.textview = Gtk.TextView()
         self.textview.set_editable(False)
         self.textview.set_monospace(True)
-        textbuffer = self.textview.get_buffer()
-        textbuffer.set_text(COMMAND.format(nvidia_version()[1]))
-        self.grid.attach_next_to(self.textview, self.label, Gtk.PositionType.BOTTOM, 2, 1)
+        self.textview.get_buffer().set_text(COMMAND.format(nvidia_version()[1]))
+        self.textview.set_top_margin(5)
+        self.textview.set_bottom_margin(5)
+        self.textview.set_right_margin(10)
+        self.textview.set_left_margin(10)
+        self.grid.attach_next_to(self.textview, self.run_label, Gtk.PositionType.BOTTOM, 2, 1)
 
+        # Do not show again button
         self.checkbox = Gtk.CheckButton()
         self.checkbox.set_label("Do not show again")
         self.checkbox.set_halign(Gtk.Align.END)
         self.grid.attach_next_to(self.checkbox, self.textview, Gtk.PositionType.BOTTOM, 1, 1)
 
+        # Ok button
         self.btn = Gtk.Button(label="Ok")
         self.btn.connect("clicked", lambda x: self.button_ok(self.checkbox.get_active()))
         self.grid.attach_next_to(self.btn, self.checkbox, Gtk.PositionType.RIGHT, 1, 1)
@@ -105,6 +127,11 @@ class NvidiaWindow(Gtk.Window):
     def button_ok(self, toggled: bool):
         do_not_show_file(toggled)
         self.close()
+
+
+    def button_copy(self):
+        clipboard = Gtk.Clipboard.get(Gdk.SELECTION_CLIPBOARD)
+        clipboard.set_text(COMMAND, -1)
 
 
 def main():
