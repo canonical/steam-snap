@@ -2,8 +2,7 @@
 
 import gi
 gi.require_version("Gtk", "3.0")
-gi.require_version("GdkPixbuf", "2.0")
-from gi.repository import Gtk, Gdk, GdkPixbuf
+from gi.repository import Gtk, Gdk
 import os
 import argparse
 
@@ -77,9 +76,10 @@ class NvidiaWindow(Gtk.Window):
         header = Gtk.HeaderBar(title=TITLE)
         self.set_titlebar(header)
 
-        self.grid = Gtk.Grid()
-        self.grid.set_row_spacing(10)
-        self.grid.set_column_spacing(10)
+        self.grid = Gtk.Grid(
+            row_spacing=10,
+            column_spacing=10
+        )
         self.add(self.grid)
 
         # main text
@@ -88,34 +88,40 @@ class NvidiaWindow(Gtk.Window):
         self.grid.attach(self.label, 0, 0, 2, 1)
 
         # run prompt
-        self.run_label = Gtk.Label()
-        self.run_label.set_margin_top(20)
+        self.run_label = Gtk.Label(
+            margin_top=20,
+            halign=Gtk.Align.START
+        )
         self.run_label.set_markup("To install, run:")
-        self.run_label.set_halign(Gtk.Align.START)
         self.grid.attach_next_to(self.run_label, self.label, Gtk.PositionType.BOTTOM, 1, 1)
 
         # copy button
         self.copy_btn = Gtk.Button.new_from_icon_name("edit-copy-symbolic", Gtk.IconSize.MENU)
         self.copy_btn.set_margin_top(20)
+        self.copy_btn.set_tooltip_text("Copy")
         self.copy_btn.connect("clicked", lambda x: self.button_copy())
         self.copy_btn.set_halign(Gtk.Align.END)
         self.grid.attach_next_to(self.copy_btn, self.run_label, Gtk.PositionType.RIGHT, 1, 1)
 
         # command text
-        self.textview = Gtk.TextView()
-        self.textview.set_editable(False)
-        self.textview.set_monospace(True)
+        self.textview = Gtk.TextView(
+            editable=False,
+            monospace=True,
+            top_margin=5,
+            bottom_margin=5,
+            right_margin=10,
+            left_margin=10
+        )
         self.textview.get_buffer().set_text(COMMAND.format(nvidia_version()[1]))
-        self.textview.set_top_margin(5)
-        self.textview.set_bottom_margin(5)
-        self.textview.set_right_margin(10)
-        self.textview.set_left_margin(10)
         self.grid.attach_next_to(self.textview, self.run_label, Gtk.PositionType.BOTTOM, 2, 1)
 
         # Do not show again button
-        self.checkbox = Gtk.CheckButton()
-        self.checkbox.set_label("Do not show again")
-        self.checkbox.set_halign(Gtk.Align.END)
+        self.checkbox = Gtk.CheckButton(
+            label="Do not show again",
+            halign=Gtk.Align.END,
+            tooltip_markup="This window can always be shown again by running "
+                "<tt>$SNAP/bin/nvidia32 --reset</tt> in the Steam Snap shell."
+        )
         self.grid.attach_next_to(self.checkbox, self.textview, Gtk.PositionType.BOTTOM, 1, 1)
 
         # Ok button
