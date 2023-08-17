@@ -415,6 +415,9 @@ apps:
   report:
     command-chain: [bin/desktop-launch]
     command: bin/steamreport
+    environment:
+      PYTHONPATH: $SNAP/usr/lib/python3/dist-packages
+      GI_TYPELIB_PATH: $SNAP/usr/lib/x86_64-linux-gnu/girepository-1.0
     plugs:
       - system-observe
       - hardware-observe

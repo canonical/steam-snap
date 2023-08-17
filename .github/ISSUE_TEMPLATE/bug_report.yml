@@ -60,24 +60,25 @@ body:
 - type: textarea
   attributes:
     label: Environment
+    id: environment
     description: |
       Output of `snap run steam.report --no-submit`. More info on this command [here](https://github.com/canonical/steam-snap/wiki/Troubleshooting#submitting-a-steam-report).
     placeholder: |
-      os_release: 
-          name:               
-          version:            
-      snap_info: 
-          steam_revision:     
-          snapd_revision:     
-      lspci: 
-          00:00.0:                       
-      glxinfo: 
-          gpu:                
-          gpu_version:        
-      lscpu: 
-          model_name:         
-      xdg_current_desktop:    
-      desktop_session:        
+      os_release:
+          name:
+          version:
+      snap_info:
+          steam_revision:
+          snapd_revision:
+      lspci:
+          00:00.0:
+      glxinfo:
+          gpu:
+          gpu_version:
+      lscpu:
+          model_name:
+      xdg_current_desktop:
+      desktop_session:
     render: yaml
   validations:
     required: true
