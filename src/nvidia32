@@ -104,6 +104,7 @@ class NvidiaWindow(Gtk.Window):
         self.grid.attach_next_to(self.copy_btn, self.run_label, Gtk.PositionType.RIGHT, 1, 1)
 
         # command text
+        self.nvidia_version = nvidia_version()
         self.textview = Gtk.TextView(
             editable=False,
             monospace=True,
@@ -112,7 +113,7 @@ class NvidiaWindow(Gtk.Window):
             right_margin=10,
             left_margin=10
         )
-        self.textview.get_buffer().set_text(COMMAND.format(nvidia_version()[1]))
+        self.textview.get_buffer().set_text(COMMAND.format(self.nvidia_version[1]))
         self.grid.attach_next_to(self.textview, self.run_label, Gtk.PositionType.BOTTOM, 2, 1)
 
         # Do not show again button
@@ -137,7 +138,7 @@ class NvidiaWindow(Gtk.Window):
 
     def button_copy(self):
         clipboard = Gtk.Clipboard.get(Gdk.SELECTION_CLIPBOARD)
-        clipboard.set_text(COMMAND, -1)
+        clipboard.set_text(COMMAND.format(self.nvidia_version[1]), -1)
 
 
 def main():
