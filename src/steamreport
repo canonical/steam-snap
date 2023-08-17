@@ -27,9 +27,10 @@ data = {}
 class SteamReportWindow(Gtk.Window):
     def __init__(self, args):
         super().__init__()
-        self.set_resizable(False)
+        self.set_resizable(True)
         self.set_border_width(10)
         self.set_position(Gtk.WindowPosition.CENTER)
+        self.set_default_size(-1, 450)
 
         grid = Gtk.Grid(
             row_spacing=10,
@@ -51,6 +52,8 @@ class SteamReportWindow(Gtk.Window):
         copy_button.set_halign(Gtk.Align.END)
         grid.attach_next_to(copy_button, label, Gtk.PositionType.RIGHT, 1, 1)
 
+        scrolled_window = Gtk.ScrolledWindow()
+        scrolled_window.set_vexpand(True)
         textview = Gtk.TextView(
             editable=False,
             monospace=True,
@@ -60,14 +63,15 @@ class SteamReportWindow(Gtk.Window):
             left_margin=10
         )
         textview.get_buffer().set_text(dict_to_string(gather_data(args)).strip())
-        grid.attach(textview, 0, 2, 6, 1)
+        scrolled_window.add(textview)
+        grid.attach(scrolled_window, 0, 2, 6, 1)
 
         issue_button = Gtk.Button(
             label="Open New Issue",
             tooltip_text="Opens a new Steam Snap issue to report a bug or problem"
         )
         issue_button.connect("clicked", lambda x: self.button_issue())
-        grid.attach_next_to(issue_button, textview, Gtk.PositionType.BOTTOM, 2, 1)
+        grid.attach_next_to(issue_button, scrolled_window, Gtk.PositionType.BOTTOM, 2, 1)
 
         report_button = Gtk.Button(
             label="Open New Game Report",
