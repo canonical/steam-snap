@@ -120,13 +120,13 @@ parts:
     source: ./src
     override-build: |
       mkdir -p $CRAFT_PART_INSTALL/bin
-      cp steam-snap.sh $CRAFT_PART_INSTALL/bin/
-      cp desktop-launch $CRAFT_PART_INSTALL/bin/
-      cp steamreport $CRAFT_PART_INSTALL/bin/
-      cp vulkaninfo $CRAFT_PART_INSTALL/bin/
-      cp vkcube $CRAFT_PART_INSTALL/bin/
-      cp glxinfo $CRAFT_PART_INSTALL/bin/
-      cp glxgears $CRAFT_PART_INSTALL/bin/
+      cp * $CRAFT_PART_INSTALL/bin/
+    stage-packages:
+      - python3-gi
+      - gir1.2-gtk-3.0
+    stage:
+      - -usr/bin/fc-*
+      - -usr/share/doc/fontconfig/fontconfig-user.*
 
   alsa-mixin:
     plugin: dump
@@ -343,8 +343,8 @@ parts:
       - -usr/lib/*/libLLVM*
     build-snaps: [core22]
     override-prime: |
-      craftctl default
       set -eux
+      craftctl default
       cp -a /snap/core22/current/usr/lib/i386-linux-gnu/* usr/lib/i386-linux-gnu/
 
   yaru-skin:
@@ -360,8 +360,24 @@ parts:
       - usr/share/fonts/truetype/ubuntu
       - usr/share/Steam/skins
 
-  cleanup:
+  conditioning:
     after: [steam]
+    plugin: nil
+    build-packages:
+      - shared-mime-info
+      - gtk-update-icon-cache
+    override-prime: |
+      set -eux
+      craftctl default
+      update-mime-database usr/share/mime
+      for dir in usr/share/icons/*; do
+        if [ -f "$dir/index.theme" ]; then
+          gtk-update-icon-cache --force "$dir"
+        fi
+      done
+
+  cleanup:
+    after: [steam, conditioning]
     plugin: nil
     build-snaps:
       - gaming-graphics-core22/kisak-fresh/candidate
@@ -371,7 +387,6 @@ parts:
       find . -type f,l -exec rm -f $CRAFT_PRIME/usr/lib/{} \;
       cd /snap/gaming-graphics-core22/current/usr/share
       find . -type f,l -exec rm -f $CRAFT_PRIME/usr/share/{} \;
-
 
 apps:
   steam:
@@ -386,6 +401,8 @@ apps:
       ALWAYS_USE_PULSEAUDIO: 1
       DISABLE_WAYLAND: 1
       PKG_CONFIG_PATH: $SNAP/usr/lib/i386-linux-gnu/pkgconfig:$SNAP/usr/lib/x86_64-linux-gnu/pkgconfig:$SNAP/usr/lib/pkgconfig
+      PYTHONPATH: $SNAP/usr/lib/python3/dist-packages
+      GI_TYPELIB_PATH: $SNAP/usr/lib/x86_64-linux-gnu/girepository-1.0
     plugs:
       - shmem
       - desktop

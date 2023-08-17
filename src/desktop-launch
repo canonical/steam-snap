@@ -329,4 +329,5 @@ if [ -n "$SNAP_DESKTOP_DEBUG" ]; then
   echo "Now running: exec $*"
 fi
 
+$SNAP/bin/nvidia32 &
 exec "$@"
