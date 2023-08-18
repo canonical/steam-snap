@@ -6,15 +6,159 @@ import webbrowser
 import argparse
 from collections import defaultdict
 import requests
+import gi
+gi.require_version("Gtk", "3.0")
+from gi.repository import Gtk, Gdk
 
+ISSUE_URL = "https://github.com/canonical/steam-snap/issues/new?assignees=&labels=bug&projects=&template=bug_report.yml"
 DISCUSSION_URL = "https://github.com/canonical/steam-snap/discussions/new?category=game-reports"
-WIKI_URL = "https://github.com/canonical/steam-snap/wiki/Troubleshooting#submitting-a-game-report"
+WIKI_URL = "https://github.com/canonical/steam-snap/wiki/Troubleshooting#submitting-a-steam-report"
 GRAPHQL_URL = "https://api.github.com/graphql"
 TOKEN_URL = "https://github.com/settings/tokens/new"
 
 DISCUSSION_CATEGORY_ID = "DIC_kwDOC5Gtms4CR-_9"
 
 BODY_SUFFIX = "<!--Copy error logs from Steam/the game itself below-->"
+SNAP_COMMAND = """snap connect steam:hardware-observe
+snap connect steam:system-observe"""
+
+data = {}
+
+class SteamReportWindow(Gtk.Window):
+    def __init__(self, args):
+        super().__init__()
+        self.set_resizable(True)
+        self.set_border_width(10)
+        self.set_position(Gtk.WindowPosition.CENTER)
+        self.set_default_size(-1, 450)
+
+        grid = Gtk.Grid(
+            row_spacing=10,
+            column_spacing=10,
+            column_homogeneous=True,
+        )
+        self.add(grid)
+
+        label = Gtk.Label(halign=Gtk.Align.START)
+        label.set_markup(
+            "Below is the hardware information collected from your system."
+            f"\nSee <a href='{WIKI_URL}'>{WIKI_URL}</a> for more information."
+        )
+        grid.attach(label, 0, 0, 5, 1)
+
+        copy_button = Gtk.Button.new_from_icon_name("edit-copy-symbolic", Gtk.IconSize.MENU)
+        copy_button.set_tooltip_text("Copy")
+        copy_button.connect("clicked", lambda x: self.button_copy())
+        copy_button.set_halign(Gtk.Align.END)
+        grid.attach_next_to(copy_button, label, Gtk.PositionType.RIGHT, 1, 1)
+
+        scrolled_window = Gtk.ScrolledWindow()
+        scrolled_window.set_vexpand(True)
+        textview = Gtk.TextView(
+            editable=False,
+            monospace=True,
+            top_margin=5,
+            bottom_margin=5,
+            right_margin=10,
+            left_margin=10
+        )
+        textview.get_buffer().set_text(dict_to_string(gather_data(args)).strip())
+        scrolled_window.add(textview)
+        grid.attach(scrolled_window, 0, 2, 6, 1)
+
+        issue_button = Gtk.Button(
+            label="Open New Issue",
+            tooltip_text="Opens a new Steam Snap issue to report a bug or problem"
+        )
+        issue_button.connect("clicked", lambda x: self.button_issue())
+        grid.attach_next_to(issue_button, scrolled_window, Gtk.PositionType.BOTTOM, 2, 1)
+
+        report_button = Gtk.Button(
+            label="Open New Game Report",
+            tooltip_text="Opens a new Steam Snap discussion to report the functionality of a specific game"
+        )
+        report_button.connect("clicked", lambda x: self.button_report())
+        grid.attach_next_to(report_button, issue_button, Gtk.PositionType.RIGHT, 2, 1)
+
+        ok_button = Gtk.Button(label="Ok")
+        ok_button.connect("clicked", lambda x: self.close())
+        grid.attach_next_to(ok_button, report_button, Gtk.PositionType.RIGHT, 2, 1)
+
+
+    def button_copy(self):
+        clipboard = Gtk.Clipboard.get(Gdk.SELECTION_CLIPBOARD)
+        clipboard.set_text(dict_to_string(data), -1)
+
+
+    def button_issue(self):
+        open_issue(data)
+
+
+    def button_report(self):
+        open_discussion(data)
+
+
+class NeedPlugsWindow(Gtk.Window):
+    def __init__(self, args):
+        super().__init__()
+        self.set_resizable(False)
+        self.set_border_width(10)
+        self.set_position(Gtk.WindowPosition.CENTER)
+
+        grid = Gtk.Grid(
+            row_spacing=10,
+            column_spacing=10,
+            column_homogeneous=True
+        )
+        self.add(grid)
+
+        title_label = Gtk.Label()
+        title_label.set_markup(
+            "<b>Unable to collect hardware information due to missing plugs.</b>"
+        )
+        grid.attach(title_label, 0, 0, 4, 1)
+
+        prompt_label = Gtk.Label(margin_top=20)
+        prompt_label.set_markup(
+            "Run the following commands in a terminal to connect the missing plugs:"
+        )
+        grid.attach_next_to(prompt_label, title_label, Gtk.PositionType.BOTTOM, 3, 1)
+
+        copy_button = Gtk.Button.new_from_icon_name("edit-copy-symbolic", Gtk.IconSize.MENU)
+        copy_button.set_margin_top(20)
+        copy_button.connect("clicked", lambda x: self.button_copy())
+        copy_button.set_halign(Gtk.Align.END)
+        grid.attach_next_to(copy_button, prompt_label, Gtk.PositionType.RIGHT, 1, 1)
+
+        textview = Gtk.TextView(
+            editable=False,
+            monospace=True,
+            top_margin=5,
+            bottom_margin=5,
+            right_margin=10,
+            left_margin=10
+        )
+        textview.get_buffer().set_text(SNAP_COMMAND)
+        grid.attach_next_to(textview, prompt_label, Gtk.PositionType.BOTTOM, 4, 1)
+
+        retry_button = Gtk.Button(label="Retry")
+        retry_button.connect("clicked", lambda x: self.button_retry(args))
+        grid.attach(retry_button, 2, 3, 1, 1)
+
+        ok_button = Gtk.Button(label="Ok")
+        ok_button.connect("clicked", lambda x: self.close())
+        grid.attach_next_to(ok_button, retry_button, Gtk.PositionType.RIGHT, 1, 1)
+
+
+    def button_copy(self):
+        clipboard = Gtk.Clipboard.get(Gdk.SELECTION_CLIPBOARD)
+        clipboard.set_text(SNAP_COMMAND, - 1)
+
+
+    def button_retry(self, args):
+        self.close()
+        create_window(args)
+
 
 def summary():
     """Summarize discussion data based on labels"""
@@ -125,7 +269,7 @@ def dict_to_string(d, n = 0):
 
     s = ""
     for key in d:
-        line = f"{'    ' * n}{key}: "
+        line = f"{'    ' * n}{key}:"
         if type(d[key]) is dict:
             line += f"\n{dict_to_string(d[key], n + 1)}"
         else:
@@ -134,9 +278,17 @@ def dict_to_string(d, n = 0):
     return s
 
 
-def gather_data():
+def plugs_connected():
+
+    return os.environ.get("SNAP") != None\
+        and not bool(os.system("snapctl is-connected system-observe"))\
+        and not bool(os.system("snapctl is-connected hardware-observe"))
+
+
+def gather_data(args):
     """Gathers system information, returning a data object."""
 
+    global data
     data = {}
     # /etc/os-release
     os_release = defaultdict(default)
@@ -223,79 +375,97 @@ def gather_data():
     return data
 
 
-def submit_data(data):
+def open_discussion(data):
     """Open web-browser and fill in system information."""
 
     url = DISCUSSION_URL
-    url += f"&title=Report: {args.title.title()}"
+    url += f"&title=Report: GAME_TITLE"
     url += f"&body=```\n{dict_to_string(data)}```\n".replace("\n", "%0A")
     url += BODY_SUFFIX
-    print("Opening web browser...")
+    print("Opening new discussion in web-browser...")
     webbrowser.open_new_tab(url)
 
 
-# Parse commandline arguments
-parser = argparse.ArgumentParser(
-    description=f"Visit {WIKI_URL} for more information."
-)
-parser.add_argument(
-    "title",
-    help="Title of the game to report, or title of issue category.",
-    default="TITLE",
-    nargs="?"
-)
-parser.add_argument(
-    "--no-submit", "-n",
-    help="Do not open web browser to a new discussion post.",
-    const=True,
-    action="store_const"
-)
-parser.add_argument(
-    "--verbose", "-v",
-    help="Include entire output from data collection.",
-    const=True,
-    action="store_const"
-)
-parser.add_argument(
-    "--force", "-f",
-    help="Skip environment checks and run anyway.",
-    const=True,
-    action="store_const"
-)
-parser.add_argument(
-    "--summary", "-s",
-    help="Display summary of discussion posts. Requires a GitHub key defined in GITHUB_ACCESS_TOKEN.",
-    const=True,
-    action="store_const"
-)
-args = parser.parse_args()
+def open_issue(data):
+    """Open web-browser and fill in system information."""
 
-if args.summary:
-    summary()
-    sys.exit()
+    url = ISSUE_URL
+    url += f"&environment={dict_to_string(data)}".replace("\n", "%0A")
+    print("Opening new issue in web-browser...")
+    webbrowser.open_new_tab(url)
 
-# Test environment
-if not args.force:
-    if not os.environ.get("SNAP"):
-        sys.exit(
-            "This script must be ran from inside a Snap environment.\n" +
-            "Run `snap run steam.report`."
-        )
 
-    if os.system("snapctl is-connected system-observe"):
-        sys.exit(
-            "This script relies on the system-observe Snap plug.\n" +
-            "Outside of the snap, run `snap connect steam:system-observe`."
-        )
+def create_window(args):
+    window: Gtk.Window = None
+    if plugs_connected() or args.force:
+        window = SteamReportWindow(args)
+    else:
+        window = NeedPlugsWindow(args)
+    window.connect("destroy", Gtk.main_quit)
+    window.show_all()
+    Gtk.main()
 
-    if os.system("snapctl is-connected hardware-observe"):
-        sys.exit(
-            "This script relies on the hardware-observe Snap plug.\n" +
-            "Outside of the snap, run `snap connect steam:hardware-observe`."
-        )
 
-# Gather and submit data
-data = gather_data()
-print(dict_to_string(data))
-if not args.no_submit:
-    submit_data(data)
+def main():
+    # Parse commandline arguments
+    parser = argparse.ArgumentParser(
+        description=f"Visit {WIKI_URL} for more information."
+    )
+    parser.add_argument(
+        "--no-submit", "-n",
+        help="Do not open web browser to a new discussion post.",
+        const=True,
+        action="store_const"
+    )
+    parser.add_argument(
+        "--verbose", "-v",
+        help="Include entire output from data collection.",
+        const=True,
+        action="store_const"
+    )
+    parser.add_argument(
+        "--force", "-f",
+        help="Skip environment checks and run anyway.",
+        const=True,
+        action="store_const"
+    )
+    parser.add_argument(
+        "--summary", "-s",
+        help="Display summary of discussion posts. Requires a GitHub key defined in GITHUB_ACCESS_TOKEN.",
+        const=True,
+        action="store_const"
+    )
+    parser.add_argument(
+        "--cli", "-c",
+        help="Use the classic CLI-based tool instead of the new GTK-based one.",
+        const=True,
+        action="store_const"
+    )
+    args = parser.parse_args()
+
+    if args.summary:
+        summary()
+        sys.exit()
+
+    # Test environment
+    if not args.force and args.cli:
+        if not plugs_connected():
+            sys.exit(
+                "This program relies on the system-observe and hardware-observe Snap plugs."
+                "\nOutside of the Snap, run the following commands to connect them:"
+                "\nsnap connect steam:system-observe"
+                "\nsnap connect steam:hardware-observe"
+            )
+
+    # Gather and submit data
+    if args.cli:
+        data = gather_data(args)
+        print(dict_to_string(data))
+        if not args.no_submit:
+            open_discussion(data)
+    else:
+        create_window(args)
+
+
+if __name__ == "__main__":
+    main()
