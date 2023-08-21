@@ -62,7 +62,7 @@ body:
     label: Environment
     id: environment
     description: |
-      Output of `snap run steam.report --no-submit`. More info on this command [here](https://github.com/canonical/steam-snap/wiki/Troubleshooting#submitting-a-steam-report).
+      Output of `snap run steam.report`. More info on this command [here](https://github.com/canonical/steam-snap/wiki/Troubleshooting#submitting-a-steam-report).
     placeholder: |
       os_release:
           name:
