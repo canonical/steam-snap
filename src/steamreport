@@ -126,6 +126,7 @@ class NeedPlugsWindow(Gtk.Window):
 
         copy_button = Gtk.Button.new_from_icon_name("edit-copy-symbolic", Gtk.IconSize.MENU)
         copy_button.set_margin_top(20)
+        copy_button.set_tooltip_text("Copy")
         copy_button.connect("clicked", lambda x: self.button_copy())
         copy_button.set_halign(Gtk.Align.END)
         grid.attach_next_to(copy_button, prompt_label, Gtk.PositionType.RIGHT, 1, 1)
