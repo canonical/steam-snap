@@ -375,6 +375,11 @@ parts:
           gtk-update-icon-cache --force "$dir"
         fi
       done
+      echo "
+      [Desktop Action Report]
+      Name=Report
+      Exec=steam.report" >> steam.desktop
+      sed -i "s/\(Actions=.*\)/\1Report;/" steam.desktop
 
   cleanup:
     after: [steam, conditioning]
