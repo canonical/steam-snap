@@ -319,12 +319,6 @@ parts:
       craftctl default
       # Set the snap version from the .deb package version
       craftctl set version=$(dpkg-parsechangelog -l $CRAFT_PART_INSTALL/usr/share/doc/steam-launcher/changelog.all.gz -S Version | sed -e s/1://g)
-      # Copy over the icon
-      cp $CRAFT_PART_INSTALL/usr/share/icons/hicolor/256x256/apps/steam.png $CRAFT_PART_INSTALL/steam.png
-      mkdir -p $CRAFT_PART_INSTALL/meta/gui
-      ln -s ../../steam.png $CRAFT_PART_INSTALL/meta/gui/icon.png
-      # Install the desktop file, with the icon field munged
-      sed 's|Icon=steam|Icon=${SNAP}/steam.png|g' $CRAFT_PART_INSTALL/usr/share/applications/steam.desktop > $CRAFT_PART_INSTALL/steam.desktop
     prime:
       - -usr/share/doc
       - -usr/share/man
@@ -391,9 +385,7 @@ parts:
 apps:
   steam:
     command-chain: [snap/command-chain/alsa-launch, bin/desktop-launch]
-    #command: bin/steam-snap.sh
     command: usr/lib/steam/bin_steam.sh -no-cef-sandbox
-    desktop: steam.desktop
     environment:
       HOME: $SNAP_USER_COMMON
       #LIBGL_DEBUG: verbose
