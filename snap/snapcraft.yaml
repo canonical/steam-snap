@@ -125,8 +125,48 @@ parts:
       - python3-gi
       - gir1.2-gtk-3.0
     stage:
-      - -usr/bin/fc-*
-      - -usr/share/doc/fontconfig/fontconfig-user.*
+      - bin/*
+      - usr/lib/python3/dist-packages/*
+      - usr/share/mime/*
+      - usr/share/icons/*
+      - usr/**/girepository-1.0*
+      - usr/lib/**/gtk-3.0*
+      - etc/gtk-3.0*
+      - usr/share/*/gir1.2-gtk-3.0*
+      - usr/share/*/libgtk-3*
+      - usr/**/libfontconfig*
+      - usr/**/cairo-1*
+      - usr/**/libatspi*
+      - usr/**/libavahi-client*
+      - usr/**/libavahi-common*
+      - usr/**/libcairo-gobject*
+      - usr/**/libcairo*
+      - usr/**/libcolord*
+      - usr/**/libcups*
+      - usr/**/libdatrie*
+      - usr/**/libdconf*
+      - usr/**/libdeflate*
+      - usr/**/libepoxy*
+      - usr/**/libfontconfig*
+      - usr/**/libfribidi*
+      - usr/**/libgirepository-1*
+      - usr/**/libgraphite2*
+      - usr/**/libgtk-3*
+      - usr/**/libharfbuzz*
+      - usr/**/libjbig*
+      - usr/**/libjpeg*
+      - usr/**/liblcms2*
+      - usr/**/libpango-1*
+      - usr/**/libpangocairo-1*
+      - usr/**/libpangoft2-1*
+      - usr/**/libpangoxft-1*
+      - usr/**/libpixman-1*
+      - usr/**/libthai*
+      - usr/**/libtiff*
+      - usr/**/libwayland-cursor*
+      - usr/**/libwebp*
+      - usr/**/libxcb-render*
+      - usr/**/libxkbcommon*
 
   alsa-mixin:
     plugin: dump
