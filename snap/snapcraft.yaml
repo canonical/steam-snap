@@ -129,7 +129,6 @@ parts:
       - usr/lib/python3/dist-packages/*
       - usr/share/mime/*
       - usr/share/icons/*
-      - usr/**/girepository-1.0*
       - usr/lib/**/gtk-3.0*
       - etc/gtk-3.0*
       - usr/share/*/gir1.2-gtk-3.0*
@@ -149,7 +148,7 @@ parts:
       - usr/**/libepoxy*
       - usr/**/libfontconfig*
       - usr/**/libfribidi*
-      - usr/**/libgirepository-1*
+      - usr/**/*girepository*
       - usr/**/libgraphite2*
       - usr/**/libgtk-3*
       - usr/**/libharfbuzz*
@@ -465,6 +464,7 @@ apps:
     command-chain: [bin/desktop-launch]
     command: bin/steamreport
     environment:
+      DISABLE_WAYLAND: 1
       PYTHONPATH: $SNAP/usr/lib/python3/dist-packages
       GI_TYPELIB_PATH: $SNAP/usr/lib/x86_64-linux-gnu/girepository-1.0
     plugs:
