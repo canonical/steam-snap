@@ -124,6 +124,8 @@ parts:
     stage-packages:
       - python3-gi
       - gir1.2-gtk-3.0
+      - lsof
+      - xdg-user-dirs
     stage:
       - bin/*
       - usr/lib/python3/dist-packages/*
