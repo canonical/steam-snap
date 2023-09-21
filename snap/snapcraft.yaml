@@ -105,6 +105,12 @@ plugs:
     interface: shared-memory
     private: true
 
+slots:
+  steam:
+    interface: dbus
+    bus: session
+    name: com.steampowered.PressureVessel.LaunchAlongsideSteam
+
 hooks:
   configure:
     plugs:
