@@ -360,6 +360,7 @@ parts:
       - lsof
       - locales-all
       - usbutils # Allows finding controllers etc
+      - psmisc
     override-build: |
       craftctl default
       # Set the snap version from the .deb package version
