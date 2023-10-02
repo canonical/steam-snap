@@ -330,4 +330,5 @@ if [ -n "$SNAP_DESKTOP_DEBUG" ]; then
 fi
 
 $SNAP/bin/nvidia32 &
-exec "$@"
+"$@"
+killall steam-runtime-launcher-service

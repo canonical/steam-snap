@@ -105,6 +105,12 @@ plugs:
     interface: shared-memory
     private: true
 
+slots:
+  steam:
+    interface: dbus
+    bus: session
+    name: com.steampowered.PressureVessel.LaunchAlongsideSteam
+
 hooks:
   configure:
     plugs:
@@ -354,6 +360,7 @@ parts:
       - lsof
       - locales-all
       - usbutils # Allows finding controllers etc
+      - psmisc
     override-build: |
       craftctl default
       # Set the snap version from the .deb package version
