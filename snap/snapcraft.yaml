@@ -99,6 +99,14 @@ plugs:
     write:
       - $HOME/.local/share/Steam
       - $HOME/Steam
+  dot-local-share-applications:
+    interface: personal-files
+    write:
+      - $HOME/.local/share/applications
+  dot-local-share-icons:
+    interface: personal-files
+    write:
+      - $HOME/.local/share/icons
   desktop:
     mount-host-font-cache: false
   shmem:

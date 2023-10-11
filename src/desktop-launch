@@ -329,6 +329,23 @@ if [ -n "$SNAP_DESKTOP_DEBUG" ]; then
   echo "Now running: exec $*"
 fi
 
+# Fix default run command
+# The default works on a system with only the Snap installed, but if they also
+# have the deb then the default command will run the deb instead of the Snap.
+find "$SNAP_USER_COMMON/.local/share/applications" -type f | while read -r file; do
+  sed -i "s/Exec=steam/Exec=snap run steam/" "$file"
+done
+
+# Links game icons to host
+find "$SNAP_USER_COMMON/.local/share/icons/hicolor" -type f -name "steam_icon_*.png" | while read -r file; do
+  dest="${file/$SNAP_USER_COMMON/$REALHOME}"
+  ensure_dir_exists "$(dirname $dest)"
+  ln -sf "$file" "$dest"
+done
+
+# Link .desktop files to host
+ln -sf $SNAP_USER_COMMON/.local/share/applications/* $REALHOME/.local/share/applications/
+
 $SNAP/bin/nvidia32 &
 "$@"
 killall steam-runtime-launcher-service
