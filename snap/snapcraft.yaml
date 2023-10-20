@@ -38,8 +38,8 @@ layout:
   /usr/share/zenity:
     bind: $SNAP/usr/share/zenity
   # https://discourse.ubuntu.com/t/the-graphics-core20-snap-interface/23000
-  /usr/share/libdrm:
-    bind: $SNAP/graphics/usr/share/libdrm
+  /usr/share/libdrm/amdgpu.ids:
+    bind-file: $SNAP/graphics/usr/share/libdrm/amdgpu.ids
   /usr/share/drirc.d:
     bind: $SNAP/graphics/usr/share/drirc.d
   /usr/share/glvnd/egl_vendor.d:
