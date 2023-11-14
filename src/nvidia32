@@ -34,12 +34,12 @@ def nvidia_version():
     Returns a tuple of the full NVIDIA version triplet and NVIDIA major version.
     """
     modinfo = os.popen(
-        "modinfo /usr/lib/modules/$(uname -r)/updates/dkms/nvidia.ko 2> /dev/null"
+        "modinfo /usr/lib/modules/$(uname -r)/updates/dkms/nvidia.ko* 2> /dev/null"
         " | grep -m 1 '^version:'"
         " | sed 's/version:\s*//'"
     ).read().splitlines()
     modinfo = modinfo or os.popen(
-        "modinfo /usr/lib/modules/$(uname -r)/kernel/nvidia*/nvidia.ko 2> /dev/null"
+        "modinfo /usr/lib/modules/$(uname -r)/kernel/nvidia*/nvidia.ko* 2> /dev/null"
         " | grep -m 1 '^version:'"
         " | sed 's/version:\s*//'"
     ).read().splitlines()
@@ -113,7 +113,9 @@ class NvidiaWindow(Gtk.Window):
             right_margin=10,
             left_margin=10
         )
-        self.textview.get_buffer().set_text(COMMAND.format(self.nvidia_version[1]))
+        command_text = COMMAND.format("<your driver version>")
+        if self.nvidia_version: command_text = COMMAND.format(self.nvidia_version[1])
+        self.textview.get_buffer().set_text(command_text)
         self.grid.attach_next_to(self.textview, self.run_label, Gtk.PositionType.BOTTOM, 2, 1)
 
         # Do not show again button
