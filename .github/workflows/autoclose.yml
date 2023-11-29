@@ -1,0 +1,21 @@
+name: Close inactive issues
+on:
+  schedule:
+    - cron: "30 1 * * *"
+
+jobs:
+  close-issues:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+      - uses: actions/stale@v5
+        with:
+          days-before-issue-stale: 30
+          days-before-issue-close: 30
+          start-date: '2023-11-29T00:00:00Z'
+          stale-issue-label: "stale"
+          exempt-issue-labels: 'keep-open'
+          stale-issue-message: "This is an automated message 🤖 \n \n Your issue has been marked as stale due to 30 days of inactivity. We value every contribution, but as a small team, we're focusing on active issues to ensure efficiency. Please respond with any updates or indicate that it's still relevant to keep this issue open 🔄. If there's no further activity in the next 30 days, the issue will be automatically closed ⏳."
+          close-issue-message: "This is an automated message 🤖 \n \n This issue has been closed due to inactivity for 30 days and no activity during the additional 30-day stale period 🗓️. We appreciate your understanding. If the issue is still relevant or requires further discussion, feel free to reopen it with a new comment. Thank you for your contributions 🙏."
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
