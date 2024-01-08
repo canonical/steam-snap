@@ -20,6 +20,7 @@ $SNAP/lib/x86_64-linux-gnu
 $SNAP/lib/i386-linux-gnu
 $SNAP/lib
 $SNAP/usr/lib/x86_64-linux-gnu
+$SNAP/usr/lib/x86_64-linux-gnu/pulseaudio
 $SNAP/usr/lib/i386-linux-gnu
 $SNAP/usr/lib
 $SNAP/usr/lib/x86_64-linux-gnu/dri
