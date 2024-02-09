@@ -144,7 +144,6 @@ parts:
       - usr/lib/**/gtk-3.0*
       - etc/gtk-3.0*
       - usr/share/*/gir1.2-gtk-3.0*
-      - usr/share/*/libgtk-3*
       - usr/**/libfontconfig*
       - usr/**/cairo-1*
       - usr/**/libatspi*
@@ -158,7 +157,6 @@ parts:
       - usr/**/libdconf*
       - usr/**/libdeflate*
       - usr/**/libepoxy*
-      - usr/**/libfontconfig*
       - usr/**/libfribidi*
       - usr/**/*girepository*
       - usr/**/libgraphite2*
