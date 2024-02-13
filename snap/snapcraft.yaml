@@ -12,7 +12,7 @@ architectures:
 base: core22
 compression: lzo
 assumes:
-  - snapd2.55.4
+  - snapd2.62
 
 lint:
   # Snapcraft's `ldd` lint can't handle 32-bit things,
