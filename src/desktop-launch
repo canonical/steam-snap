@@ -111,35 +111,28 @@ function append_dir() {
   fi
 }
 
-function can_open_file() {
-  [ -f "$1" ] && [ -r "$1" ]
-}
 
-function update_xdg_dirs_values() {
-  local save_initial_values=false
-  local XDG_DIRS="DOCUMENTS DESKTOP DOWNLOAD MUSIC PICTURES VIDEOS PUBLICSHARE TEMPLATES"
-  unset XDG_SPECIAL_DIRS_PATHS
+function strip_unreachable_dirs() {
+  local -n var=$1
+  local dirs="${var}"
 
-  if [ -f "${XDG_CONFIG_HOME:-$HOME/.config}/user-dirs.dirs" ]; then
-    # shellcheck source=/dev/null
-    source "${XDG_CONFIG_HOME:-$HOME/.config}/user-dirs.dirs"
-  fi
-
-  if [ -z ${XDG_SPECIAL_DIRS+x} ]; then
-    save_initial_values=true
-  fi
-
-  for d in $XDG_DIRS; do
-    var="XDG_${d}_DIR"
-    value="${!var}"
-
-    if [ "$save_initial_values" = true ]; then
-      XDG_SPECIAL_DIRS+=("$var")
-      XDG_SPECIAL_DIRS_INITIAL_PATHS+=("$value")
+  tmp=""
+  local IFS=:
+  for d in $dirs; do
+    # Just checking existence and the `x` bit isn't enough
+    # we need to see if we can actually `ls` it because of apparmor
+    # quirks
+    ls $d > /dev/null 2>&1
+    if [[ $? -eq 0 ]]; then
+      append_dir tmp "$d"
+    else
+      echo "INFO: filtering $d out of ${!var} because it is unreachable"
     fi
 
-    XDG_SPECIAL_DIRS_PATHS+=("$value")
   done
+
+  export "${!var}=${tmp}"
+  unset tmp
 }
 
 function is_subpath() {
@@ -345,6 +338,10 @@ done
 
 # Link .desktop files to host
 ln -sf $SNAP_USER_COMMON/.local/share/applications/* $REALHOME/.local/share/applications/
+
+strip_unreachable_dirs XDG_DATA_DIRS
+strip_unreachable_dirs XDG_CONFIG_DIRS
+strip_unreachable_dirs XDG_SPECIAL_DIRS
 
 $SNAP/bin/nvidia32 &
 "$@"
