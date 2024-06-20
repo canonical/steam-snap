@@ -123,7 +123,7 @@ hooks:
       - opengl
 
 environment:
-  LD_LIBRARY_PATH: $SNAP/graphics/lib/i386-linux-gnu:$SNAP/graphics/usr/lib:$SNAP/usr/lib/i386-linux-gnu:$SNAP/lib/i386-linux-gnu:$SNAP/usr/lib/i386-linux-gnu/pulseaudio${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}
+  LD_LIBRARY_PATH: $SNAP/graphics/lib/i386-linux-gnu:$SNAP/graphics/usr/lib:$SNAP/usr/lib/i386-linux-gnu:$SNAP/usr/lib/x86_64-linux-gnu:$SNAP/lib/i386-linux-gnu:$SNAP/usr/lib/i386-linux-gnu/pulseaudio${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}
   LIBGL_DRIVERS_PATH: $SNAP/graphics/usr/lib/i386-linux-gnu/dri:$SNAP/graphics/usr/lib/x86_64-linux-gnu/dri:${LIBGL_DRIVERS_PATH:+:$LIBGL_DRIVERS_PATH}
 
 parts:
@@ -215,7 +215,7 @@ parts:
   ninja:
     plugin: nil
     source: https://github.com/ninja-build/ninja.git
-    source-tag: "v1.11.0"
+    source-tag: "v1.12.1"
     override-build: |
       rm -rf build
       rm -f ninja
@@ -237,7 +237,7 @@ parts:
     after: [ninja]
     plugin: nil
     source: https://github.com/mesonbuild/meson.git
-    source-tag: "1.0.1"
+    source-tag: "1.4.1"
     override-build: |
       python3 -m pip install .
       mkdir -p $CRAFT_PART_INSTALL/usr/lib/python3/dist-packages
@@ -254,7 +254,7 @@ parts:
   mangohud:
     after: [meson-deps]
     source: https://github.com/flightlessmango/MangoHud.git
-    source-tag: "v0.6.8"
+    source-tag: "v0.6.9-1"
     plugin: meson
     organize:
       snap/steam/current/usr: usr
@@ -284,12 +284,13 @@ parts:
   mangohud64:
     after: [meson-deps, mangohud]
     source: https://github.com/flightlessmango/MangoHud.git
-    source-tag: "v0.6.8"
+    source-tag: "v0.6.9-1"
     plugin: meson
     organize:
       snap/steam/current/usr: usr
     meson-parameters:
       - --prefix=/usr
+      - --libdir=lib/x86_64-linux-gnu
       - -Dappend_libdir_mangohud=false
     stage:
       - -usr/bin/mangohud
