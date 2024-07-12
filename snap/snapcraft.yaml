@@ -254,7 +254,7 @@ parts:
   mangohud:
     after: [meson-deps]
     source: https://github.com/flightlessmango/MangoHud.git
-    source-tag: "v0.6.9-1"
+    source-tag: "v0.7.2"
     plugin: meson
     organize:
       snap/steam/current/usr: usr
@@ -280,11 +280,19 @@ parts:
       - libxnvctrl-dev
       - mesa-common-dev
       - python3-mako
+      - libwayland-dev:i386
+      - libwayland-dev
+      - libxkbcommon-dev:i386
+      - libxkbcommon-dev
+    # Fixes the $LIB being escaped for some reason
+    override-build: |
+        craftctl default
+        sed -i 's/\/usr\/\\\$LIB/\$SNAP\/usr\/lib\/x86_64-linux-gnu/' $CRAFT_PART_INSTALL/usr/bin/mangohud
 
   mangohud64:
     after: [meson-deps, mangohud]
     source: https://github.com/flightlessmango/MangoHud.git
-    source-tag: "v0.6.9-1"
+    source-tag: "v0.7.2"
     plugin: meson
     organize:
       snap/steam/current/usr: usr
@@ -296,6 +304,8 @@ parts:
       - -usr/bin/mangohud
       - -usr/share/vulkan/implicit_layer.d/MangoHud.json
       - -usr/share/vulkan/implicit_layer.d/libMangoApp.json
+      - -usr/share/doc/mangohud/MangoHud.conf.example
+      - -usr/share/man/man1/mangohud.1 
 
   gamemode:
     after: [meson-deps]
