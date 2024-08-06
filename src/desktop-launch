@@ -197,6 +197,10 @@ export VK_ICD_FILENAMES="/var/lib/snapd/lib/vulkan/icd.d/nvidia_icd.json:$SNAP/g
 append_dir LD_LIBRARY_PATH "/var/lib/snapd/lib/gl"
 append_dir LD_LIBRARY_PATH "/var/lib/snapd/lib/gl/vdpau"
 
+# By sheer luck, this was working in the past, but we need this explicitly
+append_dir LD_LIBRARY_PATH "/var/lib/snapd/lib/gl32"
+append_dir LD_LIBRARY_PATH "/var/lib/snapd/lib/gl32/vdpau"
+
 # Unity7 export (workaround for https://launchpad.net/bugs/1638405)
 append_dir LD_LIBRARY_PATH "$SNAP_DESKTOP_RUNTIME/usr/lib/$ARCH/libunity"
 
