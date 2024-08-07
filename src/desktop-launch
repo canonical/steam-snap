@@ -347,6 +347,13 @@ strip_unreachable_dirs XDG_DATA_DIRS
 strip_unreachable_dirs XDG_CONFIG_DIRS
 strip_unreachable_dirs XDG_SPECIAL_DIRS
 
+# Even with libfuse, appimages need to be extracted to run.
+# This is a workaround until we figure out something better, because it makes
+# launching AppImage games way slower
+#
+# That said, they're really rare so it's not a big deal
+export APPIMAGE_EXTRACT_AND_RUN=1
+
 $SNAP/bin/nvidia32 &
 "$@"
 killall steam-runtime-launcher-service
