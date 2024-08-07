@@ -376,6 +376,8 @@ parts:
       - locales-all
       - usbutils # Allows finding controllers etc
       - psmisc
+      - libfuse2:amd64
+      - libfuse2:i386
     override-build: |
       craftctl default
       # Set the snap version from the .deb package version
