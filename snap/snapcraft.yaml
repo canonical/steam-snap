@@ -378,6 +378,8 @@ parts:
       - psmisc
       - libfuse2:amd64
       - libfuse2:i386
+      - libxss1:amd64
+      - libxss1:i386
     override-build: |
       craftctl default
       # Set the snap version from the .deb package version
