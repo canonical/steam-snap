@@ -378,6 +378,7 @@ parts:
       - psmisc
       - libfuse2:amd64
       - libfuse2:i386
+      - x11-xserver-utils
     override-build: |
       craftctl default
       # Set the snap version from the .deb package version
