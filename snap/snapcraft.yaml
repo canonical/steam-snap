@@ -239,7 +239,7 @@ parts:
     after: [ninja]
     plugin: nil
     source: https://github.com/mesonbuild/meson.git
-    source-tag: "1.4.1"
+    source-tag: "1.6.0"
     override-build: |
       python3 -m pip install . --break-system-packages
       mkdir -p $CRAFT_PART_INSTALL/usr/lib/python3/dist-packages
