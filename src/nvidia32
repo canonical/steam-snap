@@ -36,12 +36,12 @@ def nvidia_version():
     modinfo = os.popen(
         "modinfo /usr/lib/modules/$(uname -r)/updates/dkms/nvidia.ko* 2> /dev/null"
         " | grep -m 1 '^version:'"
-        " | sed 's/version:\s*//'"
+        " | sed 's/version:\\s*//'"
     ).read().splitlines()
     modinfo = modinfo or os.popen(
         "modinfo /usr/lib/modules/$(uname -r)/kernel/nvidia*/nvidia.ko* 2> /dev/null"
         " | grep -m 1 '^version:'"
-        " | sed 's/version:\s*//'"
+        " | sed 's/version:\\s*//'"
     ).read().splitlines()
 
     if not modinfo:
