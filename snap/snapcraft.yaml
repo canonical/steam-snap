@@ -305,12 +305,12 @@ parts:
       - -usr/share/vulkan/implicit_layer.d/MangoHud.json
       - -usr/share/vulkan/implicit_layer.d/libMangoApp.json
       - -usr/share/doc/mangohud/MangoHud.conf.example
-      - -usr/share/man/man1/mangohud.1 
+      - -usr/share/man/man1/mangohud.1
 
   gamemode:
     after: [meson-deps]
-    source: https://github.com/ashuntu/gamemode.git
-    source-branch: "add-snap-support"
+    source: https://github.com/FeralInteractive/gamemode.git
+    source-tag: "1.8.2"
     plugin: meson
     organize:
       snap/steam/current/usr: usr
@@ -320,9 +320,12 @@ parts:
       - libsystemd-dev
       - pkg-config
       - libdbus-1-dev
+    stage-packages:
+      - libinih1
     prime:
-      - usr/bin/gamemoderun
+      - usr/bin/gamemode*
       - usr/lib/*/libgamemode*.so.*
+      - usr/lib/*/libinih.so.*
 
   debug-tools:
     plugin: nil
