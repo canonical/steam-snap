@@ -123,7 +123,7 @@ hooks:
       - opengl
 
 environment:
-  LD_LIBRARY_PATH: $SNAP/graphics/lib/i386-linux-gnu:$SNAP/graphics/usr/lib:$SNAP/usr/lib/i386-linux-gnu:$SNAP/usr/lib/x86_64-linux-gnu:$SNAP/lib/i386-linux-gnu:$SNAP/usr/lib/i386-linux-gnu/pulseaudio${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}
+  LD_LIBRARY_PATH: $SNAP/graphics/usr/lib/i386-linux-gnu:$SNAP/graphics/usr/lib:$SNAP/usr/lib/i386-linux-gnu:$SNAP/usr/lib/x86_64-linux-gnu:$SNAP/lib/i386-linux-gnu:$SNAP/usr/lib/i386-linux-gnu/pulseaudio${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}
   LIBGL_DRIVERS_PATH: $SNAP/graphics/usr/lib/i386-linux-gnu/dri:$SNAP/graphics/usr/lib/x86_64-linux-gnu/dri:${LIBGL_DRIVERS_PATH:+:$LIBGL_DRIVERS_PATH}
 
 parts:
@@ -305,7 +305,7 @@ parts:
       - -usr/share/vulkan/implicit_layer.d/MangoHud.json
       - -usr/share/vulkan/implicit_layer.d/libMangoApp.json
       - -usr/share/doc/mangohud/MangoHud.conf.example
-      - -usr/share/man/man1/mangohud.1 
+      - -usr/share/man/man1/mangohud.1
 
   gamemode:
     after: [meson-deps]
