@@ -312,18 +312,39 @@ parts:
     source: https://github.com/FeralInteractive/gamemode.git
     source-tag: "1.8.2"
     plugin: meson
+    build-environment:
+      - CC: gcc -m32
+      - CXX: g++ -m32
+      - PKG_CONFIG_PATH: /usr/lib/i386-linux-gnu/pkgconfig:/usr/lib/x86_64-linux-gnu/pkgconfig:/usr/lib/pkgconfig
     organize:
       snap/steam/current/usr: usr
     meson-parameters:
       - --prefix=/usr
+      - --libdir=lib/i386-linux-gnu
+    build-packages:
+      - libsystemd-dev:i386
+      - libdbus-1-dev:i386
+      - pkg-config
+    stage:
+      - usr/bin/gamemode*
+      - usr/lib/*/libgamemode*.so.*
+      - usr/lib/*/libinih.so.*
+
+  gamemode64:
+    after: [meson-deps, gamemode]
+    source: https://github.com/FeralInteractive/gamemode.git
+    source-tag: "1.8.2"
+    plugin: meson
+    organize:
+      snap/steam/current/usr: usr
+    meson-parameters:
+      - --prefix=/usr
+      - --libdir=lib/x86_64-linux-gnu
     build-packages:
       - libsystemd-dev
-      - pkg-config
       - libdbus-1-dev
-    stage-packages:
-      - libinih1
-    prime:
-      - usr/bin/gamemode*
+      - pkg-config
+    stage:
       - usr/lib/*/libgamemode*.so.*
       - usr/lib/*/libinih.so.*
 
