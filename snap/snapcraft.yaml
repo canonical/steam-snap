@@ -284,10 +284,11 @@ parts:
       - libwayland-dev
       - libxkbcommon-dev:i386
       - libxkbcommon-dev
-    # Fixes the $LIB being escaped for some reason
+    stage-packages:
+      - libxkbcommon0:i386
     override-build: |
         craftctl default
-        sed -i 's/\/usr\/\\\$LIB/\$SNAP\/usr\/lib\/x86_64-linux-gnu/' $CRAFT_PART_INSTALL/usr/bin/mangohud
+        sed -i 's/\/usr\/\\\$LIB/\$SNAP\/usr\/\\\$LIB/' $CRAFT_PART_INSTALL/usr/bin/mangohud
 
   mangohud64:
     after: [meson-deps, mangohud]
