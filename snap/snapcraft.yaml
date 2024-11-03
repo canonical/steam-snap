@@ -380,6 +380,8 @@ parts:
       - steam-libs-amd64
       - steam-libs-i386
       - libappindicator3-1
+      - libatk-bridge2.0-0:i386
+      - libatk-bridge2.0-0:amd64
       - libxcb-dri3-0:amd64
       - libxcb-dri3-0:i386
       - libpci3
