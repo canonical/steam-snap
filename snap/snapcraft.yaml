@@ -409,7 +409,7 @@ parts:
     override-build: |
       craftctl default
       # Set the snap version from the .deb package version
-      craftctl set version=$(dpkg-parsechangelog -l $CRAFT_PART_INSTALL/usr/share/doc/steam-launcher/changelog.all.gz -S Version | sed -e s/1://g)
+      craftctl set version=$(dpkg-parsechangelog -l $CRAFT_PART_INSTALL/usr/share/doc/steam-launcher/changelog.amd64.gz -S Version | sed -e s/1://g)
     prime:
       - -usr/share/doc
       - -usr/share/man
