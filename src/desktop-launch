@@ -337,14 +337,20 @@ done
 find "$SNAP_USER_COMMON/.local/share/icons/hicolor" -type f -name "steam_icon_*.png" | while read -r file; do
   dest="${file/$SNAP_USER_COMMON/$SNAP_REAL_HOME}"
   ensure_dir_exists "$(dirname $dest)"
-  ln -sf "$file" "$dest"
+  cp "$file" "$dest"
 done
 
 # Link .desktop files to host
-ln -f $SNAP_USER_COMMON/.local/share/applications/* $SNAP_REAL_HOME/.local/share/applications/
+mkdir $SNAP_REAL_HOME/.local/share/applications/
+cp $SNAP_USER_COMMON/.local/share/applications/* $SNAP_REAL_HOME/.local/share/applications/
 
 # Link .desktop files to $SNAP_REAL_HOME
-ln -f $SNAP_USER_COMMON/Desktop/* $SNAP_REAL_HOME/
+cp $SNAP_USER_COMMON/Desktop/* $SNAP_REAL_HOME/
+
+#Delete the original icon and shortcut files so they don't get regenerated.
+rm -r $SNAP_USER_COMMON/.local/share/icons/*
+rm $SNAP_USER_COMMON/.local/share/applications/*
+rm $SNAP_USER_COMMON/Desktop/*
 
 # GTK theme and behavior modifier
 # Those can impact the theme engine used by Qt as well
