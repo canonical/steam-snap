@@ -42,9 +42,6 @@ else
   needs_update=true
 fi
 
-# Set $REALHOME to the users real home directory
-REALHOME=$(getent passwd $UID | cut -d ':' -f 6)
-
 export SNAP_DESKTOP_RUNTIME=$SNAP
 
 # Set config folder to local path
@@ -54,9 +51,9 @@ chmod 700 "$XDG_CONFIG_HOME"
 
 # If the user has modified their user-dirs settings, force an update
 if [[ -f "$XDG_CONFIG_HOME/user-dirs.dirs.md5sum" ]]; then
-  if [[ "$(md5sum < "$REALHOME/.config/user-dirs.dirs")" != "$(cat "$XDG_CONFIG_HOME/user-dirs.dirs.md5sum")" ||
+  if [[ "$(md5sum < "$SNAP_REAL_HOME/.config/user-dirs.dirs")" != "$(cat "$XDG_CONFIG_HOME/user-dirs.dirs.md5sum")" ||
         ( -f "$XDG_CONFIG_HOME/user-dirs.locale.md5sum" &&
-          "$(md5sum < "$REALHOME/.config/user-dirs.locale")" != "$(cat "$XDG_CONFIG_HOME/user-dirs.locale.md5sum")" ) ]]; then
+          "$(md5sum < "$SNAP_REAL_HOME/.config/user-dirs.locale")" != "$(cat "$XDG_CONFIG_HOME/user-dirs.locale.md5sum")" ) ]]; then
     needs_update=true
   fi
 else
@@ -340,14 +337,14 @@ find "$SNAP_USER_COMMON/.local/share/icons/hicolor" -type f -name "steam_icon_*.
   cp "$file" "$dest"
 done
 
-# Link .desktop files to host
+# Copy .desktop files to host
 mkdir $SNAP_REAL_HOME/.local/share/applications/
 cp $SNAP_USER_COMMON/.local/share/applications/* $SNAP_REAL_HOME/.local/share/applications/
 
-# Link .desktop files to $SNAP_REAL_HOME
+# Copy .desktop files to $SNAP_REAL_HOME
 cp $SNAP_USER_COMMON/Desktop/* $SNAP_REAL_HOME/
 
-#Delete the original icon and shortcut files so they don't get regenerated.
+# Delete the original icon and shortcut files so they don't get regenerated.
 rm -r $SNAP_USER_COMMON/.local/share/icons/*
 rm $SNAP_USER_COMMON/.local/share/applications/*
 rm $SNAP_USER_COMMON/Desktop/*
