@@ -80,7 +80,7 @@ plugs:
   gaming-mesa:
     interface: content
     target: $SNAP/graphics
-    default-provider: gaming-graphics-core22
+    default-provider: gaming-graphics-core24
   gtk-3-themes:
     interface: content
     target: $SNAP/share/themes
@@ -377,6 +377,8 @@ parts:
     build-packages:
       - dpkg-dev
       - dirmngr # Needed for launchpad builds
+    build-snaps:
+      - core24
     stage-packages:
       - steam-launcher
       - steam-libs-amd64
@@ -384,6 +386,7 @@ parts:
       - libappindicator3-1
       - libxcb-dri3-0:amd64
       - libxcb-dri3-0:i386
+      - xkb-data
       - libpci3
       - libvulkan1:i386
       - libvulkan1:amd64
@@ -411,7 +414,7 @@ parts:
     override-build: |
       craftctl default
       # Set the snap version from the .deb package version
-      craftctl set version=$(dpkg-parsechangelog -l $CRAFT_PART_INSTALL/usr/share/doc/steam-launcher/changelog.amd64.gz -S Version | sed -e s/1://g)
+      craftctl set version=$(dpkg-parsechangelog -l $CRAFT_PART_INSTALL/usr/share/doc/steam-launcher/changelog.*.gz -S Version | sed -e s/1://g)
     prime:
       - -usr/share/doc
       - -usr/share/man
@@ -428,11 +431,10 @@ parts:
       - -usr/lib/*/libvulkan*
       - -usr/lib/*/libVk*
       - -usr/lib/*/libLLVM*
-    build-snaps: [core22]
     override-prime: |
       set -eux
       craftctl default
-      cp -a /snap/core22/current/usr/lib/i386-linux-gnu/* usr/lib/i386-linux-gnu/
+      cp -a /snap/core24/current/usr/lib/i386-linux-gnu/* usr/lib/i386-linux-gnu/
 
   yaru-skin:
     plugin: nil
