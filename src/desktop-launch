@@ -323,12 +323,40 @@ if [ -n "$SNAP_DESKTOP_DEBUG" ]; then
   echo "Now running: exec $*"
 fi
 
-# Creating paths for .desktop files and icons, as well as links for Steam Snap to generate files in these locations.
-mkdir $SNAP_REAL_HOME/.local/share/applications/
-mkdir $SNAP_REAL_HOME/.local/share/icons/
+######################################
+# Adjustments to shortcuts and icons #
+######################################
+
+DESKTOP_PATH=$(grep "XDG_DESKTOP_DIR" $SNAP_REAL_HOME/.config/user-dirs.dirs | cut -d'=' -f2 | sed 's/"//g' | sed "s#\$HOME#$SNAP_REAL_HOME#g")
+ensure_dir_exists $SNAP_REAL_HOME/.local/share/applications/
+ensure_dir_exists $SNAP_REAL_HOME/.local/share/icons/
+
+# Copy .desktop of Desktop folder
+if [ -d "$SNAP_USER_COMMON/Desktop" ] && [ ! -L "$SNAP_USER_COMMON/Desktop" ]; then
+    for file in "$SNAP_USER_COMMON/Desktop/"*.desktop; do
+        if [ -e "$file" ]; then
+            cp -f "$file" "$DESKTOP_PATH/"
+        fi
+    done
+fi
+
+# Copy icons folder
+if [ -d "$SNAP_USER_COMMON/.local/share/icons" ] && [ ! -L "$SNAP_USER_COMMON/.local/share/icons" ]; then
+    cp -rf "$SNAP_USER_COMMON/.local/share/icons" "$SNAP_REAL_HOME/.local/share/"
+fi
+
+# Copy applications folder
+if [ -d "$SNAP_USER_COMMON/.local/share/applications" ] && [ ! -L "$SNAP_USER_COMMON/.local/share/applications" ]; then
+    cp -rf "$SNAP_USER_COMMON/.local/share/applications" "$SNAP_REAL_HOME/.local/share/"
+fi
+
+rm -r $SNAP_USER_COMMON/Desktop
+rm -r $SNAP_USER_COMMON/.local/share/applications
+rm -r $SNAP_USER_COMMON/.local/share/icons
+
+ln -sf "$DESKTOP_PATH" "$SNAP_USER_COMMON/Desktop"
 ln -sf $SNAP_REAL_HOME/.local/share/applications/ $SNAP_USER_COMMON/.local/share/applications
 ln -sf $SNAP_REAL_HOME/.local/share/icons/ $SNAP_USER_COMMON/.local/share/icons
-ln -sf $SNAP_REAL_HOME/ $SNAP_USER_COMMON/Desktop
 
 # Fix default run command
 # The default works on a system with only the Snap installed, but if they also
