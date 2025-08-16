@@ -363,12 +363,6 @@ ln -sf "$DESKTOP_PATH" "$SNAP_USER_COMMON/Desktop"
 ln -sf $SNAP_REAL_HOME/.local/share/applications/ $SNAP_USER_COMMON/.local/share/applications
 ln -sf $SNAP_REAL_HOME/.local/share/icons/ $SNAP_USER_COMMON/.local/share/icons
 
-# Links game icons to host
-find "$SNAP_USER_COMMON/.local/share/icons/hicolor" -type f -name "steam_icon_*.png" | while read -r file; do
-  dest="${file/$SNAP_USER_COMMON/$SNAP_REAL_HOME}"
-  ensure_dir_exists "$(dirname $dest)"
-done
-
 # GTK theme and behavior modifier
 # Those can impact the theme engine used by Qt as well
 gtk_configs=(gtk-4.0/settings.ini gtk-4.0/gtk.css gtk-4.0/bookmarks gtk-4.0/colors.css gtk-3.0/settings.ini gtk-3.0/gtk.css gtk-3.0/bookmarks gtk-3.0/colors.css gtk-2.0/gtkfilechooser.ini)
