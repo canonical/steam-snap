@@ -327,9 +327,14 @@ fi
 # Adjustments to shortcuts and icons #
 ######################################
 
+# Set what the desktop folder is and ensure that the folders applications and icons exist.
 DESKTOP_PATH=$(grep "XDG_DESKTOP_DIR" $SNAP_REAL_HOME/.config/user-dirs.dirs | cut -d'=' -f2 | sed 's/"//g' | sed "s#\$HOME#$SNAP_REAL_HOME#g")
 ensure_dir_exists $SNAP_REAL_HOME/.local/share/applications/
 ensure_dir_exists $SNAP_REAL_HOME/.local/share/icons/
+
+# Remove links from previous installs (https://github.com/canonical/steam-snap/pull/451)
+find "$SNAP_REAL_HOME/.local/share/applications/" -type l -lname "$SNAP_USER_COMMON/.local/share/applications/*" -delete
+find "$SNAP_REAL_HOME/.local/share/icons/hicolor/" -type l -lname "$SNAP_USER_COMMON/.local/share/icons/hicolor/*" -delete
 
 # Copy .desktop of Desktop folder
 if [ -d "$SNAP_USER_COMMON/Desktop" ] && [ ! -L "$SNAP_USER_COMMON/Desktop" ]; then
