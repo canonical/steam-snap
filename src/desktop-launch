@@ -363,13 +363,6 @@ ln -sf "$DESKTOP_PATH" "$SNAP_USER_COMMON/Desktop"
 ln -sf $SNAP_REAL_HOME/.local/share/applications/ $SNAP_USER_COMMON/.local/share/applications
 ln -sf $SNAP_REAL_HOME/.local/share/icons/ $SNAP_USER_COMMON/.local/share/icons
 
-# Fix default run command
-# The default works on a system with only the Snap installed, but if they also
-# have the deb then the default command will run the deb instead of the Snap.
-find "$SNAP_USER_COMMON/.local/share/applications" -type f | while read -r file; do
-  sed -i "s/Exec=steam/Exec=snap run steam/" "$file"
-done
-
 # GTK theme and behavior modifier
 # Those can impact the theme engine used by Qt as well
 gtk_configs=(gtk-4.0/settings.ini gtk-4.0/gtk.css gtk-4.0/bookmarks gtk-4.0/colors.css gtk-3.0/settings.ini gtk-3.0/gtk.css gtk-3.0/bookmarks gtk-3.0/colors.css gtk-2.0/gtkfilechooser.ini)
