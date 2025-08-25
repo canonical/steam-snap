@@ -42,9 +42,6 @@ else
   needs_update=true
 fi
 
-# Set $REALHOME to the users real home directory
-REALHOME=$(getent passwd $UID | cut -d ':' -f 6)
-
 export SNAP_DESKTOP_RUNTIME=$SNAP
 
 # Set config folder to local path
@@ -54,9 +51,9 @@ chmod 700 "$XDG_CONFIG_HOME"
 
 # If the user has modified their user-dirs settings, force an update
 if [[ -f "$XDG_CONFIG_HOME/user-dirs.dirs.md5sum" ]]; then
-  if [[ "$(md5sum < "$REALHOME/.config/user-dirs.dirs")" != "$(cat "$XDG_CONFIG_HOME/user-dirs.dirs.md5sum")" ||
+  if [[ "$(md5sum < "$SNAP_REAL_HOME/.config/user-dirs.dirs")" != "$(cat "$XDG_CONFIG_HOME/user-dirs.dirs.md5sum")" ||
         ( -f "$XDG_CONFIG_HOME/user-dirs.locale.md5sum" &&
-          "$(md5sum < "$REALHOME/.config/user-dirs.locale")" != "$(cat "$XDG_CONFIG_HOME/user-dirs.locale.md5sum")" ) ]]; then
+          "$(md5sum < "$SNAP_REAL_HOME/.config/user-dirs.locale")" != "$(cat "$XDG_CONFIG_HOME/user-dirs.locale.md5sum")" ) ]]; then
     needs_update=true
   fi
 else
@@ -326,22 +323,56 @@ if [ -n "$SNAP_DESKTOP_DEBUG" ]; then
   echo "Now running: exec $*"
 fi
 
-# Fix default run command
-# The default works on a system with only the Snap installed, but if they also
-# have the deb then the default command will run the deb instead of the Snap.
-find "$SNAP_USER_COMMON/.local/share/applications" -type f | while read -r file; do
-  sed -i "s/Exec=steam/Exec=snap run steam/" "$file"
-done
+######################################
+# Adjustments to shortcuts and icons #
+######################################
 
-# Links game icons to host
-find "$SNAP_USER_COMMON/.local/share/icons/hicolor" -type f -name "steam_icon_*.png" | while read -r file; do
-  dest="${file/$SNAP_USER_COMMON/$REALHOME}"
-  ensure_dir_exists "$(dirname $dest)"
-  ln -sf "$file" "$dest"
-done
+# Set what the desktop folder is and ensure that the folders applications and icons exist.
+DESKTOP_PATH=$(grep "XDG_DESKTOP_DIR" $SNAP_REAL_HOME/.config/user-dirs.dirs | cut -d'=' -f2 | sed 's/"//g' | sed "s#\$HOME#$SNAP_REAL_HOME#g")
+ensure_dir_exists $SNAP_REAL_HOME/.local/share/applications/
+ensure_dir_exists $SNAP_REAL_HOME/.local/share/icons/
 
-# Link .desktop files to host
-ln -sf $SNAP_USER_COMMON/.local/share/applications/* $REALHOME/.local/share/applications/
+# Remove links from previous installs (https://github.com/canonical/steam-snap/pull/451)
+find "$SNAP_REAL_HOME/.local/share/applications/" -type l -lname "$SNAP_USER_COMMON/.local/share/applications/*" -delete
+find "$SNAP_REAL_HOME/.local/share/icons/hicolor/" -type l -lname "$SNAP_USER_COMMON/.local/share/icons/hicolor/*" -delete
+
+# Copy .desktop of Desktop folder
+if [ -d "$SNAP_USER_COMMON/Desktop" ] && [ ! -L "$SNAP_USER_COMMON/Desktop" ]; then
+    for file in "$SNAP_USER_COMMON/Desktop/"*.desktop; do
+        if [ -e "$file" ]; then
+            cp -f "$file" "$DESKTOP_PATH/"
+        fi
+    done
+fi
+
+# Copy icons folder
+if [ -d "$SNAP_USER_COMMON/.local/share/icons" ] && [ ! -L "$SNAP_USER_COMMON/.local/share/icons" ]; then
+    cp -rf "$SNAP_USER_COMMON/.local/share/icons" "$SNAP_REAL_HOME/.local/share/"
+fi
+
+# Copy applications folder
+if [ -d "$SNAP_USER_COMMON/.local/share/applications" ] && [ ! -L "$SNAP_USER_COMMON/.local/share/applications" ]; then
+    cp -rf "$SNAP_USER_COMMON/.local/share/applications" "$SNAP_REAL_HOME/.local/share/"
+fi
+
+rm -r $SNAP_USER_COMMON/Desktop
+rm -r $SNAP_USER_COMMON/.local/share/applications
+rm -r $SNAP_USER_COMMON/.local/share/icons
+
+ln -sf "$DESKTOP_PATH" "$SNAP_USER_COMMON/Desktop"
+ln -sf $SNAP_REAL_HOME/.local/share/applications/ $SNAP_USER_COMMON/.local/share/applications
+ln -sf $SNAP_REAL_HOME/.local/share/icons/ $SNAP_USER_COMMON/.local/share/icons
+
+# GTK theme and behavior modifier
+# Those can impact the theme engine used by Qt as well
+gtk_configs=(gtk-4.0/settings.ini gtk-4.0/gtk.css gtk-4.0/bookmarks gtk-4.0/colors.css gtk-3.0/settings.ini gtk-3.0/gtk.css gtk-3.0/bookmarks gtk-3.0/colors.css gtk-2.0/gtkfilechooser.ini)
+for f in "${gtk_configs[@]}"; do
+  dest="$XDG_CONFIG_HOME/$f"
+  if [ ! -L "$dest" ]; then
+    ensure_dir_exists "$(dirname "$dest")"
+    ln -s "$SNAP_REAL_HOME/.config/$f" "$dest"
+  fi
+done
 
 strip_unreachable_dirs XDG_DATA_DIRS
 strip_unreachable_dirs XDG_CONFIG_DIRS
