@@ -53,7 +53,8 @@ chmod 700 "$XDG_CONFIG_HOME"
 if [[ -f "$XDG_CONFIG_HOME/user-dirs.dirs.md5sum" ]]; then
   if [[ "$(md5sum < "$SNAP_REAL_HOME/.config/user-dirs.dirs")" != "$(cat "$XDG_CONFIG_HOME/user-dirs.dirs.md5sum")" ||
         ( -f "$XDG_CONFIG_HOME/user-dirs.locale.md5sum" &&
-          "$(md5sum < "$SNAP_REAL_HOME/.config/user-dirs.locale")" != "$(cat "$XDG_CONFIG_HOME/user-dirs.locale.md5sum")" ) ]]; then
+          "$(md5sum < "$SNAP_REAL_HOME/.config/user-dirs.locale")" != "$(cat "$XDG_CONFIG_HOME/user-dirs.locale.md5sum")" )
+  ]]; then
     needs_update=true
   fi
 else
