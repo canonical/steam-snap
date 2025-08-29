@@ -469,12 +469,12 @@ parts:
     after: [steam, conditioning]
     plugin: nil
     build-snaps:
-      - gaming-graphics-core22/kisak-fresh/candidate
+      - gaming-graphics-core24/edge
     override-prime: |
       set -eux
-      cd /snap/gaming-graphics-core22/current/usr/lib
+      cd /snap/gaming-graphics-core24/current/usr/lib
       find . -type f,l -exec rm -f $CRAFT_PRIME/usr/lib/{} \;
-      cd /snap/gaming-graphics-core22/current/usr/share
+      cd /snap/gaming-graphics-core24/current/usr/share
       find . -type f,l -exec rm -f $CRAFT_PRIME/usr/share/{} \;
 
 apps:
