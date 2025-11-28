@@ -377,6 +377,7 @@ parts:
   steam:
     plugin: nil
     #source: http://repo.steampowered.com/steam/archive/precise/steam_latest.deb
+    source: ./snap/bin
     build-packages:
       - dpkg-dev
       - dirmngr # Needed for launchpad builds
@@ -461,6 +462,8 @@ parts:
       craftctl default
       # Set the snap version from the .deb package version
       craftctl set version=$(dpkg-parsechangelog -l $CRAFT_PART_INSTALL/usr/share/doc/steam-launcher/changelog.*.gz -S Version | sed -e s/1://g)
+      rm $CRAFT_PART_INSTALL/usr/lib/steam/bin_steam.sh
+      mv bin_steam.sh $CRAFT_PART_INSTALL/usr/lib/steam/bin_steam.sh
     prime:
       - -usr/include
       - -usr/share/doc
