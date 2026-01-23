@@ -42,7 +42,7 @@ else
   needs_update=true
 fi
 
-export SNAP_DESKTOP_RUNTIME=$SNAP
+export SNAP_DESKTOP_RUNTIME=$SNAP_USER_COMMON/x86_rootfs
 
 # Set config folder to local path
 export XDG_CONFIG_HOME="$SNAP_USER_COMMON/.config"
@@ -186,7 +186,7 @@ if [ -e "/var/lib/snapd/lib/gl/vdpau/libvdpau_nvidia.so" ]; then
 fi
 
 # Export Vulkan ICD filename paths
-export VK_ICD_FILENAMES="/var/lib/snapd/lib/vulkan/icd.d/nvidia_icd.json:$SNAP/graphics/usr/share/vulkan/icd.d/radeon_icd.x86_64.json:$SNAP/graphics/usr/share/vulkan/icd.d/radeon_icd.i686.json:$SNAP/graphics/usr/share/vulkan/icd.d/intel_icd.x86_64.json:$SNAP/graphics/usr/share/vulkan/icd.d/intel_icd.i686.json"
+export VK_ICD_FILENAMES="/var/lib/snapd/lib/vulkan/icd.d/nvidia_icd.json:$SNAP/graphics/usr/share/vulkan/icd.d/radeon_icd.x86_64.json:$SNAP/graphics/usr/share/vulkan/icd.d/radeon_icd.i686.json:$SNAP/graphics/usr/share/vulkan/icd.d/intel_icd.x86_64.json:$SNAP/graphics/usr/share/vulkan/icd.d/intel_icd.i686.json:/usr/share/vulkan/icd.d/nvidia_icd.json:$SNAP/usr/share/vulkan/icd.d/nvidia_icd.json"
 
 # Workaround in snapd for proprietary nVidia drivers mounts the drivers in
 # /var/lib/snapd/lib/gl that needs to be in LD_LIBRARY_PATH
@@ -389,6 +389,15 @@ strip_unreachable_dirs XDG_SPECIAL_DIRS
 # That said, they're really rare so it's not a big deal
 export APPIMAGE_EXTRACT_AND_RUN=1
 
-$SNAP/bin/nvidia32 &
-"$@"
-killall steam-runtime-launcher-service
+#$SNAP/bin/nvidia32 &
+#"$@"
+
+export STEAM_DIR="$SNAP_USER_COMMON/.local/share/Steam"
+echo "STEAMDIR: $STEAM_DIR"
+export HOME="$SNAP_USER_COMMON"
+export XDG_CONFIG_HOME="$HOME/.config"
+export XDG_DATA_HOME="$HOME/.local/share"
+export XDG_CACHE_HOME="$HOME/.cache"
+
+$SNAP/usr/lib/steam/bin_steam.sh -no-cef-sandbox
+#killall steam-runtime-launcher-service
