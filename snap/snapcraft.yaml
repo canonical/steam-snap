@@ -1,4 +1,5 @@
 name: steam
+version: '1.0.0.85'
 summary: Launcher for the Steam software distribution service
 description: |
   Steam is a software distribution service with an online store, automated
@@ -9,7 +10,9 @@ grade: stable
 confinement: strict
 base: core24
 platforms:
-  amd64:
+  arm64:
+    build-on: [arm64]
+    build-for: [arm64]
 compression: lzo
 assumes:
   - snapd2.62
@@ -26,56 +29,14 @@ lint:
 
 package-repositories:
   - type: apt
-    url: http://repo.steampowered.com/steam/
-    suites: [stable]
-    components: [steam]
-    architectures: [amd64, i386]
-    key-id: BA1816EF8E75005FCF5E27A1F24AEA9FB05498B7
-
-layout:
-  /usr/lib/steam:
-    bind: $SNAP/usr/lib/steam
-  /usr/share/zenity:
-    bind: $SNAP/usr/share/zenity
-  # https://discourse.ubuntu.com/t/the-graphics-core20-snap-interface/23000
-  /usr/share/drirc.d:
-    bind: $SNAP/graphics/usr/share/drirc.d
-  /usr/share/glvnd/egl_vendor.d:
-    bind: $SNAP/graphics/usr/share/glvnd/egl_vendor.d
-  /usr/lib/x86_64-linux-gnu/alsa-lib:
-    bind: $SNAP/usr/lib/x86_64-linux-gnu/alsa-lib
-  /usr/share/alsa:
-    bind: $SNAP/usr/share/alsa
-  /usr/share/X11/xkb:
-    bind: $SNAP/usr/share/X11/xkb
-  /usr/lib/x86_64-linux-gnu/libvulkan_intel.so:
-    symlink: $SNAP/graphics/usr/lib/x86_64-linux-gnu/libvulkan_intel.so
-  /usr/lib/i386-linux-gnu/libvulkan_intel.so:
-    symlink: $SNAP/graphics/usr/lib/i386-linux-gnu/libvulkan_intel.so
-  /usr/lib/x86_64-linux-gnu/libvulkan_lvp.so:
-    symlink: $SNAP/graphics/usr/lib/x86_64-linux-gnu/libvulkan_lvp.so
-  /usr/lib/i386-linux-gnu/libvulkan_lvp.so:
-    symlink: $SNAP/graphics/usr/lib/i386-linux-gnu/libvulkan_lvp.so
-  /usr/lib/x86_64-linux-gnu/libvulkan_radeon.so:
-    symlink: $SNAP/graphics/usr/lib/x86_64-linux-gnu/libvulkan_radeon.so
-  /usr/lib/i386-linux-gnu/libvulkan_radeon.so:
-    symlink: $SNAP/graphics/usr/lib/i386-linux-gnu/libvulkan_radeon.so
-  /usr/lib/x86_64-linux-gnu/libxcb-dri3.so.0.1.0:
-    symlink: $SNAP/graphics/usr/lib/x86_64-linux-gnu/libxcb-dri3.so.0.1.0
-  /usr/lib/x86_64-linux-gnu/libxcb-dri3.so.0:
-    symlink: $SNAP/graphics/usr/lib/x86_64-linux-gnu/libxcb-dri3.so.0.1.0
-  /usr/lib/x86_64-linux-gnu/libxcb.so.1.1.0:
-    symlink: $SNAP/graphics/usr/lib/x86_64-linux-gnu/libxcb.so.1.1.0
-  /usr/lib/x86_64-linux-gnu/libxcb.so:
-    symlink: $SNAP/graphics/usr/lib/x86_64-linux-gnu/libxcb.so.1.1.0
-  /usr/lib/x86_64-linux-gnu/libxcb.so.1:
-    symlink: $SNAP/graphics/usr/lib/x86_64-linux-gnu/libxcb.so.1.1.0
-  /usr/lib/x86_64-linux-gnu/gbm/dri_gbm.so:
-    symlink: $SNAP/graphics/usr/lib/x86_64-linux-gnu/gbm/dri_gbm.so
-  /etc/ld.so.cache:
-    bind-file: $SNAP_DATA/etc/ld.so.cache
-  /etc/fonts:
-    bind: $SNAP/etc/fonts
+    url: http://ports.ubuntu.com/ubuntu-ports/
+    suites: [noble, noble-updates]
+    components: [main, universe]
+    architectures: [arm64]
+    key-id: F6ECB3762474EDA9D21B7022871920D1991BC93C
+    key-server: keyserver.ubuntu.com
+  - type: apt
+    ppa: fex-emu/fex
 
 plugs:
   gaming-graphics-core24:
@@ -124,421 +85,64 @@ hooks:
     plugs:
       - opengl
 
-environment:
-  LD_LIBRARY_PATH: $SNAP/graphics/usr/lib/i386-linux-gnu:$SNAP/graphics/usr/lib:$SNAP/usr/lib/i386-linux-gnu:$SNAP/usr/lib/x86_64-linux-gnu:$SNAP/lib/i386-linux-gnu:$SNAP/usr/lib/i386-linux-gnu/pulseaudio${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}
-  LIBGL_DRIVERS_PATH: $SNAP/graphics/usr/lib/i386-linux-gnu/dri:$SNAP/graphics/usr/lib/x86_64-linux-gnu/dri:${LIBGL_DRIVERS_PATH:+:$LIBGL_DRIVERS_PATH}
-  GI_TYPELIB_PATH: $SNAP/usr/lib/x86_64-linux-gnu/girepository-1.0
-  PYTHONPATH: $SNAP/usr/lib/python3/dist-packages
-
 parts:
-  launcher:
-    plugin: nil
-    source: ./src
-    override-build: |
-      mkdir -p $CRAFT_PART_INSTALL/bin
-      cp * $CRAFT_PART_INSTALL/bin/
-    stage-packages:
-      - python3-gi
-      - gir1.2-gtk-3.0
-    stage:
-      - bin/*
-      - usr/lib/python3/dist-packages/*
-      - usr/share/mime/*
-      - usr/share/icons/*
-      - usr/lib/**/gtk-3.0*
-      - etc/gtk-3.0*
-      - usr/share/*/gir1.2-gtk-3.0*
-      - usr/**/libfontconfig*
-      - usr/**/cairo-1*
-      - usr/**/libatspi*
-      - usr/**/libavahi-client*
-      - usr/**/libavahi-common*
-      - usr/**/libcairo-gobject*
-      - usr/**/libcairo*
-      - usr/**/libcolord*
-      - usr/**/libcups*
-      - usr/**/libdatrie*
-      - usr/**/libdconf*
-      - usr/**/libdeflate*
-      - usr/**/libepoxy*
-      - usr/**/libfribidi*
-      - usr/**/*girepository*
-      - usr/**/libgraphite2*
-      - usr/**/libgtk-3*
-      - usr/**/libharfbuzz*
-      - usr/**/libjbig*
-      - usr/**/libjpeg*
-      - usr/**/liblcms2*
-      - usr/**/libpango-1*
-      - usr/**/libpangocairo-1*
-      - usr/**/libpangoft2-1*
-      - usr/**/libpangoxft-1*
-      - usr/**/libpixman-1*
-      - usr/**/libthai*
-      - usr/**/libtiff*
-      - usr/**/libwayland-cursor*
-      - usr/**/libwebp*
-      - usr/**/libxcb-render*
-      - usr/**/libxkbcommon*
-
-  alsa-mixin:
-    plugin: dump
-    source: https://github.com/diddlesnaps/snapcraft-alsa.git
-    source-subdir: snapcraft-assets
-    build-packages:
-      - libasound2-dev
-    stage-packages:
-      - libasound2t64
-      - libasound2-plugins
-      - libmp3lame0
-      - yad
-    stage:
-      # restrict to only audio-related files - you need to ensure
-      # that gtk3 is staged for yad to work correctly, to prompt
-      # users to connect the alsa plug or proceed with pulseaudio.
-      #
-      # This helps prevent symbol conflicts in situations where
-      # you're using a non-default library, such as those that the
-      # gnome-3-34 extension for core18 provides.
-      - etc/asound.conf
-      - snap/command-chain/alsa-launch
-      - usr/bin/yad*
-      - usr/lib/*/alsa-lib
-      - usr/lib/*/libasound*
-      - usr/lib/*/libasyncns*
-      - usr/lib/*/libdnsfile*
-      - usr/lib/*/libFLAC*
-      - usr/lib/*/libjack*
-      - usr/lib/*/libpulse*
-      - usr/lib/*/libsamplerate*
-      - usr/lib/*/libsndfile*
-      - usr/lib/*/libspeex*
-      - usr/lib/*/libvorbis*
-      - usr/lib/*/pulseaudio
-      - usr/share/alsa
-
-  ninja:
-    plugin: nil
-    source: https://github.com/ninja-build/ninja.git
-    source-tag: "v1.13.1"
-    override-build: |
-      rm -rf build
-      rm -f ninja
-      rm -f ninja_bootstrap
-      sed -i 's_^#!/usr/bin/env python$_#!/usr/bin/env python3_g' configure.py
-      ./configure.py --bootstrap
-      mv ninja ninja_bootstrap
-      rm -rf build
-      ./ninja_bootstrap
-      rm -f ninja_bootstrap
-      mkdir -p $CRAFT_PART_INSTALL/usr/bin
-      mv ninja $CRAFT_PART_INSTALL/usr/bin/
-    build-packages:
-      - python3
-    prime:
-      - -*
-
-  meson-deps:
-    after: [ninja]
-    plugin: nil
-    source: https://github.com/mesonbuild/meson.git
-    source-tag: "1.8.3"
-    override-build: |
-      python3 -m pip install . --break-system-packages
-      mkdir -p $CRAFT_PART_INSTALL/usr/lib/python3/dist-packages
-      rm -rf $CRAFT_PART_INSTALL/usr/lib/python3/dist-packages/meson*
-      python3 -m pip install --target=$CRAFT_PART_INSTALL/usr .
-      mv $CRAFT_PART_INSTALL/usr/meson* $CRAFT_PART_INSTALL/usr/lib/python3/dist-packages/
-      sed -i "s%^#!/usr/bin/python3$%#!/usr/bin/env python3%g" /usr/local/bin/meson
-      sed -i "s%^#!/usr/bin/python3$%#!/usr/bin/env python3%g" $CRAFT_PART_INSTALL/usr/bin/meson
-    build-packages:
-      - python3-pip
-    prime:
-      - -*
-
-  mangohud:
-    after: [meson-deps]
-    source: https://github.com/flightlessmango/MangoHud.git
-    source-tag: "v0.8.1"
-    plugin: meson
-    organize:
-      snap/steam/current/usr: usr
-    build-environment:
-      - CC: gcc -m32
-      - CXX: g++ -m32
-      - PKG_CONFIG_PATH: /usr/lib/i386-linux-gnu/pkgconfig:/usr/lib/x86_64-linux-gnu/pkgconfig:/usr/lib/pkgconfig
-    meson-parameters:
-      - --prefix=/usr
-      - --libdir=lib/i386-linux-gnu
-      - -Dappend_libdir_mangohud=false
-    build-packages:
-      - gcc
-      - gcc-multilib
-      - g++
-      - g++-multilib
-      - glslang-dev
-      - glslang-tools
-      - libdbus-1-dev
-      - libgl-dev
-      - libglvnd-dev
-      - libx11-dev
-      - libxnvctrl-dev
-      - mesa-common-dev
-      - python3-mako
-      - libwayland-dev:i386
-      - libwayland-dev
-      - libxkbcommon-dev:i386
-      - libxkbcommon-dev
-    stage-packages:
-      - libxkbcommon0:i386
-    override-build: |
-        craftctl default
-        sed -i 's/\/usr\/\\\$LIB/\$SNAP\/usr\/\\\$LIB/' $CRAFT_PART_INSTALL/usr/bin/mangohud
-
-  mangohud64:
-    after: [meson-deps, mangohud]
-    source: https://github.com/flightlessmango/MangoHud.git
-    source-tag: "v0.8.1"
-    plugin: meson
-    organize:
-      snap/steam/current/usr: usr
-    meson-parameters:
-      - --prefix=/usr
-      - --libdir=lib/x86_64-linux-gnu
-      - -Dappend_libdir_mangohud=false
-    stage:
-      - -usr/bin/mangohud
-      - -usr/share/vulkan/implicit_layer.d/MangoHud.json
-      - -usr/share/vulkan/implicit_layer.d/libMangoApp.json
-      - -usr/share/doc/mangohud/MangoHud.conf.example
-      - -usr/share/man/man1/mangohud.1
-
-  gamemode:
-    after: [meson-deps]
-    source: https://github.com/FeralInteractive/gamemode.git
-    source-tag: "1.8.2"
-    plugin: meson
-    build-environment:
-      - CC: gcc -m32
-      - CXX: g++ -m32
-      - PKG_CONFIG_PATH: /usr/lib/i386-linux-gnu/pkgconfig:/usr/lib/x86_64-linux-gnu/pkgconfig:/usr/lib/pkgconfig
-    organize:
-      snap/steam/current/usr: usr
-    meson-parameters:
-      - --prefix=/usr
-      - --libdir=lib/i386-linux-gnu
-    build-packages:
-      - libsystemd-dev:i386
-      - libdbus-1-dev:i386
-      - pkg-config
-    stage:
-      - usr/bin/gamemode*
-      - usr/lib/*/libgamemode*.so.*
-      - usr/lib/*/libinih.so.*
-
-  gamemode64:
-    after: [meson-deps, gamemode]
-    source: https://github.com/FeralInteractive/gamemode.git
-    source-tag: "1.8.2"
-    plugin: meson
-    organize:
-      snap/steam/current/usr: usr
-    meson-parameters:
-      - --prefix=/usr
-      - --libdir=lib/x86_64-linux-gnu
-    build-packages:
-      - libsystemd-dev
-      - libdbus-1-dev
-      - pkg-config
-    stage:
-      - usr/lib/*/libgamemode*.so.*
-      - usr/lib/*/libinih.so.*
-
-  debug-tools:
-    plugin: nil
-    stage-packages:
-      - jq
-    prime:
-      - usr/bin/jq
-      - usr/lib/*/libjq.so*
-      - usr/lib/*/libonig.so*
-
-  tests:
-    plugin: dump
-    source: tests
-    override-build: |
-      mkdir -p $CRAFT_PART_INSTALL/tests
-      cp -rp * $CRAFT_PART_INSTALL/tests/
-
-  steam-devices:
-    plugin: dump
-    source: https://github.com/ValveSoftware/steam-devices.git
-
-  steam:
-    plugin: nil
-    #source: http://repo.steampowered.com/steam/archive/precise/steam_latest.deb
-    build-packages:
-      - dpkg-dev
-      - dirmngr # Needed for launchpad builds
-    build-snaps:
-      - core24
-    stage-packages:
-      - steam-launcher
-      - steam-libs-amd64
-      - steam-libs-i386
-      - libappindicator3-1
-      - libxcb-dri3-0:amd64
-      - libxcb-dri3-0:i386
-      - xkb-data
-      - libpci3
-      - libvulkan1:i386
-      - libvulkan1:amd64
-      - libxml2:i386
-      - libxml2:amd64
-      - libicu74:i386
-      - libicu74:amd64
-      - zlib1g:i386
-      - zlib1g:amd64
-      - xdg-utils
-      - xdg-user-dirs
-      - fontconfig-config
-      - fontconfig:i386
-      - fontconfig:amd64
-      - pciutils
-      - lsof
-      - locales-all
-      - usbutils # Allows finding controllers etc
-      - psmisc
-      - libfuse2:amd64
-      - libfuse2:i386
-      - libxss1:amd64
-      - libxss1:i386
-      - x11-xserver-utils
-      - libxtst6:amd64
-      - libxtst6:i386
-      - libibus-1.0-5
-      - libxrandr2:amd64
-      - libxrandr2:i386
-      - libxi6:amd64
-      - libxi6:i386
-      - libpipewire-0.3-0t64:amd64
-      - libpipewire-0.3-0t64:i386
-      - libopenal1:amd64
-      - libopenal1:i386
-      - libpulse0:amd64
-      - libpulse0:i386
-      - libnm0:amd64
-      - libnm0:i386
-      - libglib2.0-0t64:amd64
-      - libglib2.0-0t64:i386
-      - libxfixes3:amd64
-      - libxfixes3:i386
-      - libgtk2.0-0t64:amd64
-      - libgtk2.0-0t64:i386
-      - libxcb-res0:amd64
-      - libxcb-res0:i386
-      - liblzma5:amd64
-      - liblzma5:i386
-      - libice6:i386
-      - libice6:amd64
-      - libsm6:i386
-      - libsm6:amd64
-      - libsdl2-2.0-0:i386
-      - libsdl2-2.0-0:amd64
-      - libaom3:i386
-      - libaom3:amd64
-      - libavcodec60:i386
-      - libavcodec60:amd64
-      - libavutil58:i386
-      - libavutil58:amd64
-      - libdav1d7:i386
-      - libdav1d7:amd64
-      - libswscale7:i386
-      - libswscale7:amd64
-      - libvpx9:i386
-      - libvpx9:amd64
-    override-build: |
-      craftctl default
-      # Set the snap version from the .deb package version
-      craftctl set version=$(dpkg-parsechangelog -l $CRAFT_PART_INSTALL/usr/share/doc/steam-launcher/changelog.*.gz -S Version | sed -e s/1://g)
-    prime:
-      - -usr/include
-      - -usr/share/doc
-      - -usr/share/man
-      - -usr/share/bug
-      - -usr/share/gdb
-      - -usr/share/emacs*
-      - -usr/share/lintian
-      - -usr/share/drirc.d
-      - -usr/share/vulkan
-      - -usr/share/Xsession.d
-      - -usr/lib/*/dri
-      - -usr/lib/*/vdpau
-      - -usr/lib/*/libvkd3d*
-      - -usr/lib/*/libvulkan*
-      - -usr/lib/*/libVk*
-      - -usr/lib/*/libLLVM*
-      - -usr/lib/*/libgallium* # provided by gaming-graphics-core24
-      - -usr/lib/*/libasound.so* # conflicts with alsa-mixin
-    override-prime: |
-      set -eux
-      craftctl default
-      cp -a /snap/core24/current/usr/lib/i386-linux-gnu/* usr/lib/i386-linux-gnu/
-
-  yaru-skin:
-    plugin: nil
-    source: https://github.com/ubuntu/yaru-for-steam.git
-    source-type: git
-    stage-packages:
-      - fonts-ubuntu
-    override-build: |
-      mkdir -p $CRAFT_PART_INSTALL/usr/share/Steam/skins
-      ./install.py -t $CRAFT_PART_INSTALL/usr/share/Steam/skins -w full -n Yaru
-    prime:
-      - usr/share/fonts/truetype/ubuntu
-      - usr/share/Steam/skins
-
-  conditioning:
-    after: [steam]
-    plugin: nil
-    build-packages:
-      - shared-mime-info
-      - gtk-update-icon-cache
-    override-prime: |
-      set -eux
-      craftctl default
-      update-mime-database usr/share/mime
-      for dir in usr/share/icons/*; do
-        if [ -f "$dir/index.theme" ]; then
-          gtk-update-icon-cache --force "$dir"
-        fi
-      done
-
-  cleanup:
-    after: [steam, conditioning]
+  gaming-graphics-core24:
     plugin: nil
     build-snaps:
-      - gaming-graphics-core24/kisak-fresh/stable
-    override-prime: |
-      set -eux
-      cd /snap/gaming-graphics-core24/current/usr/lib
-      find . -type f,l -exec rm -f $CRAFT_PRIME/usr/lib/{} \;
-      cd /snap/gaming-graphics-core24/current/usr/share
-      find . -type f,l -exec rm -f $CRAFT_PRIME/usr/share/{} \;
+      - gaming-graphics-core24
+  amd64-content:
+    plugin: dump
+    source: https://github.com/MitchellAugustin/steam-snap/releases/download/amd64-components-1-26-26/steam_231_amd64.tar.gz
+    stage:
+      - -usr/bin/curl
+      - -usr/bin/fc-cache
+      - -usr/bin/fc-cat
+      - -usr/bin/fc-conflist
+      - -usr/bin/fc-list
+      - -usr/bin/fc-match
+      - -usr/bin/fc-pattern
+      - -usr/bin/fc-query
+      - -usr/bin/fc-scan
+      - -usr/bin/fc-validate
+      - -usr/bin/gtk-update-icon-cache
+      - -usr/bin/update-mime-database
+      - -usr/bin/zenity
+      - -usr/libexec/dconf-service
+      - -usr/share/doc/libcups2t64/changelog.Debian.gz
+      - -bin/desktop-launch
+      - -usr/share/doc/libavahi-common-data/changelog.Debian.gz
+    organize:
+        steam_231_amd64: .
+  amd64-rootfs:
+    plugin: dump
+    source: https://github.com/MitchellAugustin/steam-snap/releases/download/amd64-components-1-26-26/amd64_rootfs.tar.gz
+    organize:
+        amd64_rootfs: .
+  fex-emu:
+    plugin: nil
+    stage-packages:
+      - fex-emu-armv8.0
+      - fex-emu-wine
+      - zenity
+  fex-config:
+    plugin: dump
+    source: ./fex_config
+  wget:
+    plugin: nil
+    stage-packages:
+      - wget
+  desktop-launch:
+    plugin: dump
+    source: ./src/
+    organize:
+        desktop-launch: bin/
+    stage:
+      - bin/desktop-launch
 
+  
 apps:
   steam:
-    command-chain: [snap/command-chain/alsa-launch, bin/desktop-launch]
-    command: usr/lib/steam/bin_steam.sh -no-cef-sandbox
-    environment:
-      HOME: $SNAP_USER_COMMON
-      #LIBGL_DEBUG: verbose
-      TMPDIR: $XDG_RUNTIME_DIR
-      ALWAYS_USE_PULSEAUDIO: 1
-      DISABLE_WAYLAND: 1
-      PKG_CONFIG_PATH: $SNAP/usr/lib/i386-linux-gnu/pkgconfig:$SNAP/usr/lib/x86_64-linux-gnu/pkgconfig:$SNAP/usr/lib/pkgconfig
-      STEAM_LINUX_RUNTIME_VERBOSE: 1
-      STEAM_LINUX_RUNTIME_LOG: 1
+    command: usr/bin/fex_launcher.sh
     plugs:
       - shmem
       - camera
@@ -551,6 +155,7 @@ apps:
       - hardware-observe
       - mount-observe
       - system-observe
+      - network-observe
       - joystick
       - network
       - network-bind
@@ -566,49 +171,4 @@ apps:
       - removable-media
       - upower-observe
       - uinput
-  report:
-    command-chain: [bin/desktop-launch]
-    command: bin/steamreport
-    environment:
-      DISABLE_WAYLAND: 1
-    plugs:
-      - system-observe
-      - hardware-observe
-      - opengl
-      - x11
-      - desktop
-  vulkaninfo:
-    command-chain: [bin/desktop-launch]
-    command: bin/vulkaninfo
-    plugs:
-      - opengl
-      - x11
-      - desktop
-  vkcube:
-    command-chain: [bin/desktop-launch]
-    command: bin/vkcube
-    plugs:
-      - opengl
-      - x11
-      - desktop
-  glxinfo:
-    command-chain: [bin/desktop-launch]
-    command: bin/glxinfo
-    plugs:
-      - opengl
-      - x11
-      - desktop
-  glxgears:
-    command-chain: [bin/desktop-launch]
-    command: bin/glxgears
-    plugs:
-      - opengl
-      - x11
-      - desktop
-  test:
-    command-chain: [bin/desktop-launch]
-    command: tests/run.sh
-    plugs:
-      - opengl
-      - x11
-      - desktop
+      - dot-local-share-steam
