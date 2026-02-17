@@ -1,5 +1,4 @@
 ---
-relatedlinks: "[Download&#32;Pro&#32;for&#32;WSL&#32;from&#32;ubuntu.com](https://www.ubuntu.com/desktop/wsl)"
 myst:
   html_meta:
     "description lang=en":
