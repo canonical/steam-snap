@@ -46,9 +46,9 @@ switching graphics cards.
     - Can be played properly
 - Install a game. Ensure the installer UI is correct, the game is installed in
   the right place, and it can be played.
-- Switch to different gaming-graphics-core22 branches and ensure all of them
+- Switch to different gaming-graphics-core24 branches and ensure all of them
   work correctly. You can switch between branches using `sudo snap refresh
-  gaming-graphics-core22 --channel=<branch>/stable`. The three branches are
+  gaming-graphics-core24 --channel=<branch>/stable`. The three branches are
   `oibaf-latest`, `kisak-fresh` and `kisak-turtle`.
 - Plug in a supported controller (PS4, Xbox One and Xbox 360 controllers) and
   make sure the input is processed in the games.
