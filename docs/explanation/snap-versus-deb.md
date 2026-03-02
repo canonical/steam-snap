@@ -46,10 +46,9 @@ The snap version uses confined directories under `~/snap/steam/`.
 
 ### Bundled features
 
-The snap includes additional gaming tools:
+The snap includes additional gaming tools, including:
 
 * **{term}`MangoHUD`** - performance monitoring overlay (see [Enabling MangoHUD](/howto/mango))
-* **[{term}`GameMode`](https://github.com/FeralInteractive/gamemode)** - system optimizations for gaming performance
 
 When using the deb version, these tools must be installed separately.
 

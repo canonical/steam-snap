@@ -12,7 +12,7 @@ Valve's Steam client is available to Ubuntu users as a {term}`snap`.
 The Steam {term}`snap` provides a consistent environment to run games. The
 environment is separate from the underlying host operating system and receives
 automatic updates. It also comes bundled with useful tools, like
-{term}`MangoHud` and {term}`GameMode`.
+{term}`MangoHud`.
 
 The snap can be run on any system that supports {term}`snapd`, including
 Ubuntu.
