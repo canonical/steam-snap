@@ -10,6 +10,9 @@ Confinement
 GameMode
   A Linux daemon/library that optimizes system performance for gaming by adjusting CPU governor, I/O priority, and other settings when games are running.
 
+gaming-graphics-core24-snap
+  Graphics stack useful as a content snap for gaming snaps.
+
 MangoHud
   An overlay for monitoring system performance in games, showing metrics like frame rate (FPS), CPU/GPU usage, and temperatures on Linux.
 
