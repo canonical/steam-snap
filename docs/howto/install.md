@@ -43,8 +43,17 @@ Then install the deb with:
 sudo apt install ./steam_latest.deb 
 ```
 
-If you want more information about the Steam deb, refer to the [Debian
-documentation for Steam](https://wiki.debian.org/Steam).
+---
+
+You can also install `steam-installer` as a deb.
+
+```shell
+sudo apt install steam-installer
+```
+
+This requires enabling the i386 architecture and installing additional
+libraries, which is outlined in more detail in the [Debian documentation for
+Steam](https://wiki.debian.org/Steam).
 ````
 
 ## Snap connections
