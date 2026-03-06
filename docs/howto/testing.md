@@ -41,7 +41,7 @@ switching graphics cards.
     - Respond to input, plays audio, and displays graphical content
     - Use the correct GPU
     - Settings (especially graphics) populate correctly and can be modified
-    - Changes window mode (fullscreen, windowed)
+    - Changes window mode (full screen, windowed)
     - `Alt-Tab` works and doesn't crash the game
     - Can be played properly
 - Install a game. Ensure the installer UI is correct, the game is installed in
@@ -60,7 +60,7 @@ switching graphics cards.
     - Responds to input, plays audio, and displays graphical content
     - Uses the correct GPU
     - Settings (especially graphics) populate correctly and can be modified
-    - Changes window mode (fullscreen, windowed)
+    - Changes window mode (full screen, windowed)
     - `Alt-Tab` works and doesn't crash the game
     - Can be played properly
 - Go to `Steam > Settings > Downloads > Steam Library Folders`. Ensure you can
@@ -73,11 +73,11 @@ switching graphics cards.
 - Switch to non-English keyboard (ex. Russian). Ensure you can type non-English
 - [Ensure you can add a custom Proton version and use it.](https://github.com/canonical/steam-snap/wiki/FAQ#how-do-i-use-a-custom-proton-version)
 characters into the Steam client.
-- Test MangoHUD
-    - In the Snap shell, make sure MangoHUD works with `mangohud glxgears`.
+- Test MangoHud
+    - In the Snap shell, make sure MangoHud works with `mangohud glxgears`.
     - For *native* games, ensure adding `mangohud %command%` as launch options
-      works and displays MangoHUD.
-    - For *Proton* games, MangoHUD is not expected to work, see
+      works and displays MangoHud.
+    - For *Proton* games, MangoHud is not expected to work, see
       [here](https://github.com/flightlessmango/MangoHud/issues/369). The game
       should run, however.
 
