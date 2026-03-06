@@ -9,11 +9,11 @@ myst:
 
 # Uninstall the Steam snap
 
-## Note on snapshotting
+## Note on taking snapshots
 
-<!-- TODO: it might be good to explain if there is ever an advantage to snapshotting, as currently it just seems like a nuisance -->
+<!-- TODO: it might be good to explain if there is ever an advantage to taking snapshots, as currently it just seems like a nuisance -->
 You should consider disabling
-[snapshotting](https://snapcraft.io/docs/snapshots#heading--automatic-snapshots)
+[snapshots](https://snapcraft.io/docs/snapshots#heading--automatic-snapshots)
 when uninstalling Steam. Snapshots can be incredibly large and take a long time
 to create since they also contain your Steam library.
 

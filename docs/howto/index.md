@@ -19,7 +19,7 @@ Testing the Steam snap <testing>
 Using a dedicated GPU <dedicated-gpu>
 Changing the mesa/graphics version <change-mesa-graphics>
 Configuring Proton <configure-proton>
-Using MangoHUD <mango>
+Using MangoHud <mango>
 Using controllers <controllers>
 Troubleshooting <troubleshooting>
 Workarounds <workarounds>

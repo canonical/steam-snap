@@ -66,7 +66,7 @@ To create a file with the output of a specific game, add the following to a game
 
 This will create a text file containing the game's output in `/home/$USER/snap/steam/common/game_log`.
 
-[*Credit to thatLeaflet.*](https://github.com/canonical/steam-snap/issues/49#issuecomment-1294286910)
+[*Credit to {vale-ignore}`thatLeaflet`.*](https://github.com/canonical/steam-snap/issues/49#issuecomment-1294286910)
 
 Alternatively, just copy/paste the logs from running Steam in the terminal starting from pressing the "Play" button in Steam.
 

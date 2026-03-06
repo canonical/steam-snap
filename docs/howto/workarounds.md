@@ -15,7 +15,7 @@ manually running potentially destructive shell commands.
 (howto::workarounds-deus-ex)=
 ## Deus Ex: Revision
 
-[Deux Ex: Revision on Steam](https://store.steampowered.com/app/397550/Deus_Ex_Revision)
+[Deus Ex: Revision on Steam](https://store.steampowered.com/app/397550/Deus_Ex_Revision)
 
 Source: https://github.com/canonical/steam-snap/issues/78#issuecomment-1334686442
 

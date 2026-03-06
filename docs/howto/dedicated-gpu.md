@@ -5,7 +5,7 @@ myst:
       "Install the Steam snap on Ubuntu."
 ---
 
-(howto::dedidcated-gpu)=
+(howto::dedicated-gpu)=
 # How do to use your dedicated GPU
 
 ## NVIDIA

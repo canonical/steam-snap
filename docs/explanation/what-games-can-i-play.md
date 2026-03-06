@@ -11,7 +11,7 @@ myst:
 <!-- TODO: are there cases where it doesn't? -->
 The Steam {term}`snap` aims to support the same games as the Steam deb.
 
-## Resources on compatability
+## Resources on compatibility
 
 [{term}`Steam Deck` verified games](https://store.steampowered.com/greatondeck) are
 verified by Valve to work on the {term}`Steam Deck` (Linux-based) and should work on
