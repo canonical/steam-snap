@@ -83,5 +83,5 @@ snap connections steam
 ```
 
 ```{note}
-If you want to uninstall the snap, read the [dedicated guide](/uninstall).
+If you want to uninstall the snap, read the [dedicated guide](/howto/uninstall).
 ```
