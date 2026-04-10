@@ -28,7 +28,7 @@ managed by {term}`snapd`.
 
 The deb version requires manual updates or system package manager updates.
 
-The snap version receives automatic background updates through the Snap Store.
+The snap version receives automatic updates in the background.
 
 ### Confinement and security
 
