@@ -6,17 +6,18 @@ myst:
 ---
 
 (howto::install)=
-# Install the Steam snap
+# Installing the Steam snap
 
-## App store
+Installing Steam using different methods, configuring snap connections, and
+uninstalling the snap.
 
-Hit the {kbd}`super` key, search for "app center" and open it.
+## Install with the App center or the terminal
 
+To install Steam using the graphical **App center**, press the {kbd}`super` key,
+search for "app center", and open it.
 Find "Steam" in the App Center and click {guilabel}`install`.
 
-## Terminal
-
-Install Steam using the terminal with:
+To install Steam using the **terminal**, run the following command:
 
 ```shell
 snap install steam
@@ -56,7 +57,7 @@ libraries, which is outlined in more detail in the [Debian documentation for
 Steam](https://wiki.debian.org/Steam).
 ````
 
-## Snap connections
+## Configure snap connections
 
 Most {term}`snap connections <snap connection>` that you need will be automatically connected for you.
 
@@ -82,6 +83,32 @@ For more information on the {term}`snap connections <snap connection>`, run
 snap connections steam
 ```
 
-```{note}
-If you want to uninstall the snap, read the [dedicated guide](/howto/uninstall).
+(howto::uninstall)=
+
+## Uninstall the Steam snap
+
+```{admonition} Disabling snapshots
+:class: tip
+<!-- TODO: it might be good to explain if there is ever an advantage to taking snapshots, as currently it just seems like a nuisance -->
+You should consider disabling
+[snapshots](https://snapcraft.io/docs/snapshots#heading--automatic-snapshots)
+when uninstalling Steam. Snapshots can be incredibly large and take a long time
+to create since they also contain your Steam library.
 ```
+
+### Uninstalling without creating a snapshot
+
+#### Option 1: remove Steam and its data with no snapshot
+
+```text
+snap remove --purge steam
+```
+
+#### Option 2: disable snapshots for all snaps then remove Steam
+
+```text
+snap set system snapshots.automatic.retention=no
+snap remove steam
+```
+
+<!-- TODO: if someone uninstalls through the app center, what is the behaviour? -->
