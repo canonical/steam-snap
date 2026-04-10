@@ -12,8 +12,7 @@ Get set up using Ubuntu on a Windows machine with WSL.
 ```{toctree}
 :titlesonly:
 
-Installing the Steam snap <install>
-Uninstalling the Steam snap <uninstall>
+Install <install>
 Steam snap versions and updates <versions>
 Testing the Steam snap <testing>
 Using a dedicated GPU <dedicated-gpu>
