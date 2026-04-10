@@ -99,13 +99,14 @@ ensure you use both a Proton and a Native game.
 | Floating Point | Native | Unity | https://store.steampowered.com/app/302380 |
 | Life is Strange - Episode 1 | Native | Unreal | https://store.steampowered.com/app/319630 |
 | Rocket Bots | Native | Godot | https://store.steampowered.com/app/1359160 |
-||
-||
 | Unturned | Proton | Unity | https://store.steampowered.com/app/304930 |
-| - | Proton | Unreal | - |
-| - | Proton | Source | - |
 | Brawlhalla | Proton | Custom | - | https://store.steampowered.com/app/291550 |
 | Goose Goose Duck | Proton | ? | https://store.steampowered.com/app/1568590 |
+
+
+<!-- TODO: to add -->
+<!-- | - | Proton | Unreal | - | -->
+<!-- | - | Proton | Source | - | -->
 
 (howto::additional-games)=
 ### Additional games
@@ -115,9 +116,11 @@ ensure you use both a Proton and a Native game.
 | Game | Native/Proton | Engine | Link |
 |------|---------------|--------|------|
 | Apex Legends | Native | Source | https://store.steampowered.com/app/730 |
-| - | - | Unity | - |
-| - | - | Unreal | - |
-| - | - | Godot | - |
+
+<!-- TODO: to add -->
+<!-- | - | - | Unity | - | -->
+<!-- | - | - | Unreal | - | -->
+<!-- | - | - | Godot | - | -->
 
 ### Collections
 
