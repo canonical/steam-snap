@@ -81,7 +81,7 @@ characters into the Steam client.
       [here](https://github.com/flightlessmango/MangoHud/issues/369). The game
       should run, however.
 
-## Games
+## Free games to test
 
 The following is a list of *free* games using various engines and varying Linux support.
 
