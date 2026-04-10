@@ -6,7 +6,7 @@ myst:
 ---
 
 (howto::mango)=
-# Enabling MangoHud
+# Configure MangoHud
 
 {term}`MangoHud` is bundled with the Steam {term}`snap` and can be enabled.
 
@@ -16,7 +16,7 @@ myst:
 games. Please do not open issues relating solely to {term}`MangoHud` compatibility.
 ```
 
-## Using MangoHud
+## Use MangoHud
 
 Add `mangohud %command%` to your game launch options.
 
@@ -24,7 +24,7 @@ Add `mangohud %command%` to your game launch options.
 [Normal usage](https://github.com/flightlessmango/MangoHud#normal-usage) in the MangoHud documentation.
 ```
 
-## Configuring MangoHud
+## Configure MangoHud
 
 ### Environment variables
 

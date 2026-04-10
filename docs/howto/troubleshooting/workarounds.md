@@ -6,7 +6,7 @@ myst:
 ---
 
 (howto::workarounds)=
-# Workarounds
+# Game workarounds
 
 Known workarounds for various games that may have trouble running in a snap
 environment. Take care when applying these fixes, as they often require

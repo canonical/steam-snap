@@ -6,7 +6,7 @@ myst:
 ---
 
 (howto::dedicated-gpu)=
-# How do to use your dedicated GPU
+# Use a dedicated GPU
 
 ## NVIDIA
 
