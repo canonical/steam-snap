@@ -2,7 +2,7 @@
 myst:
   html_meta:
     "description lang=en":
-      "Enable MangoHUD in the Steam snap on Ubuntu."
+      "Enable MangoHud in the Steam snap on Ubuntu."
 ---
 
 (howto::mango)=
@@ -12,8 +12,8 @@ myst:
 
 ```{admonition} Experimental
 :class: important
-{term}`MangoHUD` support is experimental and will likely only work with **OpenGL**
-games. Please do not open issues relating solely to {term}`MangoHUD` compatibility.
+{term}`MangoHud` support is experimental and will likely only work with **OpenGL**
+games. Please do not open issues relating solely to {term}`MangoHud` compatibility.
 ```
 
 ## Using MangoHud

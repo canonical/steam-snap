@@ -48,7 +48,7 @@ The snap version uses confined directories under `~/snap/steam/`.
 
 The snap includes additional gaming tools, including:
 
-* **{term}`MangoHUD`** - performance monitoring overlay (see [Enabling MangoHUD](/howto/mango))
+* **{term}`MangoHud`** - performance monitoring overlay (see [Enabling MangoHud](/howto/mango))
 
 When using the deb version, these tools must be installed separately.
 
