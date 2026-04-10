@@ -6,7 +6,7 @@ myst:
 ---
 
 (howto::mesa-graphics)=
-# Changing the mesa/graphics version
+# Change the mesa/graphics version
 
 The Snap relies on the [gaming-graphics-core24 Snap](https://github.com/canonical/gaming-graphics/) for
 graphics packages (see `snap connections steam`). You may switch

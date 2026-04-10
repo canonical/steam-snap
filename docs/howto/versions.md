@@ -6,11 +6,11 @@ myst:
 ---
 
 (howto::versions)=
-# Checking Steam snap versions and updating the snap
+# Update the Steam snap version
 
-## Checking the version
+## Check current versions
 
-You can check the version of the steam snap and snapd.
+You can check the version of the Steam snap and `snapd`.
 
 ### Steam snap revision
 

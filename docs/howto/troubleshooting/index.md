@@ -22,7 +22,7 @@ You can still open an issue if one of these workarounds fixes a problem, but ple
 
 ## Troubleshooting specific games
 
-You may check the [reports][reports] discussions for troubleshooting tips with a specific game, and expected results. Also check {term}`ProtonDB` to see if your game *should* work based on other's input. If our [reports][reports] don't contain the game you're experiencing issues with, feel free to add it with the [steam.report tool][steamreport]. Some games may also be listed on the [Known Workarounds page][workarounds].
+You may check the [reports][reports] discussions for troubleshooting tips with a specific game, and expected results. Also check {term}`ProtonDB` to see if your game *should* work based on other's input. If our [reports][reports] don't contain the game you're experiencing issues with, feel free to add it with the [steam.report tool][steamreport]. Some games may also be listed on the {ref}`known game workarounds page <howto::workarounds>`.
 
 You can also check the [PC Gaming Wiki][10] for information on game compatibility, local and cloud game files, and system support.
 
@@ -137,8 +137,8 @@ Check [existing issues][issues] for information regarding any issue you may have
 
 ```{admonition} Unverified builds are UNTESTED and may not be stable.
 :class: warning
-You probably shouldn't be doing this unless recommended to or are testing a specific fix. **Always** revert to a verified branch afterwards.
 
+You probably shouldn't be doing this unless recommended to or are testing a specific fix. **Always** revert to a verified branch afterwards.
 ```
 
 ### Installing
@@ -154,6 +154,13 @@ Now, run Steam as usual with `snap run steam`.
 After testing the change, you need to revert to a verified branch to get regular updates again.
 
 Run `snap refresh steam --amend` to switch to a verified branch.
+
+```{toctree}
+:titlesonly:
+:hidden:
+
+Game workarounds <workarounds>
+```
 
 [1]: https://store.steampowered.com/about/
 [2]: https://docs.snapcraft.io/snapcraft-overview

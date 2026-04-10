@@ -19,10 +19,10 @@ Ubuntu.
 
 ## In this documentation
 
-* **Installation**: [Install the Steam snap](/howto/install) • [Check version and update](/howto/versions) • [Uninstall the Steam snap](/howto/uninstall)
+* **Installation**: [Install the Steam snap](/howto/install) • [Check version and update](/howto/versions) • {ref}`Uninstall the Steam snap <howto::uninstall>`
 * **Gaming setup**: [Configure Steam Play/Proton](/howto/configure-proton) • [Use controllers](/howto/controllers) • [What games can I play?](/explanation/what-games-can-i-play)
 * **Graphics and performance**: [Use your dedicated GPU](/howto/dedicated-gpu) • [Change mesa/graphics version](/howto/change-mesa-graphics) • [Enable MangoHud](/howto/mango)
-* **Troubleshooting**: [Troubleshoot common issues](/howto/troubleshooting) • [Find game-specific workarounds](/howto/workarounds)
+* **Troubleshooting**: {ref}`Troubleshoot common issues <howto::troubleshoot>` • {ref}`Find game-specific workarounds <howto::workarounds>`
 * **Reference**: [Glossary](/reference/glossary) • [Locations for external libraries](/reference/external-libraries) • [Helpful links](/reference/external-links)
 * **Additional information**: [Snap vs deb comparison](/explanation/snap-versus-deb) • [Testing the Steam snap](/howto/testing)
 
@@ -45,7 +45,7 @@ contributions, suggestions, fixes and constructive feedback.
 :hidden:
 :titlesonly:
 
-Steam snap <self>
+Home <self>
 How-to </howto/index>
 Reference </reference/index>
 Explanation </explanation/index>

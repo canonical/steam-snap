@@ -6,7 +6,7 @@ myst:
 ---
 
 (howto::configure-proton)=
-# How to configure Steam Play/Proton?
+# Configure Proton/Steam Play
 
 {term}`Proton`/{term}`Steam Play` isn't always necessary, if the game installs and runs without
 {term}`Proton`, it is native and likely works the best without {term}`Proton`.

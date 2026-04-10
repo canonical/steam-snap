@@ -13,13 +13,12 @@ Get set up using Ubuntu on a Windows machine with WSL.
 :titlesonly:
 
 Install <install>
-Steam snap versions and updates <versions>
-Testing the Steam snap <testing>
-Using a dedicated GPU <dedicated-gpu>
+Update version <versions>
+Test the snap <testing>
+Use a dedicated GPU <dedicated-gpu>
 Changing the mesa/graphics version <change-mesa-graphics>
-Configuring Proton <configure-proton>
-Using MangoHud <mango>
-Using controllers <controllers>
-Troubleshooting <troubleshooting>
-Workarounds <workarounds>
+Configure Proton <configure-proton>
+Configure MangoHud <mango>
+Set up a controller <controllers>
+Troubleshooting <troubleshooting/index>
 ```

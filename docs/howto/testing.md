@@ -6,7 +6,7 @@ myst:
 ---
 
 (howto::test)=
-# Testing the Steam snap
+# Test the Steam snap on your machine
 
 ```{note}
 This testing procedure is generally for internal use.
