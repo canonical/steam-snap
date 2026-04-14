@@ -76,6 +76,10 @@ layout:
     bind-file: $SNAP_DATA/etc/ld.so.cache
   /etc/fonts:
     bind: $SNAP/etc/fonts
+  /usr/lib/i386-linux-gnu/mangohud:
+    symlink: $SNAP/usr/lib/i386-linux-gnu/mangohud
+  /usr/lib/x86_64-linux-gnu/mangohud:
+    symlink: $SNAP/usr/lib/x86_64-linux-gnu/mangohud
 
 plugs:
   gaming-graphics-core24:
@@ -269,7 +273,7 @@ parts:
       - PKG_CONFIG_PATH: /usr/lib/i386-linux-gnu/pkgconfig:/usr/lib/x86_64-linux-gnu/pkgconfig:/usr/lib/pkgconfig
     meson-parameters:
       - --prefix=/usr
-      - --libdir=lib/i386-linux-gnu
+      - --libdir=lib/i386-linux-gnu/mangohud
       - -Dappend_libdir_mangohud=false
     build-packages:
       - gcc
@@ -293,7 +297,7 @@ parts:
       - libxkbcommon0:i386
     override-build: |
         craftctl default
-        sed -i 's/\/usr\/\\\$LIB/\$SNAP\/usr\/\\\$LIB/' $CRAFT_PART_INSTALL/usr/bin/mangohud
+        sed -i 's|MANGOHUD_LIB_NAME="/usr/\\$LIB/libMangoHud_shim.so"|MANGOHUD_LIB_NAME="/usr/lib/x86_64-linux-gnu/mangohud/libMangoHud_shim.so"|' $CRAFT_PART_INSTALL/usr/bin/mangohud
 
   mangohud64:
     after: [meson-deps, mangohud]
@@ -304,7 +308,7 @@ parts:
       snap/steam/current/usr: usr
     meson-parameters:
       - --prefix=/usr
-      - --libdir=lib/x86_64-linux-gnu
+      - --libdir=lib/x86_64-linux-gnu/mangohud
       - -Dappend_libdir_mangohud=false
     stage:
       - -usr/bin/mangohud
