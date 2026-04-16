@@ -15,6 +15,15 @@ Both the {term}`snap` and deb versions of Steam provide the full Steam client
 experience on Ubuntu. However, they differ in packaging, management, and
 bundled features.
 
+```{admonition} Official documentation for the Debian package
+:class: important
+Using the Debian package may have specific requirements, such as enabling the
+i386 architecture and installing dependencies.
+
+If you prefer to use the Debian package, refer to the [Debian wiki
+for its Steam documentation](https://wiki.debian.org/Steam).
+```
+
 ## Key differences
 
 ### Packaging and distribution
@@ -58,3 +67,4 @@ When using the deb version, these tools must be installed separately.
 Both versions support broadly the same number of games.
 
 See [What games can I play?](what-games-can-i-play) for more information on game compatibility.
+

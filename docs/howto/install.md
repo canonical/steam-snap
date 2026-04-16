@@ -24,40 +24,6 @@ To install Steam using the **terminal**, run the following command:
 snap install steam
 ```
 
-````{dropdown} Alternative: Install the Steam deb
-:icon: terminal
-
-If you would prefer to install the deb, go to the [Steam
-website](https://store.steampowered.com/about/) and click {guilabel}`INSTALL
-STEAM`.
-
-This will install `steam_latest.deb` to your Downloads directory.
-
-Change into downloads:
-
-```shell
-cd ~/Downloads/
-```
-
-Then install the deb with:
-
-```shell
-sudo apt install ./steam_latest.deb 
-```
-
----
-
-You can also install `steam-installer` as a deb.
-
-```shell
-sudo apt install steam-installer
-```
-
-This requires enabling the i386 architecture and installing additional
-libraries, which is outlined in more detail in the [Debian documentation for
-Steam](https://wiki.debian.org/Steam).
-````
-
 ## Configure snap connections
 
 Most {term}`snap connections <snap connection>` that you need will be automatically connected for you.
