@@ -18,6 +18,18 @@ To install Steam using the graphical **App center**, press the {kbd}`super` key,
 search for "app center", and open it.
 Find "Steam" in the App Center and click {guilabel}`install`.
 
+```{image} ../assets/app-center-dark.webp
+:alt: Installation page for Steam in app center.
+:class: only-dark
+:align: center
+```
+
+```{image} ../assets/app-center-light.webp
+:alt: Installation page for Steam in app center.
+:class: only-light
+:align: center
+```
+
 To install Steam using the **terminal**, run the following command:
 
 ```shell
