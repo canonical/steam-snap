@@ -1,4 +1,5 @@
 ---
+relatedlinks: "[Documentation&#32;for&#32;the&#32;debian&#32;package&#32;of&#32;Steam](https://wiki.debian.org/Steam)"
 myst:
   html_meta:
     "description lang=en":
@@ -17,45 +18,23 @@ To install Steam using the graphical **App center**, press the {kbd}`super` key,
 search for "app center", and open it.
 Find "Steam" in the App Center and click {guilabel}`install`.
 
+```{image} ../assets/app-center-dark.webp
+:alt: Installation page for Steam in app center.
+:class: only-dark
+:align: center
+```
+
+```{image} ../assets/app-center-light.webp
+:alt: Installation page for Steam in app center.
+:class: only-light
+:align: center
+```
+
 To install Steam using the **terminal**, run the following command:
 
 ```shell
 snap install steam
 ```
-
-````{dropdown} Alternative: Install the Steam deb
-:icon: terminal
-
-If you would prefer to install the deb, go to the [Steam
-website](https://store.steampowered.com/about/) and click {guilabel}`INSTALL
-STEAM`.
-
-This will install `steam_latest.deb` to your Downloads directory.
-
-Change into downloads:
-
-```shell
-cd ~/Downloads/
-```
-
-Then install the deb with:
-
-```shell
-sudo apt install ./steam_latest.deb 
-```
-
----
-
-You can also install `steam-installer` as a deb.
-
-```shell
-sudo apt install steam-installer
-```
-
-This requires enabling the i386 architecture and installing additional
-libraries, which is outlined in more detail in the [Debian documentation for
-Steam](https://wiki.debian.org/Steam).
-````
 
 ## Configure snap connections
 
