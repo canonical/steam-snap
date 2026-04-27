@@ -1,4 +1,5 @@
 ---
+relatedlinks: "[MangoHud](https://mangohud.org/)"
 myst:
   html_meta:
     "description lang=en":

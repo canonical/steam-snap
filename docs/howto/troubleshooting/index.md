@@ -1,4 +1,5 @@
 ---
+relatedlinks: "[ProtonDB](https://www.protondb.com/)"
 myst:
   html_meta:
     "description lang=en":

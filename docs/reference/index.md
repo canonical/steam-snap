@@ -7,7 +7,6 @@ designed, configured and developed.
 ```{toctree}
 :titlesonly:
 
-glossary
-external-links
 external-libraries
+glossary
 ```
