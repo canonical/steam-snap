@@ -8,17 +8,24 @@ myst:
 (howto::configure-mangohud)=
 # Configure MangoHud
 
-{term}`MangoHud` is bundled with the Steam {term}`snap` and can be enabled.
+[MangoHud](https://mangohud.org/) is an overlay tool for displaying performance metrics in-game.
+
+It is bundled with the Steam {term}`snap` and disabled by default.
 
 ```{admonition} Experimental
-:class: important
+:class: caution
+
 {term}`MangoHud` support is experimental and will likely only work with **OpenGL**
-games. Please do not open issues relating solely to {term}`MangoHud` compatibility.
+games. 
+
+Please do not open issues relating solely to {term}`MangoHud` compatibility.
 ```
 
-## Use MangoHud
+## Enable MangoHud
 
-Add `mangohud %command%` to your game launch options.
+Right-click on the game title in your library and click on {guilabel}`Settings`. 
+
+In the "General" tab, add `mangohud %command%` to the launch options.
 
 ```{seealso}
 [Normal usage](https://github.com/flightlessmango/MangoHud#normal-usage) in the MangoHud documentation.
@@ -26,14 +33,25 @@ Add `mangohud %command%` to your game launch options.
 
 ## Configure MangoHud
 
-### Environment variables
+MangoHud can be configured directly via environment variables in the Steam launch options of your game, or via 
+MangoHud's dedicated config file.
 
-You may add configuration options to your launch options by specifying the
-`MANGOHUD_CONFIG` environment variable in your launch options.
+### Environment variable in launch options
 
-For example, `MANGOHUD_CONFIG=time mangohud %command%`.
+To access a game's launch options on Steam, right-click on the game title in your library and click on {guilabel}`Settings`. 
+The launch options are in the "General" tab.
 
-### Configuration files
+Add configuration options to the launch options by specifying the `MANGOHUD_CONFIG` environment variable. 
+
+For example:
+
+```text
+MANGOHUD_CONFIG=time mangohud %command%
+```
+
+### Configuration file
+
+To use MangoHud's config file:
 
 1. Run `snap run --shell steam`
 2. Make the {term}`MangoHud` config directory: `mkdir -p ~/.config/MangoHud`
