@@ -66,5 +66,5 @@ When using the deb version, these tools must be installed separately.
 
 Both versions support broadly the same number of games.
 
-See [What games can I play?](what-games-can-i-play) for more information on game compatibility.
+See {ref}`explanation::what-games-can-i-play` for more information on game compatibility.
 

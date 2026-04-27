@@ -20,7 +20,7 @@ Repeat the below steps on every combination of GPUs possible on your system.
 On hybrid systems, try in hybrid mode (both cards on and available) and
 dedicated GPU modes (single card on and available). 
 
-See the page on [using a dedicated GPU](./dedicated-gpu.md) for tips on
+See the page on {ref}`using a dedicated GPU <howto::dedicated-gpu>` for tips on
 switching graphics cards.
 
 ## Minimum steps
@@ -34,7 +34,7 @@ switching graphics cards.
 
 ## Additional suggested steps
 
-- Run each game listed in the [Suggested Games](howto::suggested-games)
+- Run each game listed in the {ref}`Suggested Games <howto::suggested-games>`
   section. At a minimum, choose 1 Native game and 1 Proton game. Check that the
   games:
     - Open correctly to main menu
@@ -55,7 +55,7 @@ switching graphics cards.
 
 ## Additional optional steps
 
-- Run each game listed in the [Additional Games](howto::additional-games) section.
+- Run each game listed in the {ref}`Additional Games <howto::additional-games>` section.
     - Opens correctly to main menu
     - Responds to input, plays audio, and displays graphical content
     - Uses the correct GPU
