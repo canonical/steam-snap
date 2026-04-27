@@ -8,27 +8,40 @@ myst:
 (howto::set-up-controller)=
 # Set up a controller
 
-In Steam, enter Big Picture Mode (next to the close and minimize buttons on the
-top right of the client), then go to `Settings > Controller`.
+In Steam, enter Big Picture Mode by clicking the computer icon next to the close and minimize buttons. 
+<!--TODO: is big picture mode necessary? why not just go straight to Settings > Controller?-->
 
-You should be able to enable configurations for your controller type and see
-your controller appear in the list.
+Navigate to {guilabel}`Settings` > {guilabel}`Controller`.
 
-If you have issues, try the steps outlined in the following sections.
+You should be able to see your controller appear in the list and enable configurations 
+for your controller type.
 
-## Connect plugs
+![Controller menu in Steam.](../assets/controller.png) 
 
-If you can't enable the configurations, make sure the following plugs are
-connected (these will likely already be connected automatically) using the
-following commands:
+## Troubleshooting
+
+Try the following steps if your controller does not connect or you cannot enable the configurations.
+
+### Connect plugs
+
+Make sure the following plugs are connected using the following commands:
 
 - **joystick**: `snap connect steam:joystick`
 - **hardware-observe**: `snap connect steam:hardware-observe`
 - **uinput**: `snap connect steam:uinput`
 
-## Install steam devices
+It is likely that they will already be connected automatically.
+
+<!--TODO: if they're not, how would one connect them? -->
+
+### Install `steam-devices`
 
 You may also need to install the `steam-devices` deb package on your host
-system, with `sudo apt install --no-install-recommends steam-devices`.
+system:
+<!--TODO: brief context-->
 
-![Controller menu in Steam.](../assets/controller.png) 
+```shell
+sudo apt install --no-install-recommends steam-devices.
+```
+
+
