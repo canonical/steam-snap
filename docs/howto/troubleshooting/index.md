@@ -58,7 +58,7 @@ Steam and game-related logs will be displayed in the same terminal window.
 
 ### Game logs
 
-To create a file with the output of a specific game, add the following to a game's [Launch Options](howto::launch-options):
+To create a file with the output of a specific game, add the following to a game's {ref}`Launch Options <howto::launch-options>`:
 
 ```
 %command% > $HOME/game_log 2>&1
