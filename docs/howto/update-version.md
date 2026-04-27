@@ -1,4 +1,5 @@
 ---
+relatedlinks: "[Snap&#32;Store&#32;](https://snapcraft.io/steam)"
 myst:
   html_meta:
     "description lang=en":

@@ -1,5 +1,5 @@
 ---
-relatedlinks: "[Documentation&#32;for&#32;the&#32;debian&#32;package&#32;of&#32;Steam](https://wiki.debian.org/Steam)"
+relatedlinks: "[Snap&#32;Store&#32;](https://snapcraft.io/steam), [GitHub&#32;](https://github.com/canonical/steam-snap), [Documentation&#32;for&#32;the&#32;debian&#32;package&#32;of&#32;Steam](https://wiki.debian.org/Steam)"
 myst:
   html_meta:
     "description lang=en":
@@ -8,7 +8,7 @@ myst:
 
 # Steam on Ubuntu
 
-Valve's Steam client is available to Ubuntu users as a {term}`snap`.
+Valve's [Steam](https://store.steampowered.com/about/) client is available to Ubuntu users as a {term}`snap`.
 
 The Steam {term}`snap` provides a consistent environment to run games. The
 environment is separate from the underlying host operating system and receives

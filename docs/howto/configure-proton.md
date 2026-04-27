@@ -1,4 +1,5 @@
 ---
+relatedlinks: "[Proton](https://github.com/ValveSoftware/Proton), [ProtonDB](https://www.protondb.com/)"
 myst:
   html_meta:
     "description lang=en":
