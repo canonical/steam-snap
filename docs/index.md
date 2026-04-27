@@ -47,7 +47,7 @@ contributions, suggestions, fixes and constructive feedback.
 :titlesonly:
 
 Home <self>
-How-to </howto/index>
+How-to guides </howto/index>
 Reference </reference/index>
 Explanation </explanation/index>
 ```
