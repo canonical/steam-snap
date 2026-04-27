@@ -24,7 +24,7 @@ Ubuntu.
 * **Gaming setup**: {ref}`Configure Steam Play/Proton <howto::configure-proton>` • {ref}`Set up a controller <howto::set-up-controller>` • {ref}`What games can I play? <explanation::what-games-can-i-play>`
 * **Graphics and performance**: {ref}`Use your dedicated GPU <howto::dedicated-gpu>` • {ref}`Change mesa/graphics version <howto::change-mesa-graphics>` • {ref}`Configure MangoHud <howto::configure-mangohud>`
 * **Troubleshooting**: {ref}`Troubleshoot common issues <howto::troubleshooting>` • {ref}`Find game-specific workarounds <howto::game-workarounds>`
-* **Reference**: {ref}`Glossary <reference::glossary>` • {ref}`Locations for external libraries <reference::external-libraries>` • {ref}`Helpful links <reference::external-links>`
+* **Reference**: {ref}`Glossary <reference::glossary>` • {ref}`Locations for external libraries <reference::external-libraries>`
 * **Additional information**: {ref}`Snap vs. deb comparison <explanation::snap-versus-deb>` • {ref}`Testing the Steam snap <howto::test-steam-snap>`
 
 ## How the documentation is organised
