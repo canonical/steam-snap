@@ -22,7 +22,7 @@ Disabling {term}`Steam Play` entirely will only then allow you to install and pl
 
 ## Enable Proton for non-native games
 
-In the Steam application, navigate to {guilabel}`Settings > Steam Play`
+In the Steam application, navigate to {guilabel}`Settings` > {guilabel}`Steam Play`
 
 Enabling {term}`Steam Play` will automatically download the {term}`Proton` {term}`compatibility layer` libraries
 for non-native games. If left disabled, only {term}`native games <native game>` can be installed and
@@ -40,7 +40,7 @@ Unsupported titles greatly vary in functionality -- check {term}`ProtonDB` for m
 
 ## Enable Proton for an individual game
 
-Right-click on the game title in your library, then navigate to {guilabel}`Properties > Compatibility`
+Right-click on the game title in your library, then navigate to {guilabel}`Properties` > {guilabel}`Compatibility`
 
 Check "Force the use of a Specific Steam Play compatibility tool", and choose a Proton version.
 
