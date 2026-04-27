@@ -8,49 +8,56 @@ myst:
 (howto::configure-proton)=
 # Configure Proton/Steam Play
 
-{term}`Proton`/{term}`Steam Play` isn't always necessary, if the game installs and runs without
-{term}`Proton`, it is native and likely works the best without {term}`Proton`.
+[Proton](https://github.com/ValveSoftware/Proton) is software developed by Valve that allows Windows games 
+to run on Linux, and is used by the Steam Play client.
+
+Using {term}`Proton`/{term}`Steam Play` is not always necessary. If the game installs and runs without
+Proton, it is native and likely works the best without Proton.
+
+## Check if a game requires Proton
+
+[ProtonDB](https://www.protondb.com/), a crowdsourced database of compatibility information, will show "Native" if the game is a {term}`native game`. Otherwise, it requires Proton.
+
+Disabling {term}`Steam Play` entirely will only then allow you to install and play {term}`native games <native game>`.
 
 ## Enable Proton for non-native games
 
-`Steam > Settings > Steam Play`
+In the Steam application, navigate to {guilabel}`Settings > Steam Play`
 
-Enabling {term}`Steam Play` will automatically download {term}`Proton` {term}`compatibility layer` libraries
+Enabling {term}`Steam Play` will automatically download the {term}`Proton` {term}`compatibility layer` libraries
 for non-native games. If left disabled, only {term}`native games <native game>` can be installed and
 played.
 
-'Enable Steam Play for supported titles' enables {term}`compatibility layer` tools for games
+"Enable Steam Play for supported titles" enables {term}`compatibility layer` tools for games
 verified by Valve to work well on Linux.
 
-'Enable Steam Play for all other titles' enables {term}`compatibility layer` tools for *all*
-non-native games in your library. Unsupported titles greatly vary in
-functionality, check {term}`ProtonDB` for more info on specific games.
+"Enable Steam Play for all other titles" enables {term}`compatibility layer` tools for *all*
+non-native games in your library. 
+
+Unsupported titles greatly vary in functionality -- check {term}`ProtonDB` for more info on specific games.
 
 ![Checking Proton settings in Steam.](../assets/proton-protondb.png) 
 
-## Enable Proton for individual games
+## Enable Proton for an individual game
 
-`Right click the game > Properties > Compatibility > Check 'Force the use
-of...' > Choose a Proton version`
+Right-click on the game title in your library, then navigate to {guilabel}`Properties > Compatibility`
 
-## Check if a game is a Native or Proton game
-
-{term}`ProtonDB` will show 'Native' if the game is a {term}`native game`, otherwise it is
-a {term}`Proton` game.
-
-Additionally, disabling {term}`Steam Play` entirely will then only then allow you to
-install/play {term}`native games <native game>`.
+Check "Force the use of a Specific Steam Play compatibility tool", and choose a Proton version.
 
 ## Use a custom Proton version
 
-[{term}`Proton` GE instructions for reference](https://github.com/GloriousEggroll/proton-ge-custom#snap).
+Run Steam at least once.
 
-1. Run Steam at least once
-2. Create the `compatibilitytools.d` directory
+Create the `compatibilitytools.d` directory:
 
-    ```shell
-    mkdir -p ~/snap/steam/common/.steam/root/compatibilitytools.d
-    ```
-3. Extract custom {term}`Proton` versions to the above directory
-  - For example, [proton-ge](https://github.com/GloriousEggroll/proton-ge-custom)
-4. Run Steam, and you should be able to select your custom version from the {term}`Proton` version dropdown like normal
+```shell
+mkdir -p ~/snap/steam/common/.steam/root/compatibilitytools.d
+```
+
+Extract custom {term}`Proton` versions to the above directory. For example, [proton-ge](https://github.com/GloriousEggroll/proton-ge-custom).
+
+Run Steam, and you should be able to select your custom version from the {term}`Proton` version dropdown like normal.
+
+```{seealso}
+[Original `proton-ge-custom` instructions](https://github.com/GloriousEggroll/proton-ge-custom#snap)
+```
