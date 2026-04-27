@@ -136,7 +136,7 @@ html_context = {
     # Docs branch in the repo; used in links for viewing the source files
     #
     # TODO: To customise the branch, uncomment and update as needed.
-    'repo_default_branch': 'main',
+    'repo_default_branch': 'docs-dev',
     # Docs location in the repo; used in links for viewing the source files
     #
 
