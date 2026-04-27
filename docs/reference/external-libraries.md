@@ -5,7 +5,7 @@ myst:
       "Useful links for Steam users on Ubuntu."
 ---
 
-(ref::external-libs)=
+(reference::external-libraries)=
 # Locations for external libraries
 
 The default install directory could be misleadingly listed as

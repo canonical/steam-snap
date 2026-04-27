@@ -5,7 +5,7 @@ myst:
       "Workarounds when using the Steam snap with certain games."
 ---
 
-(howto::workarounds)=
+(howto::game-workarounds)=
 # Game workarounds
 
 Known workarounds for various games that may have trouble running in a snap

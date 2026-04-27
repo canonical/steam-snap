@@ -5,7 +5,7 @@ myst:
       "Troubleshoot the Steam snap on Ubuntu."
 ---
 
-(howto::troubleshoot)=
+(howto::troubleshooting)=
 # Troubleshooting
 
 ## Generic workarounds
@@ -22,7 +22,7 @@ You can still open an issue if one of these workarounds fixes a problem, but ple
 
 ## Troubleshooting specific games
 
-You may check the [reports][reports] discussions for troubleshooting tips with a specific game, and expected results. Also check {term}`ProtonDB` to see if your game *should* work based on other's input. If our [reports][reports] don't contain the game you're experiencing issues with, feel free to add it with the [steam.report tool][steamreport]. Some games may also be listed on the {ref}`known game workarounds page <howto::workarounds>`.
+You may check the [reports][reports] discussions for troubleshooting tips with a specific game, and expected results. Also check {term}`ProtonDB` to see if your game *should* work based on other's input. If our [reports][reports] don't contain the game you're experiencing issues with, feel free to add it with the [steam.report tool][steamreport]. Some games may also be listed on the {ref}`known game workarounds page <howto::game-workarounds>`.
 
 You can also check the [PC Gaming Wiki][10] for information on game compatibility, local and cloud game files, and system support.
 
@@ -159,7 +159,7 @@ Run `snap refresh steam --amend` to switch to a verified branch.
 :titlesonly:
 :hidden:
 
-Game workarounds <workarounds>
+Game workarounds <game-workarounds>
 ```
 
 [1]: https://store.steampowered.com/about/

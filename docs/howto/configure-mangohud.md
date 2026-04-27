@@ -5,7 +5,7 @@ myst:
       "Enable MangoHud in the Steam snap on Ubuntu."
 ---
 
-(howto::mango)=
+(howto::configure-mangohud)=
 # Configure MangoHud
 
 {term}`MangoHud` is bundled with the Steam {term}`snap` and can be enabled.

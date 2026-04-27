@@ -5,7 +5,7 @@ myst:
       "Change the mesa/graphics version for the Steam snap on Ubuntu."
 ---
 
-(howto::mesa-graphics)=
+(howto::change-mesa-graphics)=
 # Change the mesa/graphics version
 
 The Snap relies on the [gaming-graphics-core24 Snap](https://github.com/canonical/gaming-graphics/) for

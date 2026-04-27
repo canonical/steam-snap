@@ -20,20 +20,20 @@ Ubuntu.
 
 ## In this documentation
 
-* **Installation**: [Install the Steam snap](/howto/install) • [Check version and update](/howto/versions) • {ref}`Uninstall the Steam snap <howto::uninstall>`
-* **Gaming setup**: [Configure Steam Play/Proton](/howto/configure-proton) • [Use controllers](/howto/controllers) • [What games can I play?](/explanation/what-games-can-i-play)
-* **Graphics and performance**: [Use your dedicated GPU](/howto/dedicated-gpu) • [Change mesa/graphics version](/howto/change-mesa-graphics) • [Enable MangoHud](/howto/mango)
-* **Troubleshooting**: {ref}`Troubleshoot common issues <howto::troubleshoot>` • {ref}`Find game-specific workarounds <howto::workarounds>`
-* **Reference**: [Glossary](/reference/glossary) • [Locations for external libraries](/reference/external-libraries) • [Helpful links](/reference/external-links)
-* **Additional information**: [Snap vs deb comparison](/explanation/snap-versus-deb) • [Testing the Steam snap](/howto/testing)
+* **Installation**: {ref}`Install the Steam snap <howto::install>` • {ref}`Check version and update <howto::update-version>` • {ref}`Uninstall the Steam snap <howto::uninstall>`
+* **Gaming setup**: {ref}`Configure Steam Play/Proton <howto::configure-proton>` • {ref}`Set up a controller <howto::set-up-controller>` • {ref}`What games can I play? <explanation::what-games-can-i-play>`
+* **Graphics and performance**: {ref}`Use your dedicated GPU <howto::dedicated-gpu>` • {ref}`Change mesa/graphics version <howto::change-mesa-graphics>` • {ref}`Configure MangoHud <howto::configure-mangohud>`
+* **Troubleshooting**: {ref}`Troubleshoot common issues <howto::troubleshooting>` • {ref}`Find game-specific workarounds <howto::game-workarounds>`
+* **Reference**: {ref}`Glossary <reference::glossary>` • {ref}`Locations for external libraries <reference::external-libraries>` • {ref}`Helpful links <reference::external-links>`
+* **Additional information**: {ref}`Snap vs. deb comparison <explanation::snap-versus-deb>` • {ref}`Testing the Steam snap <howto::test-steam-snap>`
 
 ## How the documentation is organised
 
 This documentation uses the [Diátaxis structure](https://diataxis.fr/).
 
-* [How-to guides](/howto/index) provide you with the steps necessary for completing specific tasks.
-* [References](/reference/index) give you concise and factual information to support your understanding.
-* [Explanations](/explanation/index) include topic overviews and additional context on the software.
+* {ref}`How-to guides <howto>` provide you with the steps necessary for completing specific tasks.
+* {ref}`References <reference>` give you concise and factual information to support your understanding.
+* {ref}`Explanations <explanation>` include topic overviews and additional context on the software.
 
 ## Project and community
 

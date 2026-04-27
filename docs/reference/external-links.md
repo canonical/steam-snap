@@ -5,7 +5,7 @@ myst:
       "Useful links for Steam users on Ubuntu."
 ---
 
-(ref::links)=
+(reference::external-links)=
 # Helpful links for Steam users
 
 * [Snap Store Page](https://snapcraft.io/steam)
