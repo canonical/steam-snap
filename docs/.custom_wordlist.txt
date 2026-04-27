@@ -4,6 +4,7 @@ backends
 Brawlhalla
 Charmcraft
 cjk
+crowdsourced
 cryptographically
 docstrings?
 dvipng

@@ -26,7 +26,7 @@ sudo apt install libnvidia-gl-<YOUR_DRIVER_VERSION>:i386
 ```
 
 Replace `<YOUR_DRIVER_VERSION>` with your NVIDIA driver version. This can be
-found by running a command like `glxinfo -B`, or via the NVIDIA System Managemenet Interface by running `nvidia-smi`.
+found by running a command like `glxinfo -B`, or via the NVIDIA System Management Interface by running `nvidia-smi`.
 
 ### Enable a graphics card
 
