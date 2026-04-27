@@ -8,6 +8,24 @@ myst:
 (howto::update-version)=
 # Update the Steam snap version
 
+<!-- TODO: Commenting this out for now because it is confusing.
+           We should briefly clarify how upstream Steam updates and Steam snap updates relate to each other, 
+           and what users should expect.
+
+Steam will update itself like it normally does. -->
+
+When a new version of the Steam snap is released, your snap will be updated automatically. 
+
+You can force an update immediately by running the command
+
+```shell
+snap refresh steam
+```
+
+<!-- TODO: how do you go back a version or stay on one version? -->
+
+## Check Steam snap and `snapd` versions
+
 Check your current version of the Steam snap with the command
 
 ```shell
@@ -32,21 +50,5 @@ snap info snapd
 
 Your revision is the number at the end by `installed:` in parenthesis.
 
-## Update the Steam snap
 
-<!-- TODO: Commenting this out for now because it is confusing.
-           We should briefly clarify how upstream Steam updates and Steam snap updates relate to each other, 
-           and what users should expect.
-
-Steam will update itself like it normally does. -->
-
-When a new version of the Steam snap is released, your snap will be updated automatically. 
-
-You can force an update immediately by running the command
-
-```shell
-snap refresh steam
-```
-
-<!-- TODO: how do you go back a version or stay on one version? -->
 
