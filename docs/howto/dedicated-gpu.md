@@ -26,15 +26,15 @@ sudo apt install libnvidia-gl-<YOUR_DRIVER_VERSION>:i386
 ```
 
 Replace `<YOUR_DRIVER_VERSION>` with your NVIDIA driver version. This can be
-found by running a command like {command}`glxinfo -B`, or via the NVIDIA System Managemenet Interface with {command}`nvidia-smi`.
+found by running a command like `glxinfo -B`, or via the NVIDIA System Managemenet Interface by running `nvidia-smi`.
 
 ### Enable a graphics card
 
-Switch between graphics modes with {command}`sudo prime-select <mode>` and reboot. 
+Switch between graphics modes with the command `sudo prime-select <mode>` and reboot. 
 
 For games to use your graphics card, `prime-select` should be set to `nvidia` or `on-demand`. 
 
-Show your current graphics mode with {command}`sudo prime-select query`. 
+Show your current graphics mode with the command `sudo prime-select query`. 
 
 ```{note}
 Exclusively using a discrete graphics card (`nvidia` option) will use more power than normal.
@@ -42,7 +42,7 @@ Exclusively using a discrete graphics card (`nvidia` option) will use more power
 
 ### View GPU stats
 
-To view programs using your GPU as well as power usage and other information, run {command}`nvidia-smi`. 
+To view programs using your GPU as well as power usage and other information, run `nvidia-smi`. 
 
 If a game is correctly using your GPU, a listing should appear in `nvidia-smi` after it has started running.
 
