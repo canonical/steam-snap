@@ -5,7 +5,7 @@ myst:
       "Help us test the Steam snap on Ubuntu."
 ---
 
-(howto::test)=
+(howto::test-steam-snap)=
 # Test the Steam snap on your machine
 
 ```{note}

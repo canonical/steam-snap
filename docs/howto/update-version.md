@@ -5,7 +5,7 @@ myst:
       "Checking the version of the Steam snap and updating the snap."
 ---
 
-(howto::versions)=
+(howto::update-version)=
 # Update the Steam snap version
 
 ## Check current versions

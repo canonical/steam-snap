@@ -5,8 +5,8 @@ myst:
       "Use controllers with the Steam snap on Ubuntu."
 ---
 
-(howto::controllers)=
-# Use controllers
+(howto::set-up-controller)=
+# Set up a controller
 
 In Steam, enter Big Picture Mode (next to the close and minimize buttons on the
 top right of the client), then go to `Settings > Controller`.

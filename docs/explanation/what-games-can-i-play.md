@@ -5,7 +5,7 @@ myst:
       "A comparison between the snap and deb version of the Steam client."
 ---
 
-(exp::what-games)=
+(explanation::what-games-can-i-play)=
 # What games can I play?
 
 <!-- TODO: are there cases where it doesn't? -->
