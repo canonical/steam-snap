@@ -93,7 +93,7 @@ Type `exit` or press {kbd}`Ctrl`+ {kbd}`D` to exit.
 (howto::launch-options)=
 ## Launch options
 
-You can modify the launch options for a specific game by right-clicking the game in your Library and clicking on {guilabel}`Properties`. The launch options are in the "General" tab. 
+You can modify the launch options for a specific game by right-clicking the game in your Library and clicking on {guilabel}`Properties`. The launch options are in the {guilabel}`General` tab. 
 
 Any options should end with `%command%`.
 

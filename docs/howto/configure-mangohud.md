@@ -26,7 +26,7 @@ Please do not open issues relating solely to {term}`MangoHud` compatibility.
 
 Right-click on the game title in your library and click on {guilabel}`Properties`. 
 
-In the "General" tab, add `mangohud %command%` to the launch options.
+In the {guilabel}`General` tab, add `mangohud %command%` to the launch options.
 
 ```{seealso}
 [Normal usage](https://github.com/flightlessmango/MangoHud#normal-usage) in the MangoHud documentation.
@@ -40,7 +40,7 @@ MangoHud's dedicated config file.
 ### Environment variable in launch options
 
 To access a game's launch options on Steam, right-click on the game title in your library and click on {guilabel}`Properties`. 
-The launch options are in the "General" tab.
+The launch options are in the {guilabel}`General` tab.
 
 Add configuration options to the launch options by specifying the `MANGOHUD_CONFIG` environment variable. 
 
