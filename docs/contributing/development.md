@@ -5,13 +5,8 @@ myst:
       "Help us develop the Steam snap on Ubuntu."
 ---
 
-<<<<<<<< HEAD:docs/howto/test-steam-snap.md
-(howto::test-steam-snap)=
-# Test the Steam snap on your machine
-========
 (contribute::development)=
 # Development
->>>>>>>> 7027b49 (expand testing guide into dev guide):docs/contributing/development.md
 
 ## Building
 
