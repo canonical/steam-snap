@@ -2,19 +2,45 @@
 myst:
   html_meta:
     "description lang=en":
-      "Help us test the Steam snap on Ubuntu."
+      "Help us develop the Steam snap on Ubuntu."
 ---
 
+<<<<<<<< HEAD:docs/howto/test-steam-snap.md
 (howto::test-steam-snap)=
 # Test the Steam snap on your machine
+========
+(contribute::development)=
+# Development
+>>>>>>>> 7027b49 (expand testing guide into dev guide):docs/contributing/development.md
 
-```{note}
-This testing procedure is generally for internal use.
+## Building
+
+Building the Steam snap locally requires
+[Snapcraft](https://docs.snapcraft.io/snapcraft-overview).
+
+To build the snap, run the following command:
+
+```shell
+snapcraft --use-lxd
 ```
+
+Then install it with:
+
+```shell
+snap install steam.snap --dangerous
+```
+
+To run:
+
+```shell
+snap run steam
+```
+
+## Testing
 
 The following steps assume you have successfully created a `steam_*.snap` with
 `snapcraft` and installed it with `snap install steam_*.snap --dangerous`. This
-also assumes you have Steam Play (Proton) enabled for any game.
+also assumes you have Steam Play  enabled for any game.
 
 Repeat the below steps on every combination of GPUs possible on your system.
 On hybrid systems, try in hybrid mode (both cards on and available) and
@@ -23,7 +49,7 @@ dedicated GPU modes (single card on and available).
 See the page on {ref}`using a dedicated GPU <howto::dedicated-gpu>` for tips on
 switching graphics cards.
 
-## Minimum steps
+### Minimum steps
 
 - Run `snap run steam.test`. Ensure GLX and Vulkan both report "passed".
 - Run `snap run steam.report --no-submit`. Ensure that no error occurs and each
@@ -32,7 +58,7 @@ switching graphics cards.
   tab (Store, Library, etc.) populates correctly with content.
 - Run some games. Ensure they open and can be played.
 
-## Additional suggested steps
+### Additional suggested steps
 
 - Run each game listed in the {ref}`Suggested Games <howto::suggested-games>`
   section. At a minimum, choose 1 Native game and 1 Proton game. Check that the
@@ -53,7 +79,7 @@ switching graphics cards.
 - Plug in a supported controller (PS4, Xbox One and Xbox 360 controllers) and
   make sure the input is processed in the games.
 
-## Additional optional steps
+### Additional optional steps
 
 - Run each game listed in the {ref}`Additional Games <howto::additional-games>` section.
     - Opens correctly to main menu
@@ -81,7 +107,7 @@ characters into the Steam client.
       [here](https://github.com/flightlessmango/MangoHud/issues/369). The game
       should run, however.
 
-## Free games to test
+### Free games to test
 
 The following is a list of *free* games using various engines and varying Linux support.
 
@@ -89,7 +115,7 @@ If you cannot run every game in a list, prioritize games in top-down order and
 ensure you use both a Proton and a Native game.
 
 (howto::suggested-games)=
-### Suggested games
+#### Suggested games
 
 *These games are generally small in scope and size.*
 
@@ -109,7 +135,7 @@ ensure you use both a Proton and a Native game.
 <!-- | - | Proton | Source | - | -->
 
 (howto::additional-games)=
-### Additional games
+#### Additional games
 
 *These games are generally large in scope and size.*
 
@@ -122,7 +148,7 @@ ensure you use both a Proton and a Native game.
 <!-- | - | - | Unreal | - | -->
 <!-- | - | - | Godot | - | -->
 
-### Collections
+#### Collections
 
 Steam game collections can be a useful feature for keeping track of well-tested games. Follow these steps to create a *Dynamic Collection* that automatically populates with games based on Steam Deck status:
 
