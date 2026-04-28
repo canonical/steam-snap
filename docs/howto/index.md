@@ -13,7 +13,6 @@ Get set up using Ubuntu on a Windows machine with WSL.
 
 Install <install>
 Update version <update-version>
-Test the snap <test-steam-snap>
 Use a dedicated GPU <dedicated-gpu>
 Change the mesa/graphics version <change-mesa-graphics>
 Configure Proton <configure-proton>
