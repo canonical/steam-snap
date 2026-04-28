@@ -52,3 +52,11 @@ How-to guides </howto/index>
 Reference </reference/index>
 Explanation </explanation/index>
 ```
+```{toctree}
+:caption: Contributing
+:hidden:
+
+contributing/development
+contributing/documentation
+```
+
