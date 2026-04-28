@@ -1,3 +1,4 @@
+(reference::glossary)=
 # Glossary
 
 ```{glossary}

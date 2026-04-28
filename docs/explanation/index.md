@@ -1,5 +1,4 @@
 (explanation)=
-
 # Explanation
 
 This section contains explanations that will help you develop a deeper

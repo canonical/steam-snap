@@ -1,5 +1,5 @@
 ---
-relatedlinks: "[Documentation&#32;for&#32;the&#32;debian&#32;package&#32;of&#32;Steam](https://wiki.debian.org/Steam)"
+relatedlinks: "[Snap&#32;Store&#32;](https://snapcraft.io/steam), [GitHub&#32;](https://github.com/canonical/steam-snap), [Documentation&#32;for&#32;the&#32;debian&#32;package&#32;of&#32;Steam](https://wiki.debian.org/Steam)"
 myst:
   html_meta:
     "description lang=en":
@@ -12,23 +12,26 @@ myst:
 Installing Steam using different methods, configuring snap connections, and
 uninstalling the snap.
 
-## Install with the App center or the terminal
+## Install via the App Center
 
-To install Steam using the graphical **App center**, press the {kbd}`super` key,
+To install Steam using the graphical **App Center**, press the {kbd}`super` key,
 search for "app center", and open it.
-Find "Steam" in the App Center and click {guilabel}`install`.
+
+Find "Steam" in the App Center and click {guilabel}`Install`.
 
 ```{image} ../assets/app-center-dark.webp
-:alt: Installation page for Steam in app center.
+:alt: Installation page for Steam in App Center.
 :class: only-dark
 :align: center
 ```
 
 ```{image} ../assets/app-center-light.webp
-:alt: Installation page for Steam in app center.
+:alt: Installation page for Steam in App Center.
 :class: only-light
 :align: center
 ```
+
+## Install via command-line
 
 To install Steam using the **terminal**, run the following command:
 
@@ -63,30 +66,30 @@ snap connections steam
 ```
 
 (howto::uninstall)=
-
 ## Uninstall the Steam snap
 
-```{admonition} Disabling snapshots
-:class: tip
 <!-- TODO: it might be good to explain if there is ever an advantage to taking snapshots, as currently it just seems like a nuisance -->
-You should consider disabling
-[snapshots](https://snapcraft.io/docs/snapshots#heading--automatic-snapshots)
-when uninstalling Steam. Snapshots can be incredibly large and take a long time
-to create since they also contain your Steam library.
-```
+Snap automatically creates a data snapshot when a snap is removed. They can be incredibly large and take a long time
+to create, since they also contain your Steam library.
 
-### Uninstalling without creating a snapshot
+It is therefore recommended to disable [snapshots](https://snapcraft.io/docs/snapshots#heading--automatic-snapshots)
+when uninstalling Steam.
 
-#### Option 1: remove Steam and its data with no snapshot
+To remove Steam and its data without creating a snapshot, run
 
-```text
+```shell
 snap remove --purge steam
 ```
 
-#### Option 2: disable snapshots for all snaps then remove Steam
+To disable snapshots for **all** snaps, run
 
-```text
+```shell
 snap set system snapshots.automatic.retention=no
+```
+
+Then, Steam can be removed with
+
+```shell
 snap remove steam
 ```
 

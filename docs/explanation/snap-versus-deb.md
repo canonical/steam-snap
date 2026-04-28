@@ -6,7 +6,7 @@ myst:
       "A comparison between the snap and deb version of the Steam client."
 ---
 
-(exp::snap-vs-deb)=
+(explanation::snap-versus-deb)=
 # Comparing the snap and deb versions of Steam
 
 Ubuntu supports installing software applications in the snap or deb format.
@@ -58,7 +58,7 @@ The snap version uses confined directories under `~/snap/steam/`.
 
 The snap includes additional gaming tools, including:
 
-* **{term}`MangoHud`** - performance monitoring overlay (see [Enabling MangoHud](/howto/mango))
+* **{term}`MangoHud`** - performance monitoring overlay (see {ref}`howto::configure-mangohud`)
 
 When using the deb version, these tools must be installed separately.
 
@@ -66,5 +66,5 @@ When using the deb version, these tools must be installed separately.
 
 Both versions support broadly the same number of games.
 
-See [What games can I play?](what-games-can-i-play) for more information on game compatibility.
+See {ref}`explanation::what-games-can-i-play` for more information on game compatibility.
 
