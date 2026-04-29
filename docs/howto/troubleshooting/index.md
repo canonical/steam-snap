@@ -9,6 +9,15 @@ myst:
 (howto::troubleshooting)=
 # Troubleshooting
 
+This page includes guidance on troubleshooting the Steam snap.
+
+```{admonition} Submitting game reports
+:class: tip
+If you want to submit a report on a game for discussion with other users of the
+Steam snap, or create an issue for the project maintainers, read our
+contributing guide on using the [game reports tool](contribute::reports).
+```
+
 ## Generic workarounds
 
 Give these a try before opening an issue.
@@ -126,38 +135,6 @@ Restart Steam for the changes to take effect.
 With PR [#34][9], Steam should correctly display cursors at their right size (and with the right icons!).
 
 The [Arch wiki][8] also has some information regarding Steam and HiDPI issues.
-
-## Submit a Steam report
-
-Individual games and setups will often face unique issues, which is why it may be useful to report games/your setup to us for review. As of Snap revision 66, a script is included to automatically collect some system data and open a new discussion post for reporting.
-
-As of revision 165, this script has be upgraded to use a GTK-based dialog. To use it, follow the steps below:
-
-1. Ensure `system-observe` and `hardware-observe` are connected with `snap connect steam:system-observe` and `snap connect steam:hardware-observe` respectfully 
-2. Right click Steam and select "Report", or run `snap run steam.report` from a terminal window
-    - If the necessary connections aren't connected, you'll see a prompt to do so
-    - *The report window may take a few seconds to gather information*
-3. Copy the resulting report, or use the buttons to open a new issue or discussion with your report information auto-filled
-
-Example report dialog:
-
-<img src="https://github.com/canonical/steam-snap/assets/101582426/3ce372bd-f410-4969-b345-a694faf77f85" width="50%" />
-
-The CLI version of the report tool can still be use;, simply run `snap run steam.report --cli`.
-
-```{admonition} GitHub issues
-:class: tip
-
-Game report discussions are NOT a replacement for [issues][issues]. Instead, discussion posts are a way to communicate a game's functionality with your setup and troubleshoot with other users. 
-
-**If the game, your setup, or other users' setups expose a new problem, a [GitHub issue][issues] should be opened.** Game report discussions are meant for reducing issue clutter and to discuss workarounds to specific games.
-```
-
-## Open a new issue
-
-Check [existing issues][issues] for information regarding any issue you may have first. If nothing exists, open a new issue describing your problem [here][6]. 
-
-Helpful information to include would be your Steam {term}`Snap` and {term}`snapd` versions, {term}`Proton` version(s), system/GPU information, and any relevant logs. You may use the Steam Report tool described above to gather most of the needed information for you, just run it with `--no-submit`.
 
 ## Using unverified builds
 
