@@ -59,7 +59,7 @@ snap connect steam:hardware-observe
 snap connect steam:audio-record
 ```
 
-For more information on the {term}`snap connections <snap connection>`, run
+For more information on the snap connections, run
 
 ```shell
 snap connections steam

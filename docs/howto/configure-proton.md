@@ -19,20 +19,20 @@ Proton, it is native and likely works the best without Proton.
 
 [ProtonDB](https://www.protondb.com/), a crowdsourced database of compatibility information, will show "Native" if the game is a {term}`native game`. Otherwise, it requires Proton.
 
-Disabling {term}`Steam Play` entirely will only then allow you to install and play {term}`native games <native game>`.
+Disabling Steam Play entirely will only then allow you to install and play native games.
 
 ## Enable Proton for non-native games
 
 In the Steam application, navigate to {guilabel}`Settings` > {guilabel}`Steam Play`
 
-Enabling {term}`Steam Play` will automatically download the {term}`Proton` {term}`compatibility layer` libraries
-for non-native games. If left disabled, only {term}`native games <native game>` can be installed and
+Enabling Steam Play will automatically download the Proton {term}`compatibility layer` libraries
+for non-native games. If left disabled, only native games can be installed and
 played.
 
-"Enable Steam Play for supported titles" enables {term}`compatibility layer` tools for games
+"Enable Steam Play for supported titles" enables compatibility layer tools for games
 verified by Valve to work well on Linux.
 
-"Enable Steam Play for all other titles" enables {term}`compatibility layer` tools for *all*
+"Enable Steam Play for all other titles" enables compatibility layer tools for *all*
 non-native games in your library. 
 
 Unsupported titles greatly vary in functionality -- check {term}`ProtonDB` for more info on specific games.
@@ -55,9 +55,9 @@ Create the `compatibilitytools.d` directory:
 mkdir -p ~/snap/steam/common/.steam/root/compatibilitytools.d
 ```
 
-Extract custom {term}`Proton` versions to the above directory. For example, [proton-ge](https://github.com/GloriousEggroll/proton-ge-custom).
+Extract custom Proton versions to the above directory. For example, [proton-ge](https://github.com/GloriousEggroll/proton-ge-custom).
 
-Run Steam, and you should be able to select your custom version from the {term}`Proton` version dropdown like normal.
+Run Steam, and you should be able to select your custom version from the Proton version dropdown like normal.
 
 ```{seealso}
 [Original `proton-ge-custom` instructions](https://github.com/GloriousEggroll/proton-ge-custom#snap)
