@@ -10,7 +10,7 @@ myst:
 
 Valve's [Steam](https://store.steampowered.com/about/) client is available to Ubuntu users as a {term}`snap`.
 
-The Steam {term}`snap` provides a consistent environment to run games. The
+The Steam snap provides a consistent environment to run games. The
 environment is separate from the underlying host operating system and receives
 automatic updates. It also comes bundled with useful tools, like
 {term}`MangoHud`.

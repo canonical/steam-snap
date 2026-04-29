@@ -21,7 +21,7 @@ to work on desktop Linux distributions.
 
 ## Filtering your game library
 
-To filter your own library by *{term}`Steam Deck` Verification*,
+To filter your own library by *Steam Deck Verification*,
 go to your Steam {guilabel}`Library` tab and click the penguin
 ([Tux](https://en.wikipedia.org/wiki/Tux_(mascot))) to show games that run on
 Linux. 

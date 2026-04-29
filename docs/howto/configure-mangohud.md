@@ -19,7 +19,7 @@ It is bundled with the Steam {term}`snap` and disabled by default.
 {term}`MangoHud` support is experimental and will likely only work with **OpenGL**
 games. 
 
-Please do not open issues relating solely to {term}`MangoHud` compatibility.
+Please do not open issues relating solely to MangoHud compatibility.
 ```
 
 ## Enable MangoHud
@@ -55,10 +55,10 @@ MANGOHUD_CONFIG=time mangohud %command%
 To use MangoHud's config file:
 
 1. Run `snap run --shell steam`
-2. Make the {term}`MangoHud` config directory: `mkdir -p ~/.config/MangoHud`
+2. Make the MangoHud config directory: `mkdir -p ~/.config/MangoHud`
 3. Copy the default config file: `cp $SNAP/usr/share/doc/mangohud/MangoHud.conf.example ~/.config/MangoHud/MangoHud.conf`
 4. Edit `~/.config/MangoHud/MangoHud.conf` to your liking
-5. Run {term}`MangoHud` like usual
+5. Run MangoHud like usual
 
 ```{seealso}
 [Configuration](https://github.com/flightlessmango/MangoHud#hud-configuration) in the MangoHud documentation.
