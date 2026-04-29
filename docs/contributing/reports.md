@@ -14,7 +14,9 @@ reports on how games function on your setup.
 {bdg-secondary}`Tool added in revision 66`
 
 We bundled a tool with the Steam snap that makes it easy for you to collect
-system information and open a discussion or issue about a game.
+system information and open a
+[discussion](https://github.com/canonical/steam-snap/discussions/categories/game-reports)
+or [issue](https://github.com/canonical/steam-snap/issues) about a game.
 
 ## Reports and issues
 
