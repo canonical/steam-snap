@@ -56,6 +56,7 @@ Explanation </explanation/index>
 :hidden:
 
 contributing/development
+contributing/reports
 contributing/documentation
 ```
 
