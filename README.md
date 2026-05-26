@@ -18,8 +18,10 @@ Run with
 
     snap run steam
 
-# [For questions and troubleshooting, see the wiki][3].
+## Documentation
+
+For more information, refer to the [official Steam snap documentation][3].
 
 [1]: https://store.steampowered.com/about/
 [2]: https://docs.snapcraft.io/snapcraft-overview
-[3]: https://github.com/canonical/steam-snap/wiki
+[3]: https://documentation.ubuntu.com/steam/
