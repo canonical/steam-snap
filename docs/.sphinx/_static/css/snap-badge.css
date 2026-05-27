@@ -1,0 +1,7 @@
+.snap-store-badge-container {
+    padding: 1rem 0 1rem var(--toc-spacing-horizontal);
+}
+.snap-badge {
+    width: 100%;
+    max-width: 182px;
+}

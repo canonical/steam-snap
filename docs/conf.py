@@ -210,7 +210,7 @@ sitemap_excludes = [
 #######################
 
 html_static_path = [".sphinx/_static"]
-#templates_path = ["_templates"]
+templates_path = [".sphinx/_templates"]
 
 
 #############
@@ -300,7 +300,7 @@ exclude_patterns = [
 
 # Adds custom CSS files, located under 'html_static_path'
 
-html_css_files = ["css/dropdown.css"]
+html_css_files = ["css/dropdown.css", "css/snap-badge.css"]
 
 # Adds custom JavaScript files, located under 'html_static_path'
 
