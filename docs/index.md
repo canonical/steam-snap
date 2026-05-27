@@ -8,15 +8,14 @@ myst:
 
 # Steam on Ubuntu
 
-Valve's [Steam](https://store.steampowered.com/about/) client is available to Ubuntu users as a {term}`snap`.
+Valve's Steam client is available to Ubuntu users as a snap.
 
 The Steam snap provides a consistent environment to run games. The
 environment is separate from the underlying host operating system and receives
 automatic updates. It also comes bundled with useful tools, like
-{term}`MangoHud`.
+MangoHud.
 
-The snap can be run on any system that supports {term}`snapd`, including
-Ubuntu.
+The snap can be run on any system that supports snapd, including Ubuntu.
 
 ## In this documentation
 

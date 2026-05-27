@@ -1,5 +1,7 @@
 # Steam Snap
 
+[![Get it from the Snap Store](https://snapcraft.io/static/images/badges/en/snap-store-black.svg)](https://snapcraft.io/steam)
+
 This is a snap of Valve's [Steam client][1]. It is intended to run on any system that supports snapd, providing a consistent environment to
 run the games separate from the underlying host operating system.
 
