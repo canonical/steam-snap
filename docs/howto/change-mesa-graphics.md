@@ -26,3 +26,8 @@ Switch between them with the following command:
 snap refresh gaming-graphics-core24 --channel <channel>
 ```
 
+To find what version of the [gaming-graphics-core24](https://github.com/canonical/gaming-graphics/) Snap you have, use the following command:
+
+```shell
+snap info gaming-graphics-core24
+```
