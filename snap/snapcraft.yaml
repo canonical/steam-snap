@@ -533,7 +533,7 @@ parts:
 apps:
   steam:
     command-chain: [snap/command-chain/alsa-launch, bin/desktop-launch]
-    command: usr/lib/steam/bin_steam.sh -no-cef-sandbox
+    command: usr/lib/steam/bin_steam.sh -no-cef-sandbox -pipewire
     environment:
       HOME: $SNAP_USER_COMMON
       #LIBGL_DEBUG: verbose
