@@ -360,9 +360,9 @@ rm -r $SNAP_USER_COMMON/Desktop
 rm -r $SNAP_USER_COMMON/.local/share/applications
 rm -r $SNAP_USER_COMMON/.local/share/icons
 
-ln -sf "$DESKTOP_PATH" "$SNAP_USER_COMMON/Desktop"
-ln -sf $SNAP_REAL_HOME/.local/share/applications/ $SNAP_USER_COMMON/.local/share/applications
-ln -sf $SNAP_REAL_HOME/.local/share/icons/ $SNAP_USER_COMMON/.local/share/icons
+ln -snf "$DESKTOP_PATH" "$SNAP_USER_COMMON/Desktop"
+ln -snf $SNAP_REAL_HOME/.local/share/applications/ $SNAP_USER_COMMON/.local/share/applications
+ln -snf $SNAP_REAL_HOME/.local/share/icons/ $SNAP_USER_COMMON/.local/share/icons
 
 # Remove links from the user's applications folder that open the applications folder itself.
 find "$SNAP_REAL_HOME/.local/share/applications/" -type l -lname "$SNAP_REAL_HOME/.local/share/applications" -delete
