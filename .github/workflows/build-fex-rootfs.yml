@@ -26,13 +26,31 @@ jobs:
           DEBIAN_FRONTEND=noninteractive sudo apt update
           DEBIAN_FRONTEND=noninteractive sudo apt install -y build-essential git
           DEBIAN_FRONTEND=noninteractive sudo apt install -y qemu-system-x86 libvirt-daemon libguestfs-tools guestmount cloud-image-utils pigz erofs-utils python3-git
-          sudo chmod 0666 /dev/kvm
-          sudo chmod +r /boot/vmlinuz*
+          if [[ -e /dev/kvm ]]; then
+            sudo chmod 0666 /dev/kvm
+          fi
+          if compgen -G "/boot/vmlinuz*" > /dev/null; then
+            sudo chmod +r /boot/vmlinuz*
+          fi
 
           git clone https://github.com/MitchellAugustin/RootFS.git "$ROOTFS_DIR"
           mkdir -p "$ROOTFS_DIR/cache_dir" "$ROOTFS_DIR/rootfs_dir"
           cd "$ROOTFS_DIR"
-          python3 build_image.py Configs/Ubuntu_24_04.json cache_dir/ rootfs_dir/
+
+          HOST_MEM_MB=$(( $(awk '/MemTotal/ {print $2}' /proc/meminfo) / 1024 ))
+          QEMU_MEM_MB=$(( HOST_MEM_MB / 2 ))
+          if [[ "$QEMU_MEM_MB" -lt 4096 ]]; then QEMU_MEM_MB=4096; fi
+          if [[ "$QEMU_MEM_MB" -gt 12288 ]]; then QEMU_MEM_MB=12288; fi
+          QEMU_MEM="${QEMU_MEM_MB}M"
+
+          BUILD_ARGS=(-m "$QEMU_MEM")
+          if [[ ! -r /dev/kvm || ! -w /dev/kvm ]]; then
+            echo "KVM unavailable for runner user, using QEMU TCG fallback (-disable-kvm)."
+            BUILD_ARGS+=("-disable-kvm")
+          fi
+
+          echo "Running RootFS build with args: ${BUILD_ARGS[*]}"
+          python3 build_image.py "${BUILD_ARGS[@]}" Configs/Ubuntu_24_04.json cache_dir/ rootfs_dir/
           echo "Rootfs build stages finished, check ~/RootFS for output."
 
           ln -sfn "$ROOTFS_DIR" "$HOME/RootFS"
