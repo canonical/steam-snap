@@ -1,6 +1,11 @@
 name: Build FEX RootFS
 
 on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - rootfs-build-job
   workflow_dispatch:
 
 jobs:
