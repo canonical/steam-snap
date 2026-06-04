@@ -24,7 +24,7 @@ jobs:
           echo "Steam snap rootfs build"
           pwd
           DEBIAN_FRONTEND=noninteractive sudo apt update
-          DEBIAN_FRONTEND=noninteractive sudo apt install -y build-essential git
+          DEBIAN_FRONTEND=noninteractive sudo apt install -y build-essential git tree
           DEBIAN_FRONTEND=noninteractive sudo apt install -y qemu-system-x86 libvirt-daemon libguestfs-tools guestmount cloud-image-utils pigz erofs-utils python3-git
           if [[ -e /dev/kvm ]]; then
             sudo chmod 0666 /dev/kvm
@@ -61,11 +61,21 @@ jobs:
           python3 build_image.py "${BUILD_ARGS[@]}" Configs/Ubuntu_24_04.json cache_dir/ rootfs_dir/
           echo "Rootfs build stages finished, check ~/RootFS for output."
 
-          ln -sfn "$ROOTFS_DIR" "$HOME/RootFS"
+          echo "Post-build directory listing"
+          pwd
+          ls -la
+          echo "Post-build tree for current directory"
+          tree -a -L 3 .
+          echo "Post-build tree for rootfs_dir"
+          tree -a -L 4 rootfs_dir
+          echo "Post-build tree for home directory"
+          tree -a -L 3 "$HOME"
+
+          ln -sfn "$ROOTFS_DIR/rootfs_dir" "$HOME/RootFS"
 
       - name: Upload RootFS artifact
         uses: actions/upload-artifact@v4
         with:
           name: Ubuntu_24_04.sqsh
-          path: ${{ github.workspace }}/RootFS/Ubuntu_24_04.sqsh
+          path: ${{ github.workspace }}/RootFS/rootfs_dir/Ubuntu_24_04.sqsh
           if-no-files-found: error
