@@ -37,6 +37,14 @@ jobs:
           mkdir -p "$ROOTFS_DIR/cache_dir" "$ROOTFS_DIR/rootfs_dir"
           cd "$ROOTFS_DIR"
 
+          # CI runners are memory-constrained for large C++ builds inside Stage1 VM.
+          # Force conservative parallelism in RootFS build scripts to avoid guest OOM kills.
+          while IFS= read -r -d '' script; do
+            sed -E -i 's/(^|[[:space:]])make -j[0-9]+/\1make -j2/g' "$script"
+            sed -E -i 's/(^|[[:space:]])ninja -j[0-9]+/\1ninja -j2/g' "$script"
+            sed -i '1a export CMAKE_BUILD_PARALLEL_LEVEL=2\nexport MAKEFLAGS="-j2"\nexport NINJAFLAGS="-j2"' "$script"
+          done < <(find "$ROOTFS_DIR" -type f \( -name 'build_install*.sh' -o -name 'build_*.sh' \) -print0)
+
           HOST_MEM_MB=$(( $(awk '/MemTotal/ {print $2}' /proc/meminfo) / 1024 ))
           QEMU_MEM_MB=$(( HOST_MEM_MB / 2 ))
           if [[ "$QEMU_MEM_MB" -lt 4096 ]]; then QEMU_MEM_MB=4096; fi
