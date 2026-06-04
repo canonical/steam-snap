@@ -1,0 +1,40 @@
+name: Build FEX RootFS
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-fex-rootfs:
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Build RootFS image
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          uname -r
+          echo "Steam snap rootfs build"
+          DEBIAN_FRONTEND=noninteractive sudo apt update
+          DEBIAN_FRONTEND=noninteractive sudo apt install -y build-essential git
+          DEBIAN_FRONTEND=noninteractive sudo apt install -y qemu-system-x86 libvirt-daemon libguestfs-tools guestmount cloud-image-utils pigz erofs-utils python3-git
+          sudo chmod 0666 /dev/kvm
+          sudo chmod +r /boot/vmlinuz*
+
+          sudo mkdir -p /home/ubuntu
+          sudo chown -R "$USER":"$USER" /home/ubuntu
+
+          git clone https://github.com/MitchellAugustin/RootFS.git
+          mkdir -p /home/ubuntu/RootFS/cache_dir /home/ubuntu/RootFS/rootfs_dir
+          cd /home/ubuntu/RootFS
+          python3 build_image.py Configs/Ubuntu_24_04.json cache_dir/ rootfs_dir/
+          echo "Rootfs build stages finished, check ~/RootFS for output."
+
+          ln -sfn /home/ubuntu/RootFS "$HOME/RootFS"
+
+      - name: Upload RootFS artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Ubuntu_24_04.sqsh
+          path: ~/RootFS/Ubuntu_24_04.sqsh
+          if-no-files-found: error
