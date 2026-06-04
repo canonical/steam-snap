@@ -1,0 +1,5 @@
+Within a pv shell launched with the command below, the following command launches vkcube within s-l-r:
+
+LD_LIBRARY_PATH=/var/lib/snapd/hostfs/usr/lib/aarch64-linux-gnu:$LD_LIBRARY_PATH vkcube
+
+export VK_LOADER_DEBUG=all && export STEAM_LINUX_RUNTIME_VERBOSE=1 && export STEAM_LINUX_RUNTIME_LOG=1 && echo "Printing /var/lib/snapd/lib/vulkan/icd.d/nvidia_icd.json" && cat /var/lib/snapd/lib/vulkan/icd.d/nvidia_icd.json &&  PRESSURE_VESSEL_SHELL=instead %command%

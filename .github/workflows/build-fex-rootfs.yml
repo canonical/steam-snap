@@ -1,0 +1,76 @@
+name: Build FEX RootFS
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-fex-rootfs:
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Build RootFS image
+        shell: bash
+        env:
+          ROOTFS_DIR: ${{ github.workspace }}/RootFS
+        run: |
+          set -euo pipefail
+
+          uname -r
+          echo "Steam snap rootfs build"
+          pwd
+          DEBIAN_FRONTEND=noninteractive sudo apt update
+          DEBIAN_FRONTEND=noninteractive sudo apt install -y build-essential git tree
+          DEBIAN_FRONTEND=noninteractive sudo apt install -y qemu-system-x86 libvirt-daemon libguestfs-tools guestmount cloud-image-utils pigz erofs-utils python3-git
+          if [[ -e /dev/kvm ]]; then
+            sudo chmod 0666 /dev/kvm
+          fi
+          if compgen -G "/boot/vmlinuz*" > /dev/null; then
+            sudo chmod +r /boot/vmlinuz*
+          fi
+
+          git clone https://github.com/MitchellAugustin/RootFS.git "$ROOTFS_DIR"
+          mkdir -p "$ROOTFS_DIR/cache_dir" "$ROOTFS_DIR/rootfs_dir"
+          cd "$ROOTFS_DIR"
+
+          # CI runners are memory-constrained for large C++ builds inside Stage1 VM.
+          # Force conservative parallelism in RootFS build scripts to avoid guest OOM kills.
+          while IFS= read -r -d '' script; do
+            sed -E -i 's/(^|[[:space:]])make -j[0-9]+/\1make -j2/g' "$script"
+            sed -E -i 's/(^|[[:space:]])ninja -j[0-9]+/\1ninja -j2/g' "$script"
+            sed -i '1a export CMAKE_BUILD_PARALLEL_LEVEL=2\nexport MAKEFLAGS="-j2"\nexport NINJAFLAGS="-j2"' "$script"
+          done < <(find "$ROOTFS_DIR" -type f \( -name 'build_install*.sh' -o -name 'build_*.sh' \) -print0)
+
+          HOST_MEM_MB=$(( $(awk '/MemTotal/ {print $2}' /proc/meminfo) / 1024 ))
+          QEMU_MEM_MB=$(( HOST_MEM_MB / 2 ))
+          if [[ "$QEMU_MEM_MB" -lt 4096 ]]; then QEMU_MEM_MB=4096; fi
+          if [[ "$QEMU_MEM_MB" -gt 12288 ]]; then QEMU_MEM_MB=12288; fi
+          QEMU_MEM="${QEMU_MEM_MB}M"
+
+          BUILD_ARGS=(-m "$QEMU_MEM")
+          if [[ ! -r /dev/kvm || ! -w /dev/kvm ]]; then
+            echo "KVM unavailable for runner user, using QEMU TCG fallback (-disable-kvm)."
+            BUILD_ARGS+=("-disable-kvm")
+          fi
+
+          echo "Running RootFS build with args: ${BUILD_ARGS[*]}"
+          python3 build_image.py "${BUILD_ARGS[@]}" Configs/Ubuntu_24_04.json cache_dir/ rootfs_dir/
+          echo "Rootfs build stages finished, check ~/RootFS for output."
+
+          echo "Post-build directory listing"
+          pwd
+          ls -la
+          echo "Post-build tree for current directory"
+          tree -a -L 3 .
+          echo "Post-build tree for rootfs_dir"
+          tree -a -L 4 rootfs_dir
+          echo "Post-build tree for home directory"
+          tree -a -L 3 "$HOME"
+
+          ln -sfn "$ROOTFS_DIR/rootfs_dir" "$HOME/RootFS"
+
+      - name: Upload RootFS artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Ubuntu_24_04.sqsh
+          path: ${{ github.workspace }}/RootFS/rootfs_dir/Ubuntu_24_04.sqsh
+          if-no-files-found: error
