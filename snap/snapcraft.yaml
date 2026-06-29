@@ -46,6 +46,8 @@ layout:
     bind: $SNAP/usr/lib/x86_64-linux-gnu/alsa-lib
   /usr/share/alsa:
     bind: $SNAP/usr/share/alsa
+  /usr/share/pipewire:
+    bind: $SNAP/usr/share/pipewire
   /usr/share/X11/xkb:
     bind: $SNAP/usr/share/X11/xkb
   /usr/lib/x86_64-linux-gnu/libvulkan_intel.so:
@@ -425,8 +427,11 @@ parts:
       - libxrandr2:i386
       - libxi6:amd64
       - libxi6:i386
+      - pipewire
       - libpipewire-0.3-0t64:amd64
       - libpipewire-0.3-0t64:i386
+      - libpipewire-0.3-modules:amd64
+      - libpipewire-0.3-modules:i386
       - libopenal1:amd64
       - libopenal1:i386
       - libpulse0:amd64
