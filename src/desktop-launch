@@ -286,6 +286,11 @@ if [ -n "$XDG_RUNTIME_DIR" ]; then
     fi
 fi
 
+# Tell Pipewire where to find its configuration and plugins
+export PIPEWIRE_CONFIG_DIR="$SNAP_DESKTOP_RUNTIME/usr/share/pipewire"
+export PIPEWIRE_MODULE_DIR="$SNAP_DESKTOP_RUNTIME/usr/lib/$ARCH/pipewire-0.3"
+export SPA_PLUGIN_DIR="$SNAP_DESKTOP_RUNTIME/usr/lib/$ARCH/spa-0.2"
+
 # Keep an array of data dirs, for looping through them
 IFS=':' read -r -a data_dirs_array <<< "$XDG_DATA_DIRS"
 
