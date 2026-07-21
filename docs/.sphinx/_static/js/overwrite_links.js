@@ -1,5 +1,5 @@
  // Replaces oldDomain with newDomain in relevant anchor tags
- const RtDHostedDomain = 'canonical-steam-snap.readthedocs-hosted.com';
+ const oldDomain = 'canonical-steam-snap.readthedocs-hosted.com';
  const newDomain = 'ubuntu.com/docs/steam';
 
 function overwriteMatchingAnchorUrls(container) {
