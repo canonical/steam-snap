@@ -176,7 +176,7 @@ if os.getenv("OPENAPI", ""):
 # TODO: If your documentation is hosted on https://docs.ubuntu.com/,
 #       uncomment and update as needed.
 
-# slug = 'docs/steam'
+slug = 'docs/steam'
 
 #######################
 # Sitemap configuration: https://sphinx-sitemap.readthedocs.io/
