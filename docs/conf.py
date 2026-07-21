@@ -302,11 +302,11 @@ exclude_patterns = [
 
 # Adds custom CSS files, located under 'html_static_path'
 
-html_css_files = ["css/dropdown.css", "css/snap-badge.css"]
+html_css_files = ["css/dropdown.css", "css/snap-badge.css", "https://assets.ubuntu.com/v1/d86746ef-cookie_banner.css"]
 
 # Adds custom JavaScript files, located under 'html_static_path'
 
-html_js_files = ["js/overwrite_links.js"]
+html_js_files = ["js/overwrite_links.js", "https://assets.ubuntu.com/v1/287a5e8f-bundle.js"]
 
 
 # Specifies a reST snippet to be appended to each .rst file
