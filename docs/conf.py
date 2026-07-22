@@ -70,7 +70,7 @@ copyright = "%s CC-BY-SA, %s" % (datetime.date.today().year, author)
 # NOTE: The Open Graph Protocol (OGP) enhances page display in a social graph
 #       and is used by social media platforms; see https://ogp.me/
 
-ogp_site_url = f"https://ubuntu.com/docs/steam/"
+ogp_site_url = "https://ubuntu.com/docs/steam/"
 
 
 # Preview name of the documentation website
@@ -184,7 +184,7 @@ slug = 'docs/steam'
 
 # Use RTD canonical URL to ensure duplicate pages have a specific canonical URL
 
-html_baseurl = f"https://ubuntu.com/docs/steam/"
+html_baseurl = "https://ubuntu.com/docs/steam/"
 
 # sphinx-sitemap uses html_baseurl to generate the full URL for each page:
 
