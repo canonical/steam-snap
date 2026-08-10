@@ -13,6 +13,15 @@ if ! snapctl is-connected "gaming-graphics-core24"; then
   exit 1
 fi
 
+# Show immediate feedback that Steam is launching
+SPLASH_ZENITY_PID=
+if [[ "$*" == *bin_steam.sh* ]]; then
+  "$SNAP/usr/bin/zenity" --info --no-wrap --title="Steam" \
+    --text="Steam is starting…" --icon-name=steam >/dev/null 2>&1 &
+  SPLASH_ZENITY_PID=$!
+  disown "$SPLASH_ZENITY_PID" 2>/dev/null || true
+fi
+
 # ensure_dir_exists calls `mkdir -p` if the given path is not a directory.
 # This speeds up execution time by avoiding unnecessary calls to mkdir.
 #
@@ -393,6 +402,13 @@ strip_unreachable_dirs XDG_SPECIAL_DIRS
 #
 # That said, they're really rare so it's not a big deal
 export APPIMAGE_EXTRACT_AND_RUN=1
+
+# Close our startup splash now, right before handing off to the real Steam
+# command, so it doesn't overlap with any dialog Steam itself may open.
+if [ -n "$SPLASH_ZENITY_PID" ]; then
+  kill "$SPLASH_ZENITY_PID" 2>/dev/null || true
+  wait "$SPLASH_ZENITY_PID" 2>/dev/null || true
+fi
 
 $SNAP/bin/nvidia32 &
 "$@"
