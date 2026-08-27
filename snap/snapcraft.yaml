@@ -472,7 +472,6 @@ parts:
       craftctl set version=$(dpkg-parsechangelog -l $CRAFT_PART_INSTALL/usr/share/doc/steam-launcher/changelog.*.gz -S Version | sed -e s/1://g)
     prime:
       - -usr/include
-      - -usr/share/doc
       - -usr/share/man
       - -usr/share/bug
       - -usr/share/gdb
