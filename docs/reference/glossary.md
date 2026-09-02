@@ -11,7 +11,7 @@ Confinement
 GameMode
   A Linux daemon/library that optimizes system performance for gaming by adjusting CPU governor, I/O priority, and other settings when games are running.
 
-gaming-graphics-core24-snap
+gaming-graphics-core26-snap
   Graphics stack useful as a content snap for gaming snaps.
 
 MangoHud
