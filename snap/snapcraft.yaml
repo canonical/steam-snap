@@ -49,7 +49,8 @@ layout:
   /usr/share/pipewire:
     bind: $SNAP/usr/share/pipewire
   /usr/share/X11/xkb:
-    bind: $SNAP/usr/share/X11/xkb
+    # $SNAP/usr/share/X11/xkb is a symlink
+    bind: $SNAP/usr/share/xkeyboard-config-2
   /usr/lib/x86_64-linux-gnu/libvulkan_intel.so:
     symlink: $SNAP/graphics/usr/lib/x86_64-linux-gnu/libvulkan_intel.so
   /usr/lib/i386-linux-gnu/libvulkan_intel.so:
