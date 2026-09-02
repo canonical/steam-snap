@@ -1,0 +1,27 @@
+tracepoint:syscalls:sys_enter_openat
+/comm == "exe"/
+{
+    @last_file[pid] = str(args->filename);
+}
+
+tracepoint:syscalls:sys_exit_openat
+/comm == "exe"/
+{
+    if ((int64)args->ret < 0) {
+        @last_errno[pid] = -(int64)args->ret;
+    }
+}
+
+tracepoint:sched:sched_process_exit
+/comm == "exe"/
+{
+    printf(
+        "[PID %d] CRASH after failing to open %s (errno=%d)\n",
+        pid,
+        @last_file[pid],
+        @last_errno[pid]
+    );
+    delete(@last_file[pid]);
+    delete(@last_errno[pid]);
+}
+
