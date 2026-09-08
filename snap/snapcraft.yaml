@@ -534,7 +534,7 @@ parts:
     after: [steam, conditioning]
     plugin: nil
     build-snaps:
-      - gaming-graphics-core26/kisak-fresh/candidate
+      - gaming-graphics-core26/kisak-fresh/stable
     override-prime: |
       set -eux
       cd /snap/gaming-graphics-core26/current/usr/lib
