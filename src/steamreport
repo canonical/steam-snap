@@ -12,7 +12,7 @@ from gi.repository import Gtk, Gdk
 
 ISSUE_URL = "https://github.com/canonical/steam-snap/issues/new?assignees=&labels=bug&projects=&template=bug_report.yml"
 DISCUSSION_URL = "https://github.com/canonical/steam-snap/discussions/new?category=game-reports"
-WIKI_URL = "https://github.com/canonical/steam-snap/wiki/Troubleshooting#submitting-a-steam-report"
+WIKI_URL = "https://ubuntu.com/docs/steam/contributing/reports/"
 GRAPHQL_URL = "https://api.github.com/graphql"
 TOKEN_URL = "https://github.com/settings/tokens/new"
 

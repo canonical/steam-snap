@@ -91,9 +91,9 @@ switching graphics cards.
   and alter Proton versions.
 - Go to Big Picture Mode. Ensure all text is properly displayed and you can
   navigate the UI.
-- Switch to non-English keyboard (ex. Russian). Ensure you can type non-English
-- [Ensure you can add a custom Proton version and use it.](https://github.com/canonical/steam-snap/wiki/FAQ#how-do-i-use-a-custom-proton-version)
-characters into the Steam client.
+- Switch to non-English keyboard (ex. Russian). Ensure you can type non-English characters into the Steam client.
+- {ref}`Ensure you can add a custom Proton version and use it. <howto::custom-proton>`
+
 - Test MangoHud
     - In the Snap shell, make sure MangoHud works with `mangohud glxgears`.
     - For *native* games, ensure adding `mangohud %command%` as launch options

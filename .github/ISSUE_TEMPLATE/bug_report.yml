@@ -9,7 +9,7 @@ body:
     description: |
       Please search to see if an issue already exists for the bug you encountered: https://github.com/canonical/steam-snap/issues?q=label%3Atype%2Fbug.
 
-      Be sure to check the [wiki](https://github.com/canonical/steam-snap/wiki) to see if your issue is addressed.
+      Be sure to check the [docs](https://ubuntu.com/docs/steam/) to see if your issue is addressed.
 
       If you are able, it is helpful to test if the problem occurs on the deb version of Steam or not.
     options:
@@ -50,7 +50,7 @@ body:
   attributes:
     label: Environment
     description: |
-      Run `snap run steam.report` in a terminal or right-click Steam and choose "Report", then paste the output here. More info on this command [here](https://github.com/canonical/steam-snap/wiki/Troubleshooting#submitting-a-steam-report).
+      Run `snap run steam.report` in a terminal or right-click Steam and choose "Report", then paste the output here. More info on this command [here](https://ubuntu.com/docs/steam/contributing/reports/).
     placeholder: |
       os_release:
           name:
@@ -74,7 +74,7 @@ body:
   attributes:
     label: gaming-graphics-core24 version
     description: |
-      Please select the version(s) of the [gaming-graphics-core24](https://github.com/canonical/gaming-graphics/) Snap you have tried/this issue affects. More info on this [here](https://github.com/canonical/steam-snap/wiki/FAQ#how-do-i-use-a-different-mesagraphics-version).
+      Please select the version(s) of the [gaming-graphics-core24](https://github.com/canonical/gaming-graphics/) Snap you have tried/this issue affects. More info on this [here](https://ubuntu.com/docs/steam/howto/change-mesa-graphics/).
 
       If the issue is graphics/GPU related, it is very useful to us if you try each gaming-graphics-core24 branch and report observed behavior differences.
     options:
@@ -89,9 +89,9 @@ body:
     label: |
       Anything else?
     description: |
-      Screenshots? [Logs](https://github.com/canonical/steam-snap/wiki/Troubleshooting#view-logs)? Links? Anything that will give us more context about the issue. If pasting logs, please format them by surrounding the text with ```.
+      Screenshots? [Logs](https://ubuntu.com/docs/steam/howto/troubleshooting/#view-logs)? Links? Anything that will give us more context about the issue. If pasting logs, please format them by surrounding the text with ```.
 
-      Please include [Steam logs](https://github.com/canonical/steam-snap/wiki/Troubleshooting#view-logs) (if applicable) and any additional steps you took to troubleshoot. For troubleshooting ideas, see the [wiki](https://github.com/canonical/steam-snap/wiki).
+      Please include [Steam logs](https://ubuntu.com/docs/steam/howto/troubleshooting/#view-logs) (if applicable) and any additional steps you took to troubleshoot. For troubleshooting ideas, see the [docs](https://ubuntu.com/docs/steam/).
 
       If you are able, please include whether the issue occurs on the Steam deb as well as the Snap.
 
