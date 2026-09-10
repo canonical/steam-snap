@@ -32,7 +32,7 @@ You can still open an issue if one of these workarounds fixes a problem, but ple
 
 ## Troubleshooting specific games
 
-You may check the [reports][reports] discussions for troubleshooting tips with a specific game, and expected results. Also check {term}`ProtonDB` to see if your game *should* work based on other's input. If our [reports][reports] don't contain the game you're experiencing issues with, feel free to add it with the [steam.report tool][steamreport]. Some games may also be listed on the {ref}`known game workarounds page <howto::game-workarounds>`.
+You may check the [reports][reports] discussions for troubleshooting tips with a specific game, and expected results. Also check {term}`ProtonDB` to see if your game *should* work based on other's input. If our [reports][reports] don't contain the game you're experiencing issues with, feel free to add it with the {doc}`steam.report tool </contributing/reports>`. Some games may also be listed on the {doc}`known game workarounds page </howto/troubleshooting/game-workarounds>`.
 
 You can also check the [PC Gaming Wiki][10] for information on game compatibility, local and cloud game files, and system support.
 
@@ -178,5 +178,3 @@ Game workarounds <game-workarounds>
 [10]: https://www.pcgamingwiki.com/wiki
 [issues]: https://github.com/canonical/steam-snap/issues
 [reports]: https://github.com/canonical/steam-snap/discussions/categories/game-reports
-[steamreport]: https://github.com/canonical/steam-snap/wiki/Troubleshooting#submitting-a-steam-report
-[workarounds]: https://github.com/canonical/steam-snap/wiki/Known-Workarounds

@@ -45,6 +45,7 @@ Right-click on the game title in your library, then navigate to {guilabel}`Prope
 
 Check "Force the use of a Specific Steam Play compatibility tool", and choose a Proton version.
 
+(howto::custom-proton)=
 ## Use a custom Proton version
 
 Run Steam at least once.

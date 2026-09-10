@@ -10,7 +10,7 @@ TITLE = "NVIDIA 32-bit Not Found"
 TEXT = """<b>32-bit NVIDIA driver files were not found on your host system.</b>
 It is recommended that you install them for the best experience.
 
-See <a href="https://github.com/canonical/steam-snap/wiki/FAQ#32-bit-driver">https://github.com/canonical/steam-snap/wiki/FAQ#32-bit-driver</a> for more information."""
+See <a href="https://ubuntu.com/docs/steam/howto/dedicated-gpu/#bit-driver">https://ubuntu.com/docs/steam/howto/dedicated-gpu/#bit-driver</a> for more information."""
 COMMAND = """sudo dpkg --add-architecture i386
 sudo apt update
 sudo apt install libnvidia-gl-{}:i386"""
