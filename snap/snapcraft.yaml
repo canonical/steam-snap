@@ -403,6 +403,7 @@ parts:
       - libxcb-dri3-0:i386
       - xkb-data
       - libpci3
+      - libx11-data
       - libvulkan1:i386
       - libvulkan1:amd64
       - libxml2-16:i386
