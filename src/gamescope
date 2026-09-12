@@ -39,4 +39,4 @@ export __EGL_EXTERNAL_PLATFORM_CONFIG_DIRS="/var/lib/snapd/hostfs/usr/share/egl/
 # So instead, we make a private x11 dir inside the snap-space
 GAMESCOPE="${SNAP}/usr/games/gamescope"
 exec bwrap --dev-bind / / --perms 1777 --tmpfs /tmp/.X11-unix -- \
-  ${GAMESCOPE} "$@"
+  "${GAMESCOPE}" "$@"

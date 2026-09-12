@@ -375,6 +375,8 @@ parts:
     stage-packages:
       - gamescope
       - xwayland
+      - bubblewrap
+      - x11-xkb-utils
 
   debug-tools:
     plugin: nil
