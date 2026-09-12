@@ -37,9 +37,6 @@ export __EGL_EXTERNAL_PLATFORM_CONFIG_DIRS="/var/lib/snapd/hostfs/usr/share/egl/
 # https://gitlab.freedesktop.org/wlroots/wlroots/-/blob/master/xwayland/sockets.c
 #
 # So instead, we make a private x11 dir inside the snap-space
-
-echo "Running gamescope in bubblewrap to create private x11 socket"
 GAMESCOPE="${SNAP}/usr/games/gamescope"
 exec bwrap --dev-bind / / --perms 1777 --tmpfs /tmp/.X11-unix -- \
   ${GAMESCOPE} "$@"
-#   gamescope "$@"
