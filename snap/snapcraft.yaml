@@ -83,6 +83,10 @@ layout:
     symlink: $SNAP/usr/lib/i386-linux-gnu/mangohud
   /usr/lib/x86_64-linux-gnu/mangohud:
     symlink: $SNAP/usr/lib/x86_64-linux-gnu/mangohud
+  /usr/bin/Xwayland: # Used by gamescope
+    symlink: $SNAP/usr/bin/Xwayland
+  /usr/bin/xkbcomp: # Used by gamescope
+    symlink: $SNAP/usr/bin/xkbcomp
 
 plugs:
   gaming-graphics-core26:
@@ -365,6 +369,14 @@ parts:
     stage:
       - usr/lib/*/libgamemode*.so.*
       - usr/lib/*/libinih.so.*
+      
+  gamescope:
+    plugin: nil
+    stage-packages:
+      - gamescope
+      - xwayland
+      - bubblewrap
+      - x11-xkb-utils
 
   debug-tools:
     plugin: nil

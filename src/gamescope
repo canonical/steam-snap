@@ -1,0 +1,42 @@
+#!/bin/bash
+
+# Fix various environment details to allow gamescope to work in the snap.
+# Gamescope runs an XWayland server, and most of these are for XWayland
+# needs.
+#
+# Many of these could be moved into snapcraft.yaml, it's a soft judgement
+# call to keep them here to not pollute the overall snap.
+
+# Real binary lives in usr/games (Debian games-section convention), and
+# gamescope execs gamescopereaper by bare name, so it must be on PATH.
+export PATH="$PATH:$SNAP/usr/games"
+
+# Let XWayland->libgbm find host NVIDIA + snap mesa backends
+export GBM_BACKENDS_PATH="/var/lib/snapd/lib/gl/gbm:$SNAP/graphics/usr/lib/x86_64-linux-gnu/gbm"
+
+# Mirror some json files from the host that tell XWayland where some nvidia
+# egl libraries are. Works assuming that nvidia drivers are installed in the 
+# host. Should degrade to mesa if not installed.
+export __EGL_VENDOR_LIBRARY_DIRS="/var/lib/snapd/hostfs/usr/share/glvnd/egl_vendor.d:$SNAP/graphics/usr/share/glvnd/egl_vendor.d"
+export __EGL_EXTERNAL_PLATFORM_CONFIG_DIRS="/var/lib/snapd/hostfs/usr/share/egl/egl_external_platform.d"
+
+# Normally an app running an XWayland server binds to a free socket in the
+# global /tmp/.X11-unix/ space, so other apps can find it to render into it.
+# These are read-only unless the snap asks for an x11 slot, which requires
+# manual review + approval
+# (https://forum.snapcraft.io/t/x11-plug-and-slot-needing-manual-review/8693)
+#
+# However, the gamescope-xwayland server is just for the game running under
+# the gamescope command, so we can instead make a private x11 socket dir
+# for it instead of using the global /tmp/.X11 space.
+# This keeps the steam+gamescope snap all well encapsulated from userspace.
+#
+# Ideally, wlroots would take an input for the X11 socket, and then gamescope
+# could make a private file and pass it. But instead wlroots hardcodes the
+# socket dir:
+# https://gitlab.freedesktop.org/wlroots/wlroots/-/blob/master/xwayland/sockets.c
+#
+# So instead, we make a private x11 dir inside the snap-space
+GAMESCOPE="${SNAP}/usr/games/gamescope"
+exec bwrap --dev-bind / / --perms 1777 --tmpfs /tmp/.X11-unix -- \
+  "${GAMESCOPE}" "$@"
