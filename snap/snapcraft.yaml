@@ -83,9 +83,7 @@ layout:
     symlink: $SNAP/usr/lib/i386-linux-gnu/mangohud
   /usr/lib/x86_64-linux-gnu/mangohud:
     symlink: $SNAP/usr/lib/x86_64-linux-gnu/mangohud
-  /usr/games: # gamescope lives in /usr/games 
-    bind: $SNAP/usr/games
-  /usr/bin/Xwayland:
+  /usr/bin/Xwayland: # Used by gamescope
     symlink: $SNAP/usr/bin/Xwayland
 
 plugs:
