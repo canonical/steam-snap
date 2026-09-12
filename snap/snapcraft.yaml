@@ -139,8 +139,6 @@ environment:
   LD_LIBRARY_PATH: $SNAP/graphics/usr/lib/i386-linux-gnu:$SNAP/graphics/usr/lib:$SNAP/usr/lib/i386-linux-gnu:$SNAP/usr/lib/x86_64-linux-gnu:$SNAP/lib/i386-linux-gnu:$SNAP/usr/lib/i386-linux-gnu/pulseaudio${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}
   LIBGL_DRIVERS_PATH: $SNAP/graphics/usr/lib/i386-linux-gnu/dri:$SNAP/graphics/usr/lib/x86_64-linux-gnu/dri:${LIBGL_DRIVERS_PATH:+:$LIBGL_DRIVERS_PATH}
   GI_TYPELIB_PATH: $SNAP/usr/lib/x86_64-linux-gnu/girepository-1.0
-  # Let gamescope->xwayland->libgbm find host NVIDIA + snap mesa backends
-  GBM_BACKENDS_PATH: /var/lib/snapd/lib/gl/gbm:$SNAP/graphics/usr/lib/x86_64-linux-gnu/gbm${GBM_BACKENDS_PATH:+:$GBM_BACKENDS_PATH}
   PYTHONPATH: $SNAP/usr/lib/python3/dist-packages
 
 parts:
