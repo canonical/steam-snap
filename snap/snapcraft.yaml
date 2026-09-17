@@ -562,6 +562,7 @@ apps:
       - joystick
       - network
       - network-bind
+      - network-manager
       - opengl
       - audio-playback
       - audio-record
