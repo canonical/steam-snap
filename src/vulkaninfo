@@ -1,4 +1,4 @@
 #!/bin/bash
 
-exec $SNAP/graphics/usr/bin/vulkaninfo "$@"
+exec "$SNAP"/graphics/usr/bin/vulkaninfo "$@"
 exit $?
