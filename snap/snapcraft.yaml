@@ -144,16 +144,23 @@ parts:
       mkdir -p $CRAFT_PART_INSTALL/bin
       cp * $CRAFT_PART_INSTALL/bin/
     stage-packages:
+      - python3
       - python3-gi
-      - gir1.2-gtk-3.0
+      - gir1.2-gtk-4.0
+      - xdotool
     stage:
       - bin/*
+      - usr/bin/python3*
+      - usr/bin/xdotool
+      - usr/lib/**/libxdo*
+      - usr/lib/python3.*/**
       - usr/lib/python3/dist-packages/*
+      - usr/lib/**/libpython3*
       - usr/share/mime/*
       - usr/share/icons/*
-      - usr/lib/**/gtk-3.0*
-      - etc/gtk-3.0*
-      - usr/share/*/gir1.2-gtk-3.0*
+      - usr/lib/**/gtk-4.0*
+      - etc/gtk-4.0*
+      - usr/share/*/gir1.2-gtk-4.0*
       - usr/**/libfontconfig*
       - usr/**/cairo-1*
       - usr/**/libatspi*
@@ -169,8 +176,9 @@ parts:
       - usr/**/libepoxy*
       - usr/**/libfribidi*
       - usr/**/*girepository*
+      - usr/**/libgraphene*
       - usr/**/libgraphite2*
-      - usr/**/libgtk-3*
+      - usr/**/libgtk-4*
       - usr/**/libharfbuzz*
       - usr/**/libjbig*
       - usr/**/libjpeg*
@@ -536,7 +544,7 @@ parts:
 
 apps:
   steam:
-    command-chain: [snap/command-chain/alsa-launch, bin/desktop-launch]
+    command-chain: [bin/steam-splash-wrapper, snap/command-chain/alsa-launch, bin/desktop-launch]
     command: usr/lib/steam/bin_steam.sh -no-cef-sandbox
     environment:
       HOME: $SNAP_USER_COMMON
