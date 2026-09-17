@@ -413,10 +413,22 @@ $SNAP/bin/nvidia32 &
 # Let `snap set steam gamepadui=true` make the "steam" app always start
 # in Big Picture / gamepadui mode, the same way a Steam Deck boots
 # useful for handheld and console setups
+GAMEPADUI_WATCHDOG_PID=""
 if [[ "$1" == *"/bin_steam.sh" ]] && [ "$(snapctl get gamepadui 2>/dev/null)" = "true" ]; then
     export SteamDeck=1
     set -- "$@" -gamepadui
+
+    # Steam sometimes falls back to the classic Desktop UI after a game
+    # exits. Only run this watchdog while gamepadui=true is set; it will
+    # try to force Steam back into GamepadUI/Big Picture if that happens.
+    "$SNAP/bin/gamepadui-watchdog" &
+    GAMEPADUI_WATCHDOG_PID=$!
 fi
 
 "$@"
+
+if [ -n "$GAMEPADUI_WATCHDOG_PID" ]; then
+    kill "$GAMEPADUI_WATCHDOG_PID" 2>/dev/null
+fi
+
 killall steam-runtime-launcher-service
