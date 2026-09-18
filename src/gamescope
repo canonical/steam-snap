@@ -11,6 +11,24 @@
 # gamescope execs gamescopereaper by bare name, so it must be on PATH.
 export PATH="$PATH:$SNAP/usr/games"
 
+# Set wayland socket path. This is similar to the !DISABLE_WAYLAND block
+# in src/desktop-launch, but we just do an `export` here not a symlink
+# so the change is only made for gamescope execution, not the whole steam
+# snap env.
+#
+# Details for posterity:
+# gamescope fails with "Failed to connect to wayland socket: wayland-0.":
+# https://github.com/ValveSoftware/gamescope/blob/c50ddfa9b71a75ec8df94bda8cf31d425dbdda24/src/main.cpp#L554
+# because wayland-client resolves the wayland socket to:
+# $XDG_RUNTIME_DIR/$WAYLAND_DISPLAY =  "/run/user/1000/snap.steam/wayland-0"
+# But the wayland socket is actually at "/run/user/1000/wayland-0"
+#
+# We can change WAYLAND_DISPLAY from just "wayland-0" to instead be an absolute
+# path to make wayland-client read the right value
+# https://gitlab.freedesktop.org/wayland/wayland/-/blob/381af21cf84f13be0ca24aed756a9cded3290d49/src/wayland-client.c#L1171
+host_wayland_socket="/run/user/$(id -u)/${WAYLAND_DISPLAY:-wayland-0}"
+[ -S "$host_wayland_socket" ] && export WAYLAND_DISPLAY="$host_wayland_socket"
+
 # Let XWayland->libgbm find host NVIDIA + snap mesa backends
 export GBM_BACKENDS_PATH="/var/lib/snapd/lib/gl/gbm:$SNAP/graphics/usr/lib/x86_64-linux-gnu/gbm"
 
