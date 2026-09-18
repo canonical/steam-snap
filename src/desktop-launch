@@ -6,10 +6,10 @@
 # shellcheck disable=SC2034
 START=$(date +%s.%N)
 
-if ! snapctl is-connected "gaming-graphics-core24"; then
+if ! snapctl is-connected "gaming-graphics-core26"; then
   echo "ERROR: not connected to the gaming-mesa content interface."
   echo "To connect:"
-  echo "sudo snap connect steam:gaming-graphics-core24 gaming-graphics-core24"
+  echo "sudo snap connect steam:gaming-graphics-core26 gaming-graphics-core26"
   exit 1
 fi
 

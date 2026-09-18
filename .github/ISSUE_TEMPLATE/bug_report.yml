@@ -72,11 +72,11 @@ body:
     required: true
 - type: dropdown
   attributes:
-    label: gaming-graphics-core24 version
+    label: gaming-graphics-core26 version
     description: |
-      Please select the version(s) of the [gaming-graphics-core24](https://github.com/canonical/gaming-graphics/) Snap you have tried/this issue affects. More info on this [here](https://ubuntu.com/docs/steam/howto/change-mesa-graphics/).
+      Please select the version(s) of the [gaming-graphics-core26](https://github.com/canonical/gaming-graphics/) Snap you have tried/this issue affects. More info on this [here](https://ubuntu.com/docs/steam/howto/change-mesa-graphics/).
 
-      If the issue is graphics/GPU related, it is very useful to us if you try each gaming-graphics-core24 branch and report observed behavior differences.
+      If the issue is graphics/GPU related, it is very useful to us if you try each gaming-graphics-core26 branch and report observed behavior differences.
     options:
       - kisak-fresh (default)
       - kisak-turtle
