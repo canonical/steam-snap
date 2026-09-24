@@ -542,11 +542,11 @@ apps:
       HOME: $SNAP_USER_COMMON
       #LIBGL_DEBUG: verbose
       TMPDIR: $XDG_RUNTIME_DIR
-      ALWAYS_USE_PULSEAUDIO: 1
-      DISABLE_WAYLAND: 1
+      ALWAYS_USE_PULSEAUDIO: "1"
+      DISABLE_WAYLAND: "1"
       PKG_CONFIG_PATH: $SNAP/usr/lib/i386-linux-gnu/pkgconfig:$SNAP/usr/lib/x86_64-linux-gnu/pkgconfig:$SNAP/usr/lib/pkgconfig
-      STEAM_LINUX_RUNTIME_VERBOSE: 1
-      STEAM_LINUX_RUNTIME_LOG: 1
+      STEAM_LINUX_RUNTIME_VERBOSE: "1"
+      STEAM_LINUX_RUNTIME_LOG: "1"
     plugs:
       - shmem
       - camera
@@ -579,7 +579,7 @@ apps:
     command-chain: [bin/desktop-launch]
     command: bin/steamreport
     environment:
-      DISABLE_WAYLAND: 1
+      DISABLE_WAYLAND: "1"
     plugs:
       - system-observe
       - hardware-observe
