@@ -1,4 +1,4 @@
 #!/bin/bash
 
-exec $SNAP/graphics/usr/bin/glxinfo "$@"
+exec "$SNAP"/graphics/usr/bin/glxinfo "$@"
 exit $?
