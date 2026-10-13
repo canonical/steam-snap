@@ -39,7 +39,7 @@ also assumes you have Steam Play  enabled for any game.
 
 Repeat the below steps on every combination of GPUs possible on your system.
 On hybrid systems, try in hybrid mode (both cards on and available) and
-dedicated GPU modes (single card on and available). 
+dedicated GPU modes (single card on and available).
 
 See the page on {ref}`using a dedicated GPU <howto::dedicated-gpu>` for tips on
 switching graphics cards.
@@ -67,9 +67,9 @@ switching graphics cards.
     - Can be played properly
 - Install a game. Ensure the installer UI is correct, the game is installed in
   the right place, and it can be played.
-- Switch to different gaming-graphics-core24 branches and ensure all of them
+- Switch to different gaming-graphics-core26 branches and ensure all of them
   work correctly. You can switch between branches using `sudo snap refresh
-  gaming-graphics-core24 --channel=<branch>/stable`. The three branches are
+  gaming-graphics-core26 --channel=<branch>/stable`. The three branches are
   `oibaf-latest`, `kisak-fresh` and `kisak-turtle`.
 - Plug in a supported controller (PS4, Xbox One and Xbox 360 controllers) and
   make sure the input is processed in the games.
@@ -148,13 +148,13 @@ ensure you use both a Proton and a Native game.
 Steam game collections can be a useful feature for keeping track of well-tested games. Follow these steps to create a *Dynamic Collection* that automatically populates with games based on Steam Deck status:
 
 1. Go to Steam's Library tab
-2. Click the four boxes to the right of Home 
-> ![Selecting your collections in Steam.](../assets/testing-four-boxes.png) 
+2. Click the four boxes to the right of Home
+> ![Selecting your collections in Steam.](../assets/testing-four-boxes.png)
 3. Click the empty box labeled "Create a new Collection"
 4. Give it a name, e.g. "Verified and Playable on Deck"
 5. Select *Create Dynamic Collection*; alternatively, select *Create Collection* to manually add games yourself
 6. Under Hardware Support, click the *Steam Deck* dropdown and select a verified status for the collection
-> ![Selecting verified status for collection in Steam.](../assets/testing-verified-status.png) 
+> ![Selecting verified status for collection in Steam.](../assets/testing-verified-status.png)
 7. Scroll down and you should see all the games in your library that meet the criteria you selected
 
 Repeat steps 1 and 2 to see past collections you've made or to create new collections.
