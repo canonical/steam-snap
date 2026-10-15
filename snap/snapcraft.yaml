@@ -227,7 +227,7 @@ parts:
   ninja:
     plugin: nil
     source: https://github.com/ninja-build/ninja.git
-    source-tag: "v1.13.1"
+    source-tag: "v1.13.2"
     override-build: |
       rm -rf build
       rm -f ninja
@@ -249,7 +249,7 @@ parts:
     after: [ninja]
     plugin: nil
     source: https://github.com/mesonbuild/meson.git
-    source-tag: "1.8.3"
+    source-tag: "1.12.1"
     override-build: |
       /usr/bin/python3 -m pip install . --break-system-packages
       mkdir -p $CRAFT_PART_INSTALL/usr/lib/python3/dist-packages
@@ -266,7 +266,7 @@ parts:
   mangohud:
     after: [meson-deps]
     source: https://github.com/flightlessmango/MangoHud.git
-    source-tag: "v0.8.1"
+    source-tag: "v0.8.4"
     plugin: meson
     organize:
       snap/steam/current/usr: usr
@@ -306,7 +306,7 @@ parts:
   mangohud64:
     after: [meson-deps, mangohud]
     source: https://github.com/flightlessmango/MangoHud.git
-    source-tag: "v0.8.1"
+    source-tag: "v0.8.4"
     plugin: meson
     organize:
       snap/steam/current/usr: usr
