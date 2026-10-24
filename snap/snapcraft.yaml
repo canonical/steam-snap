@@ -119,6 +119,13 @@ plugs:
   shmem:
     interface: shared-memory
     private: true
+  # Consumer of gamepad-shell's SteamOS Manager adapter (TDP/performance
+  # profile). Must repeat the slot's bus/name verbatim; connect manually:
+  #   snap connect steam:dbus-steamos-manager gamepad-shell:dbus-steamos-manager
+  dbus-steamos-manager:
+    interface: dbus
+    bus: session
+    name: com.steampowered.SteamOSManager1
 
 slots:
   steam:
@@ -592,6 +599,7 @@ apps:
       - removable-media
       - upower-observe
       - uinput
+      - dbus-steamos-manager
   report:
     command-chain: [bin/desktop-launch]
     command: bin/steamreport
