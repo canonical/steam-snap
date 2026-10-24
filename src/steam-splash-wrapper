@@ -1,0 +1,11 @@
+#!/bin/bash
+#
+# Shows a "Starting Steam..." splash immediately, without blocking the
+# rest of the command-chain. steam-splash itself decides fullscreen vs.
+# windowed and closes when Steam's final window is focused (or on timeout).
+
+# exec below keeps this PID, so the splash can watch the Steam chain exit.
+"$SNAP/bin/steam-splash" $$ &
+disown
+
+exec "$@"
