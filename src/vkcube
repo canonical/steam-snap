@@ -1,4 +1,4 @@
 #!/bin/bash
 
-exec $SNAP/graphics/usr/bin/vkcube "$@"
+exec "$SNAP"/graphics/usr/bin/vkcube "$@"
 exit $?

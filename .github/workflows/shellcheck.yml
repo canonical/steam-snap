@@ -1,0 +1,19 @@
+name: shellcheck
+on:
+  pull_request:
+    paths:
+      - "src/**"
+  push:
+    branches:
+      - main
+    paths:
+      - "src/**"
+  workflow_dispatch:
+
+jobs:
+  shellcheck:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v7
+    - name: Run ShellCheck
+      run: shellcheck src/desktop-launch src/glxgears src/glxinfo src/steam-snap.sh src/vkcube src/vulkaninfo

@@ -65,8 +65,8 @@ fi
 # If the user has saves in the old $SNAP_USER_DATA/.config, move them
 # to $SNAP_USER_COMMON/.config
 if [[ -d $SNAP_USER_DATA/.config ]]; then
-  mv -n $SNAP_USER_DATA/.config/* $XDG_CONFIG_HOME
-  rm -r $SNAP_USER_DATA/.config
+  mv -n "$SNAP_USER_DATA"/.config/* "$XDG_CONFIG_HOME"
+  rm -r "$SNAP_USER_DATA"/.config
 fi
 
 if [ "$SNAP_ARCH" = "amd64" ]; then
@@ -129,8 +129,7 @@ function strip_unreachable_dirs() {
     # Just checking existence and the `x` bit isn't enough
     # we need to see if we can actually `ls` it because of apparmor
     # quirks
-    ls $d > /dev/null 2>&1
-    if [[ $? -eq 0 ]]; then
+    if ls "$d" > /dev/null 2>&1; then
       append_dir tmp "$d"
     else
       echo "INFO: filtering $d out of ${!var} because it is unreachable"
@@ -145,7 +144,7 @@ function strip_unreachable_dirs() {
 function is_subpath() {
   dir="$(realpath "$1")"
   parent="$(realpath "$2")"
-  [ "${dir##$parent/}" != "$dir" ] && return 0 || return 1
+  [ "${dir##"$parent"/}" != "$dir" ] && return 0 || return 1
 }
 
 append_dir PATH "$SNAP_DESKTOP_RUNTIME/usr/bin"
@@ -336,7 +335,7 @@ wait_for_async_execs
 
 # Copy the yaru into place so it's available at runtime
 ensure_dir_exists "$XDG_DATA_HOME/Steam/skins"
-cp -rp $SNAP/usr/share/Steam/skins/Yaru $XDG_DATA_HOME/Steam/skins/
+cp -rp "$SNAP"/usr/share/Steam/skins/Yaru "$XDG_DATA_HOME"/Steam/skins/
 
 if [ -n "$SNAP_DESKTOP_DEBUG" ]; then
   echo "desktop-launch elapsed time: $(date +%s.%N --date="$START seconds ago")"
@@ -348,9 +347,9 @@ fi
 ######################################
 
 # Set what the desktop folder is and ensure that the folders applications and icons exist.
-DESKTOP_PATH=$(grep "XDG_DESKTOP_DIR" $SNAP_REAL_HOME/.config/user-dirs.dirs | cut -d'=' -f2 | sed 's/"//g' | sed "s#\$HOME#$SNAP_REAL_HOME#g")
-ensure_dir_exists $SNAP_REAL_HOME/.local/share/applications/
-ensure_dir_exists $SNAP_REAL_HOME/.local/share/icons/
+DESKTOP_PATH=$(grep "XDG_DESKTOP_DIR" "$SNAP_REAL_HOME"/.config/user-dirs.dirs | cut -d'=' -f2 | sed 's/"//g' | sed "s#\$HOME#$SNAP_REAL_HOME#g")
+ensure_dir_exists "$SNAP_REAL_HOME"/.local/share/applications/
+ensure_dir_exists "$SNAP_REAL_HOME"/.local/share/icons/
 
 # Remove links from previous installs (https://github.com/canonical/steam-snap/pull/451)
 find "$SNAP_REAL_HOME/.local/share/applications/" -type l -lname "$SNAP_USER_COMMON/.local/share/applications/*" -delete
@@ -375,13 +374,13 @@ if [ -d "$SNAP_USER_COMMON/.local/share/applications" ] && [ ! -L "$SNAP_USER_CO
     cp -rf "$SNAP_USER_COMMON/.local/share/applications" "$SNAP_REAL_HOME/.local/share/"
 fi
 
-rm -r $SNAP_USER_COMMON/Desktop
-rm -r $SNAP_USER_COMMON/.local/share/applications
-rm -r $SNAP_USER_COMMON/.local/share/icons
+rm -r "$SNAP_USER_COMMON"/Desktop
+rm -r "$SNAP_USER_COMMON"/.local/share/applications
+rm -r "$SNAP_USER_COMMON"/.local/share/icons
 
 ln -sf "$DESKTOP_PATH" "$SNAP_USER_COMMON/Desktop"
-ln -sf $SNAP_REAL_HOME/.local/share/applications/ $SNAP_USER_COMMON/.local/share/applications
-ln -sf $SNAP_REAL_HOME/.local/share/icons/ $SNAP_USER_COMMON/.local/share/icons
+ln -sf "$SNAP_REAL_HOME"/.local/share/applications/ "$SNAP_USER_COMMON"/.local/share/applications
+ln -sf "$SNAP_REAL_HOME"/.local/share/icons/ "$SNAP_USER_COMMON"/.local/share/icons
 
 # Remove links from the user's applications folder that open the applications folder itself.
 find "$SNAP_REAL_HOME/.local/share/applications/" -type l -lname "$SNAP_REAL_HOME/.local/share/applications" -delete
@@ -408,7 +407,7 @@ strip_unreachable_dirs XDG_SPECIAL_DIRS
 # That said, they're really rare so it's not a big deal
 export APPIMAGE_EXTRACT_AND_RUN=1
 
-$SNAP/bin/nvidia32 &
+"$SNAP"/bin/nvidia32 &
 
 # Let `snap set steam gamepadui=true` make the "steam" app always start
 # in Big Picture / gamepadui mode, the same way a Steam Deck boots
