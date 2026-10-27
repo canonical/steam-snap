@@ -1,0 +1,134 @@
+#!/usr/bin/env python3
+"""Fullscreen (gamepad-shell) or windowed (everywhere else) "Starting
+Steam..." splash. Closes itself once Steam's final window is focused, or
+after a timeout if detection never succeeds."""
+
+import os
+import subprocess
+import sys
+
+# Run on X11/XWayland like Steam itself, so xdotool sees focus moving
+# between the splash and Steam (native Wayland windows are invisible to it).
+os.environ["GDK_BACKEND"] = "x11"
+
+import gi
+
+gi.require_version("Gtk", "4.0")
+gi.require_version("Gdk", "4.0")
+from gi.repository import Gio, GLib, Gtk
+
+FULLSCREEN = os.environ.get("XDG_SESSION_DESKTOP") == "gamepad"
+READY_TIMEOUT_SECONDS = 120
+POLL_INTERVAL_MS = 500
+
+# PID of the process the splash is waiting on (the Steam launch chain,
+# passed by steam-splash-wrapper); the splash exits as soon as it is gone.
+WATCH_PID = int(sys.argv[1]) if len(sys.argv) > 1 and sys.argv[1].isdigit() else None
+
+
+def watched_process_gone():
+    return WATCH_PID is not None and not os.path.exists(f"/proc/{WATCH_PID}")
+
+CSS = b"""
+window {
+    background-color: #1b1b1b;
+}
+spinner {
+    min-width: 32px;
+    min-height: 32px;
+}
+.splash-label {
+    color: #ffffff;
+    font-size: 22pt;
+    font-weight: bold;
+}
+"""
+
+
+class SplashWindow(Gtk.ApplicationWindow):
+    def __init__(self, app):
+        super().__init__(application=app, decorated=False)
+
+        provider = Gtk.CssProvider()
+        provider.load_from_data(CSS)
+        Gtk.StyleContext.add_provider_for_display(
+            self.get_display(), provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION,
+        )
+
+        box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=20)
+        box.set_valign(Gtk.Align.CENTER)
+        box.set_halign(Gtk.Align.CENTER)
+
+        spinner = Gtk.Spinner()
+        spinner.start()
+        box.append(spinner)
+
+        label = Gtk.Label(label="Starting Steam…")
+        label.add_css_class("splash-label")
+        box.append(label)
+
+        self.set_child(box)
+
+        if FULLSCREEN:
+            self.fullscreen()
+        else:
+            self.set_default_size(420, 220)
+
+        self.deadline = GLib.get_monotonic_time() / 1_000_000 + READY_TIMEOUT_SECONDS
+        GLib.timeout_add(POLL_INTERVAL_MS, self.check_ready)
+
+    def check_ready(self):
+        now = GLib.get_monotonic_time() / 1_000_000
+        if now >= self.deadline or watched_process_gone() or steam_window_present():
+            self.get_application().quit()
+            return GLib.SOURCE_REMOVE
+        return GLib.SOURCE_CONTINUE
+
+
+# Windows Steam shows before its main window (updater, login, dialogs).
+INTERIM_TITLE_PREFIXES = (
+    "updating steam",
+    "steam - updating",
+    "steam - self updater",
+    "sign in to steam",
+    "steam login",
+    "steam dialog",
+)
+
+
+def _xdotool(*args):
+    try:
+        result = subprocess.run(
+            ["xdotool", *args],
+            capture_output=True,
+            text=True,
+            timeout=2,
+        )
+    except (OSError, subprocess.SubprocessError):
+        return None
+    return result.stdout.strip() if result.returncode == 0 else None
+
+
+def steam_window_present():
+    """True once Steam's final (main) window is the focused window."""
+    window = _xdotool("getactivewindow")
+    if not window:
+        return False
+    wm_class = _xdotool("getwindowclassname", window)
+    if not wm_class or wm_class.lower() != "steam":
+        return False
+    title = (_xdotool("getwindowname", window) or "").lower()
+    return bool(title) and not title.startswith(INTERIM_TITLE_PREFIXES)
+
+
+class SplashApp(Gtk.Application):
+    def __init__(self):
+        super().__init__(application_id="io.snapcraft.steam.Splash",
+                          flags=Gio.ApplicationFlags.FLAGS_NONE)
+
+    def do_activate(self):
+        SplashWindow(self).present()
+
+
+if __name__ == "__main__":
+    SplashApp().run(None)

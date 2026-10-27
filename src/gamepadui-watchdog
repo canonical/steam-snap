@@ -1,0 +1,98 @@
+#!/bin/bash
+#
+# gamepadui-watchdog
+#
+# When `snap set steam gamepadui=true` is set, Steam is launched with
+# `-gamepadui` so it boots straight into the Deck-style GamepadUI, the
+# same way a Steam Deck does. However, Steam sometimes falls back to the
+# classic (desktop) UI after a game is closed, with no single reliable
+# trigger identified upstream.
+#
+# This watchdog is only started (by desktop-launch) while gamepadui=true.
+# It polls visible Steam windows and, if the classic Desktop UI appears
+# to have taken over (a decorated window smaller than the full display,
+# as opposed to GamepadUI/Big Picture which always renders borderless
+# and full-screen), it asks Steam to return to GamepadUI/Big Picture.
+#
+# This is a best-effort heuristic, not a guaranteed fix, since there is
+# no documented Steam API to query or force the current UI mode.
+
+set -u
+
+LOG_PREFIX="[gamepadui-watchdog]"
+
+# How often to check (seconds).
+POLL_INTERVAL="${GAMEPADUI_WATCHDOG_INTERVAL:-3}"
+# How many consecutive detections are required before acting, to avoid
+# reacting to transient dialogs (e.g. controller config, achievements popups).
+DEBOUNCE_CHECKS="${GAMEPADUI_WATCHDOG_DEBOUNCE:-2}"
+# Minimum time (seconds) between recovery attempts.
+COOLDOWN_SECONDS="${GAMEPADUI_WATCHDOG_COOLDOWN:-20}"
+# Ignore windows smaller than this on either axis; avoids false positives
+# from small notification/tray-style popups.
+MIN_WINDOW_SIZE="${GAMEPADUI_WATCHDOG_MIN_SIZE:-400}"
+
+log() {
+  if [ -n "${GAMEPADUI_WATCHDOG_DEBUG:-}" ]; then
+    echo "$LOG_PREFIX $*" >&2
+  fi
+}
+
+steam_running() {
+  pgrep -x steam >/dev/null 2>&1 || pgrep -x steamwebhelper >/dev/null 2>&1
+}
+
+# Returns success (0) if a Steam window currently looks like the classic
+# Desktop UI, i.e. a real, decorated window that does not cover the full
+# display. GamepadUI/Big Picture always render borderless and full-screen.
+is_desktop_ui_visible() {
+  local screen_geo width height win geo w h
+
+  screen_geo="$(xdotool getdisplaygeometry 2>/dev/null)" || return 1
+  width="${screen_geo% *}"
+  height="${screen_geo#* }"
+  [ -z "$width" ] || [ -z "$height" ] && return 1
+
+  while read -r win; do
+    [ -z "$win" ] && continue
+    geo="$(xdotool getwindowgeometry --shell "$win" 2>/dev/null)" || continue
+    w="$(echo "$geo" | sed -n 's/^WIDTH=//p')"
+    h="$(echo "$geo" | sed -n 's/^HEIGHT=//p')"
+    [ -z "$w" ] || [ -z "$h" ] && continue
+    [ "$w" -lt "$MIN_WINDOW_SIZE" ] || [ "$h" -lt "$MIN_WINDOW_SIZE" ] && continue
+
+    if [ "$w" -lt "$width" ] || [ "$h" -lt "$height" ]; then
+      log "detected non-fullscreen Steam window $win (${w}x${h} vs ${width}x${height})"
+      return 0
+    fi
+  done < <(xdotool search --onlyvisible --class '[Ss]team' 2>/dev/null)
+
+  return 1
+}
+
+log "starting (poll=${POLL_INTERVAL}s debounce=${DEBOUNCE_CHECKS} cooldown=${COOLDOWN_SECONDS}s min-size=${MIN_WINDOW_SIZE})"
+
+consecutive=0
+last_recovery=0
+
+while steam_running; do
+  sleep "$POLL_INTERVAL"
+
+  if is_desktop_ui_visible; then
+    consecutive=$((consecutive + 1))
+  else
+    consecutive=0
+  fi
+
+  if [ "$consecutive" -ge "$DEBOUNCE_CHECKS" ]; then
+    now=$(date +%s)
+    if [ $((now - last_recovery)) -ge "$COOLDOWN_SECONDS" ]; then
+      log "Desktop UI persisted for ${consecutive} checks; forcing back to GamepadUI"
+      steam -gamepadui steam://open/bigpicture >/dev/null 2>&1 &
+      last_recovery=$now
+    fi
+    consecutive=0
+  fi
+done
+
+log "steam no longer running, exiting"
