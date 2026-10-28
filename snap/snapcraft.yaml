@@ -1,4 +1,5 @@
 name: steam
+version: '1.0.0.85'
 summary: Launcher for the Steam software distribution service
 description: |
   Steam is a software distribution service with an online store, automated
@@ -7,12 +8,14 @@ description: |
 adopt-info: steam
 grade: stable
 confinement: strict
-base: core24
+base: core26
 platforms:
-  amd64:
+  arm64:
+    build-on: [arm64]
+    build-for: [arm64]
 compression: lzo
 assumes:
-  - snapd2.62
+  - snapd2.73
 
 lint:
   # Snapcraft's `ldd` lint can't handle 32-bit things,
@@ -25,63 +28,130 @@ lint:
         - usr/lib32/**
 
 package-repositories:
+  # Do not set `architectures` here: craft-archives would then rewrite the
+  # default ubuntu.sources with `Architectures: arm64 armhf`, and armhf is not
+  # published on archive.ubuntu.com, breaking `apt update`.
   - type: apt
-    url: http://repo.steampowered.com/steam/
-    suites: [stable]
-    components: [steam]
-    architectures: [amd64, i386]
-    key-id: BA1816EF8E75005FCF5E27A1F24AEA9FB05498B7
+    url: http://ports.ubuntu.com/ubuntu-ports/
+    suites: [noble, noble-updates]
+    components: [main, universe]
+    key-id: F6ECB3762474EDA9D21B7022871920D1991BC93C
+    key-server: keyserver.ubuntu.com
+  - type: apt
+    ppa: fex-emu/fex
 
+# Most of these symlinks are required to get everything visible within
+# the pressure-vessel container.
+# If anything breaks when launching games through s-r-t in the future,
+# use the debug-scripts to help identify which libs are not visible
+# in the environment, and then add a corresponding symlink.
+# We can't explicitly override pressure-vessel's LD_LIBRARY_PATH,
+# but we can ensure that the select .sos that it will pick up are available
 layout:
-  /usr/lib/steam:
-    bind: $SNAP/usr/lib/steam
-  /usr/share/zenity:
-    bind: $SNAP/usr/share/zenity
-  # https://discourse.ubuntu.com/t/the-graphics-core20-snap-interface/23000
   /usr/share/drirc.d:
     bind: $SNAP/graphics/usr/share/drirc.d
   /usr/share/glvnd/egl_vendor.d:
     bind: $SNAP/graphics/usr/share/glvnd/egl_vendor.d
-  /usr/lib/x86_64-linux-gnu/alsa-lib:
-    bind: $SNAP/usr/lib/x86_64-linux-gnu/alsa-lib
+  /usr/lib/aarch64-linux-gnu/alsa-lib:
+    bind: $SNAP/usr/lib/aarch64-linux-gnu/alsa-lib
   /usr/share/alsa:
     bind: $SNAP/usr/share/alsa
-  /usr/share/X11/xkb:
-    bind: $SNAP/usr/share/X11/xkb
-  /usr/lib/x86_64-linux-gnu/libvulkan_intel.so:
-    symlink: $SNAP/graphics/usr/lib/x86_64-linux-gnu/libvulkan_intel.so
-  /usr/lib/i386-linux-gnu/libvulkan_intel.so:
-    symlink: $SNAP/graphics/usr/lib/i386-linux-gnu/libvulkan_intel.so
-  /usr/lib/x86_64-linux-gnu/libvulkan_lvp.so:
-    symlink: $SNAP/graphics/usr/lib/x86_64-linux-gnu/libvulkan_lvp.so
-  /usr/lib/i386-linux-gnu/libvulkan_lvp.so:
-    symlink: $SNAP/graphics/usr/lib/i386-linux-gnu/libvulkan_lvp.so
-  /usr/lib/x86_64-linux-gnu/libvulkan_radeon.so:
-    symlink: $SNAP/graphics/usr/lib/x86_64-linux-gnu/libvulkan_radeon.so
-  /usr/lib/i386-linux-gnu/libvulkan_radeon.so:
-    symlink: $SNAP/graphics/usr/lib/i386-linux-gnu/libvulkan_radeon.so
-  /usr/lib/x86_64-linux-gnu/libxcb-dri3.so.0.1.0:
-    symlink: $SNAP/graphics/usr/lib/x86_64-linux-gnu/libxcb-dri3.so.0.1.0
-  /usr/lib/x86_64-linux-gnu/libxcb-dri3.so.0:
-    symlink: $SNAP/graphics/usr/lib/x86_64-linux-gnu/libxcb-dri3.so.0.1.0
-  /usr/lib/x86_64-linux-gnu/libxcb.so.1.1.0:
-    symlink: $SNAP/graphics/usr/lib/x86_64-linux-gnu/libxcb.so.1.1.0
-  /usr/lib/x86_64-linux-gnu/libxcb.so:
-    symlink: $SNAP/graphics/usr/lib/x86_64-linux-gnu/libxcb.so.1.1.0
-  /usr/lib/x86_64-linux-gnu/libxcb.so.1:
-    symlink: $SNAP/graphics/usr/lib/x86_64-linux-gnu/libxcb.so.1.1.0
-  /usr/lib/x86_64-linux-gnu/gbm/dri_gbm.so:
-    symlink: $SNAP/graphics/usr/lib/x86_64-linux-gnu/gbm/dri_gbm.so
+  /usr/lib/aarch64-linux-gnu/libvulkan_intel.so:
+    symlink: $SNAP/graphics/usr/lib/aarch64-linux-gnu/libvulkan_intel.so
+  /usr/lib/aarch64-linux-gnu/libvulkan_radeon.so:
+    symlink: $SNAP/graphics/usr/lib/aarch64-linux-gnu/libvulkan_radeon.so
+  /usr/lib/aarch64-linux-gnu/libvulkan_broadcom.so:
+    symlink: $SNAP/graphics/usr/lib/aarch64-linux-gnu/libvulkan_broadcom.so
+  /usr/lib/aarch64-linux-gnu/libvulkan_dzn.so:
+    symlink: $SNAP/graphics/usr/lib/aarch64-linux-gnu/libvulkan_dzn.so
+  /usr/lib/aarch64-linux-gnu/libvulkan_asahi.so:
+    symlink: $SNAP/graphics/usr/lib/aarch64-linux-gnu/libvulkan_asahi.so
+  /usr/lib/aarch64-linux-gnu/libvulkan_freedreno.so:
+    symlink: $SNAP/graphics/usr/lib/aarch64-linux-gnu/libvulkan_freedreno.so
+  /usr/lib/aarch64-linux-gnu/libvulkan_gfxstream.so:
+    symlink: $SNAP/graphics/usr/lib/aarch64-linux-gnu/libvulkan_gfxstream.so
+  /usr/lib/aarch64-linux-gnu/libvulkan_lvp.so:
+    symlink: $SNAP/graphics/usr/lib/aarch64-linux-gnu/libvulkan_lvp.so
+  /usr/lib/aarch64-linux-gnu/libvulkan_nouveau.so:
+    symlink: $SNAP/graphics/usr/lib/aarch64-linux-gnu/libvulkan_nouveau.so
+  /usr/lib/aarch64-linux-gnu/libvulkan_panfrost.so:
+    symlink: $SNAP/graphics/usr/lib/aarch64-linux-gnu/libvulkan_panfrost.so
+  /usr/lib/aarch64-linux-gnu/libvulkan_virtio.so:
+    symlink: $SNAP/graphics/usr/lib/aarch64-linux-gnu/libvulkan_virtio.so
+  /usr/lib/aarch64-linux-gnu/libxcb-dri3.so.0.1.0:
+    symlink: $SNAP/graphics/usr/lib/aarch64-linux-gnu/libxcb-dri3.so.0.1.0
+  /usr/lib/aarch64-linux-gnu/libxcb-dri3.so.0:
+    symlink: $SNAP/graphics/usr/lib/aarch64-linux-gnu/libxcb-dri3.so.0.1.0
+  /usr/lib/aarch64-linux-gnu/libxcb.so.1.1.0:
+    symlink: $SNAP/graphics/usr/lib/aarch64-linux-gnu/libxcb.so.1.1.0
+  /usr/lib/aarch64-linux-gnu/libxcb.so:
+    symlink: $SNAP/graphics/usr/lib/aarch64-linux-gnu/libxcb.so.1.1.0
+  /usr/lib/aarch64-linux-gnu/libxcb.so.1:
+    symlink: $SNAP/graphics/usr/lib/aarch64-linux-gnu/libxcb.so.1.1.0
+  /usr/lib/aarch64-linux-gnu/gbm/dri_gbm.so:
+    symlink: $SNAP/graphics/usr/lib/aarch64-linux-gnu/gbm/dri_gbm.so
+  /usr/lib/aarch64-linux-gnu/libvulkan.so:
+    symlink: $SNAP/graphics/usr/lib/aarch64-linux-gnu/libvulkan.so.1.3.275
+  /usr/lib/aarch64-linux-gnu/libvulkan.so.1:
+    symlink: $SNAP/graphics/usr/lib/aarch64-linux-gnu/libvulkan.so.1.3.275
+  /usr/lib/aarch64-linux-gnu/libvulkan.so.1.3.275:
+    symlink: $SNAP/graphics/usr/lib/aarch64-linux-gnu/libvulkan.so.1.3.275
+  /usr/lib/aarch64-linux-gnu/libGL.so:
+    symlink: $SNAP/graphics/usr/lib/aarch64-linux-gnu/libGL.so.1.7.0
+  /usr/lib/aarch64-linux-gnu/libGL.so.1:
+    symlink: $SNAP/graphics/usr/lib/aarch64-linux-gnu/libGL.so.1.7.0
+  /usr/lib/aarch64-linux-gnu/libGL.so.1.7.0:
+    symlink: $SNAP/graphics/usr/lib/aarch64-linux-gnu/libGL.so.1.7.0
+  /usr/lib/aarch64-linux-gnu/libGLX.so.0:
+    symlink: $SNAP/graphics/usr/lib/aarch64-linux-gnu/libGLX.so.0.0.0
+  /usr/lib/aarch64-linux-gnu/libGLX.so.0.0.0:
+    symlink: $SNAP/graphics/usr/lib/aarch64-linux-gnu/libGLX.so.0.0.0
+  /usr/lib/aarch64-linux-gnu/libGLX_mesa.so.0:
+    symlink: $SNAP/graphics/usr/lib/aarch64-linux-gnu/libGLX_mesa.so.0.0.0
+  /usr/lib/aarch64-linux-gnu/libGLX_mesa.so.0.0.0:
+    symlink: $SNAP/graphics/usr/lib/aarch64-linux-gnu/libGLX_mesa.so.0.0.0
+  /usr/lib/aarch64-linux-gnu/libGLX_indirect.so.0:
+    symlink: $SNAP/graphics/usr/lib/aarch64-linux-gnu/libGLX_mesa.so.0.0.0
+  /usr/lib/aarch64-linux-gnu/libGLdispatch.so.0:
+    symlink: $SNAP/graphics/usr/lib/aarch64-linux-gnu/libGLdispatch.so.0.0.0
+  /usr/lib/aarch64-linux-gnu/libGLdispatch.so.0.0.0:
+    symlink: $SNAP/graphics/usr/lib/aarch64-linux-gnu/libGLdispatch.so.0.0.0
+  /usr/lib/aarch64-linux-gnu/libGLESv2.so.2:
+    symlink: $SNAP/graphics/usr/lib/aarch64-linux-gnu/libGLESv2.so.2.1.0
+  /usr/lib/aarch64-linux-gnu/libGLESv2.so.2.1.0:
+    symlink: $SNAP/graphics/usr/lib/aarch64-linux-gnu/libGLESv2.so.2.1.0
+  /usr/lib/libOpenGL.so.0:
+    symlink: $SNAP/usr/lib/aarch64-linux-gnu/libOpenGL.so.0
+  /usr/lib/libX11.so.6:
+    symlink: $SNAP/usr/lib/aarch64-linux-gnu/libX11.so.6
+  /usr/lib/libXau.so.6:
+    symlink: $SNAP/usr/lib/aarch64-linux-gnu/libXau.so.6
+  /usr/lib/libXdmcp.so.6:
+    symlink: $SNAP/usr/lib/aarch64-linux-gnu/libXdmcp.so.6
+  /usr/lib/libXext.so.6:
+    symlink: $SNAP/usr/lib/aarch64-linux-gnu/libXext.so.6
+  /usr/lib/aarch64-linux-gnu/libVkLayer_MESA_device_select.so:
+    symlink: $SNAP/graphics/usr/lib/aarch64-linux-gnu/libVkLayer_MESA_device_select.so
+  /usr/lib/aarch64-linux-gnu/libVkLayer_MESA_overlay.so:
+    symlink: $SNAP/graphics/usr/lib/aarch64-linux-gnu/libVkLayer_MESA_overlay.so
+  /usr/share/vulkan:
+    bind: $SNAP/graphics/usr/share/vulkan
   /etc/ld.so.cache:
     bind-file: $SNAP_DATA/etc/ld.so.cache
   /etc/fonts:
     bind: $SNAP/etc/fonts
+  /usr/share/fex-emu:
+    bind: $SNAP/usr/share/fex-emu
+  /usr/lib/aarch64-linux-gnu/fex-emu:
+    bind: $SNAP/usr/lib/aarch64-linux-gnu/fex-emu
+  /usr/lib/pressure-vessel/overrides/lib/aarch64-linux-gnu/fex-emu:
+    bind: $SNAP/usr/lib/aarch64-linux-gnu/fex-emu
 
 plugs:
-  gaming-graphics-core24:
+  gaming-graphics-core26:
     interface: content
     target: $SNAP/graphics
-    default-provider: gaming-graphics-core24
+    default-provider: gaming-graphics-core26
   gtk-3-themes:
     interface: content
     target: $SNAP/share/themes
@@ -125,342 +195,913 @@ hooks:
       - opengl
 
 environment:
-  LD_LIBRARY_PATH: $SNAP/graphics/usr/lib/i386-linux-gnu:$SNAP/graphics/usr/lib:$SNAP/usr/lib/i386-linux-gnu:$SNAP/usr/lib/x86_64-linux-gnu:$SNAP/lib/i386-linux-gnu:$SNAP/usr/lib/i386-linux-gnu/pulseaudio${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}
-  LIBGL_DRIVERS_PATH: $SNAP/graphics/usr/lib/i386-linux-gnu/dri:$SNAP/graphics/usr/lib/x86_64-linux-gnu/dri:${LIBGL_DRIVERS_PATH:+:$LIBGL_DRIVERS_PATH}
-  GI_TYPELIB_PATH: $SNAP/usr/lib/x86_64-linux-gnu/girepository-1.0
+  LD_LIBRARY_PATH: $SNAP/graphics/usr/lib/aarch64-linux-gnu:$SNAP/graphics/usr/lib:$SNAP/usr/lib/aarch64-linux-gnu:$SNAP/usr/lib/aarch64-linux-gnu:$SNAP/lib/aarch64-linux-gnu:$SNAP/usr/lib/aarch64-linux-gnu/pulseaudio${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}
+  LIBGL_DRIVERS_PATH: $SNAP/graphics/usr/lib/aarch64-linux-gnu/dri:$SNAP/graphics/usr/lib/aarch64-linux-gnu/dri:${LIBGL_DRIVERS_PATH:+:$LIBGL_DRIVERS_PATH}
+  GI_TYPELIB_PATH: $SNAP/usr/lib/aarch64-linux-gnu/girepository-1.0
   PYTHONPATH: $SNAP/usr/lib/python3/dist-packages
 
 parts:
-  launcher:
+  gaming-graphics-core26:
     plugin: nil
-    source: ./src
-    override-build: |
-      mkdir -p $CRAFT_PART_INSTALL/bin
-      cp * $CRAFT_PART_INSTALL/bin/
-    stage-packages:
-      - python3-gi
-      - gir1.2-gtk-3.0
-    stage:
-      - bin/*
-      - usr/lib/python3/dist-packages/*
-      - usr/share/mime/*
-      - usr/share/icons/*
-      - usr/lib/**/gtk-3.0*
-      - etc/gtk-3.0*
-      - usr/share/*/gir1.2-gtk-3.0*
-      - usr/**/libfontconfig*
-      - usr/**/cairo-1*
-      - usr/**/libatspi*
-      - usr/**/libavahi-client*
-      - usr/**/libavahi-common*
-      - usr/**/libcairo-gobject*
-      - usr/**/libcairo*
-      - usr/**/libcolord*
-      - usr/**/libcups*
-      - usr/**/libdatrie*
-      - usr/**/libdconf*
-      - usr/**/libdeflate*
-      - usr/**/libepoxy*
-      - usr/**/libfribidi*
-      - usr/**/*girepository*
-      - usr/**/libgraphite2*
-      - usr/**/libgtk-3*
-      - usr/**/libharfbuzz*
-      - usr/**/libjbig*
-      - usr/**/libjpeg*
-      - usr/**/liblcms2*
-      - usr/**/libpango-1*
-      - usr/**/libpangocairo-1*
-      - usr/**/libpangoft2-1*
-      - usr/**/libpangoxft-1*
-      - usr/**/libpixman-1*
-      - usr/**/libthai*
-      - usr/**/libtiff*
-      - usr/**/libwayland-cursor*
-      - usr/**/libwebp*
-      - usr/**/libxcb-render*
-      - usr/**/libxkbcommon*
-
-  alsa-mixin:
+    build-snaps:
+      - gaming-graphics-core26/kisak-fresh/candidate
+  amd64-content:
     plugin: dump
-    source: https://github.com/diddlesnaps/snapcraft-alsa.git
-    source-subdir: snapcraft-assets
-    build-packages:
-      - libasound2-dev
-    stage-packages:
-      - libasound2t64
-      - libasound2-plugins
-      - libmp3lame0
-      - yad
+    source: https://github.com/MitchellAugustin/steam-snap/releases/download/amd64-components-1-26-26/steam_231_amd64.tar.gz
     stage:
-      # restrict to only audio-related files - you need to ensure
-      # that gtk3 is staged for yad to work correctly, to prompt
-      # users to connect the alsa plug or proceed with pulseaudio.
-      #
-      # This helps prevent symbol conflicts in situations where
-      # you're using a non-default library, such as those that the
-      # gnome-3-34 extension for core18 provides.
-      - etc/asound.conf
-      - snap/command-chain/alsa-launch
-      - usr/bin/yad*
-      - usr/lib/*/alsa-lib
-      - usr/lib/*/libasound*
-      - usr/lib/*/libasyncns*
-      - usr/lib/*/libdnsfile*
-      - usr/lib/*/libFLAC*
-      - usr/lib/*/libjack*
-      - usr/lib/*/libpulse*
-      - usr/lib/*/libsamplerate*
-      - usr/lib/*/libsndfile*
-      - usr/lib/*/libspeex*
-      - usr/lib/*/libvorbis*
-      - usr/lib/*/pulseaudio
-      - usr/share/alsa
-
-  ninja:
-    plugin: nil
-    source: https://github.com/ninja-build/ninja.git
-    source-tag: "v1.13.1"
-    override-build: |
-      rm -rf build
-      rm -f ninja
-      rm -f ninja_bootstrap
-      sed -i 's_^#!/usr/bin/env python$_#!/usr/bin/env python3_g' configure.py
-      ./configure.py --bootstrap
-      mv ninja ninja_bootstrap
-      rm -rf build
-      ./ninja_bootstrap
-      rm -f ninja_bootstrap
-      mkdir -p $CRAFT_PART_INSTALL/usr/bin
-      mv ninja $CRAFT_PART_INSTALL/usr/bin/
-    build-packages:
-      - python3
-    prime:
-      - -*
-
-  meson-deps:
-    after: [ninja]
-    plugin: nil
-    source: https://github.com/mesonbuild/meson.git
-    source-tag: "1.8.3"
-    override-build: |
-      python3 -m pip install . --break-system-packages
-      mkdir -p $CRAFT_PART_INSTALL/usr/lib/python3/dist-packages
-      rm -rf $CRAFT_PART_INSTALL/usr/lib/python3/dist-packages/meson*
-      python3 -m pip install --target=$CRAFT_PART_INSTALL/usr .
-      mv $CRAFT_PART_INSTALL/usr/meson* $CRAFT_PART_INSTALL/usr/lib/python3/dist-packages/
-      sed -i "s%^#!/usr/bin/python3$%#!/usr/bin/env python3%g" /usr/local/bin/meson
-      sed -i "s%^#!/usr/bin/python3$%#!/usr/bin/env python3%g" $CRAFT_PART_INSTALL/usr/bin/meson
-    build-packages:
-      - python3-pip
-    prime:
-      - -*
-
-  mangohud:
-    after: [meson-deps]
-    source: https://github.com/flightlessmango/MangoHud.git
-    source-tag: "v0.8.1"
-    plugin: meson
+      # the amd64 snap's own metadata; snapcraft regenerates meta/ for this snap
+      - -meta
+      - -usr/bin/curl
+      - -usr/bin/fc-cache
+      - -usr/bin/fc-cat
+      - -usr/bin/fc-conflist
+      - -usr/bin/fc-list
+      - -usr/bin/fc-match
+      - -usr/bin/fc-pattern
+      - -usr/bin/fc-query
+      - -usr/bin/fc-scan
+      - -usr/bin/fc-validate
+      - -usr/bin/gtk-update-icon-cache
+      - -usr/bin/update-mime-database
+      - -usr/bin/zenity
+      - -usr/libexec/dconf-service
+      - -usr/share/doc/libcups2t64/changelog.Debian.gz
+      - -bin/desktop-launch
+      - -usr/share/doc/libavahi-common-data/changelog.Debian.gz
+      - -usr/bin/cpp-13
+      - -usr/bin/fuser
+      - -usr/bin/iceauth
+      - -usr/bin/killall
+      - -usr/bin/lsof
+      - -usr/bin/lspci
+      - -usr/bin/lsusb
+      - -usr/bin/peekfd
+      - -usr/bin/prtstat
+      - -usr/bin/pslog
+      - -usr/bin/pstree
+      - -usr/bin/sessreg
+      - -usr/bin/setpci
+      - -usr/bin/showrgb
+      - -usr/bin/usbhid-dump
+      - -usr/bin/usbreset
+      - -usr/bin/xcmsdb
+      - -usr/bin/xdg-user-dirs-update
+      - -usr/bin/xgamma
+      - -usr/bin/xhost
+      - -usr/bin/xmodmap
+      - -usr/bin/xrandr
+      - -usr/bin/xrdb
+      - -usr/bin/xrefresh
+      - -usr/bin/xset
+      - -usr/bin/xsetmode
+      - -usr/bin/xsetpointer
+      - -usr/bin/xsetroot
+      - -usr/bin/xstdcmap
+      - -usr/bin/xvidtune
+      - -60-steam-input.rules
+      - -60-steam-vr.rules
+      - -usr/share/doc/libavahi-common-data/changelog.Debian.gz
+      - -usr/share/doc/libtiff6/changelog.Debian.gz
+      - -usr/share/doc/libgraphite2-3/changelog.Debian.gz
+      - -usr/share/doc/libgraphite2-3/changelog.Debian.gz
+      - -usr/share/doc/liblcms2-2/changelog.Debian.gz
+      - -etc/X11/Xsession.d/20x11-common_process-args
+      - -etc/adduser.conf
+      - -etc/sensors3.conf
+      - -usr/sbin/adduser
+      - -usr/sbin/deluser
+      - -usr/share/doc/adduser/NEWS.Debian.gz
+      - -usr/share/doc/adduser/README.gz
+      - -usr/share/doc/adduser/TODO
+      - -usr/share/doc/adduser/changelog.gz
+      - -usr/share/doc/adduser/copyright
+      - -usr/share/doc/adduser/examples/adduser.conf
+      - -usr/share/doc/adwaita-icon-theme/NEWS.gz
+      - -usr/share/doc/adwaita-icon-theme/changelog.Debian.gz
+      - -usr/share/doc/curl/copyright
+      - -usr/share/doc/fontconfig-config/changelog.Debian.gz
+      - -usr/share/doc/fontconfig/fontconfig-user.html
+      - -usr/share/doc/fontconfig/fontconfig-user.pdf.gz
+      - -usr/share/doc/fontconfig/fontconfig-user.txt.gz
+      - -usr/share/doc/fonts-dejavu-mono/changelog.Debian.gz
+      - -usr/share/doc/gtk-update-icon-cache/changelog.Debian.gz
+      - -usr/share/doc/gtk-update-icon-cache/copyright
+      - -usr/share/doc/hicolor-icon-theme/NEWS.gz
+      - -usr/share/doc/hicolor-icon-theme/changelog.Debian.gz
+      - -usr/share/doc/libadwaita-1-0/NEWS.gz
+      - -usr/share/doc/libadwaita-1-0/changelog.Debian.gz
+      - -usr/share/doc/libadwaita-1-0/copyright
+      - -usr/share/doc/libaom3/changelog.Debian.gz
+      - -usr/share/doc/libaom3/copyright
+      - -usr/share/doc/libappstream5/changelog.Debian.gz
+      - -usr/share/doc/libavahi-client3/copyright
+      - -usr/share/doc/libavahi-common-data/copyright
+      - -usr/share/doc/libavahi-common3/copyright
+      - -usr/share/doc/libcairo-gobject2/NEWS.gz
+      - -usr/share/doc/libcairo-gobject2/README.md.gz
+      - -usr/share/doc/libcairo2/changelog.Debian.gz
+      - -usr/share/doc/libcolord2/changelog.Debian.gz
+      - -usr/share/doc/libcolord2/copyright
+      - -usr/share/doc/libcups2t64/copyright
+      - -usr/share/doc/libcurl3t64-gnutls/changelog.Debian.gz
+      - -usr/share/doc/libcurl3t64-gnutls/copyright
+      - -usr/share/doc/libcurl4t64/changelog.Debian.gz
+      - -usr/share/doc/libcurl4t64/copyright
+      - -usr/share/doc/libdatrie1/NEWS.gz
+      - -usr/share/doc/libdatrie1/changelog.Debian.gz
+      - -usr/share/doc/libdatrie1/copyright
+      - -usr/share/doc/libdconf1/NEWS.gz
+      - -usr/share/doc/libdconf1/changelog.Debian.gz
+      - -usr/share/doc/libdeflate0/changelog.Debian.gz
+      - -usr/share/doc/libdeflate0/copyright
+      - -usr/share/doc/libdrm-amdgpu1/copyright
+      - -usr/share/doc/libegl-mesa0/copyright
+      - -usr/share/doc/libegl1/copyright
+      - -usr/share/doc/libepoxy0/changelog.Debian.gz
+      - -usr/share/doc/libfribidi0/NEWS.gz
+      - -usr/share/doc/libfribidi0/changelog.Debian.gz
+      - -usr/share/doc/libfribidi0/copyright
+      - -usr/share/doc/libgbm1/copyright
+      - -usr/share/doc/libgdk-pixbuf-2.0-0/NEWS.gz
+      - -usr/share/doc/libgdk-pixbuf-2.0-0/changelog.Debian.gz
+      - -usr/share/doc/libgdk-pixbuf-2.0-0/copyright
+      - -usr/share/doc/libgdk-pixbuf2.0-common/changelog.Debian.gz
+      - -usr/share/doc/libgdk-pixbuf2.0-common/copyright
+      - -usr/share/doc/libgl1-mesa-dri/copyright
+      - -usr/share/doc/libgl1/copyright
+      - -usr/share/doc/libgles2/copyright
+      - -usr/share/doc/libglvnd0/changelog.Debian.gz
+      - -usr/share/doc/libglvnd0/copyright
+      - -usr/share/doc/libglx-mesa0/changelog.Debian.gz
+      - -usr/share/doc/libglx-mesa0/copyright
+      - -usr/share/doc/libglx0/copyright
+      - -usr/share/doc/libgraphene-1.0-0/changelog.Debian.gz
+      - -usr/share/doc/libgtk-4-1/changelog.Debian.gz
+      - -usr/share/doc/libgtk-4-1/copyright
+      - -usr/share/doc/libgtk-4-common/NEWS.gz
+      - -usr/share/doc/libgtk-4-common/README.md.gz
+      - -usr/share/doc/libgtk-4-common/changelog.Debian.gz
+      - -usr/share/doc/libgtk-4-common/copyright
+      - -usr/share/doc/libharfbuzz0b/changelog.Debian.gz
+      - -usr/share/doc/libharfbuzz0b/copyright
+      - -usr/share/doc/libhwy1t64/changelog.Debian.gz
+      - -usr/share/doc/libice6/changelog.Debian.gz
+      - -usr/share/doc/libjbig0/changelog.Debian.gz
+      - -usr/share/doc/libjpeg-turbo8/changelog.Debian.gz
+      - -usr/share/doc/libjpeg8/changelog.Debian.gz
+      - -usr/share/doc/libldap2/changelog.Debian.gz
+      - -usr/share/doc/libldap2/copyright
+      - -usr/share/doc/liblerc4/changelog.Debian.gz
+      - -usr/share/doc/liblerc4/copyright
+      - -usr/share/doc/libnghttp2-14/AUTHORS
+      - -usr/share/doc/libnghttp2-14/README.rst.gz
+      - -usr/share/doc/libnghttp2-14/changelog.Debian.gz
+      - -usr/share/doc/libnghttp2-14/copyright
+      - -usr/share/doc/libpango-1.0-0/NEWS.gz
+      - -usr/share/doc/libpango-1.0-0/changelog.Debian.gz
+      - -usr/share/doc/libpango-1.0-0/copyright
+      - -usr/share/doc/libpangocairo-1.0-0/copyright
+      - -usr/share/doc/libpangoft2-1.0-0/copyright
+      - -usr/share/doc/libpixman-1-0/changelog.Debian.gz
+      - -usr/share/doc/libpixman-1-0/copyright
+      - -usr/share/doc/libpsl5t64/changelog.Debian.gz
+      - -usr/share/doc/librsvg2-2/NEWS.gz
+      - -usr/share/doc/librsvg2-2/README.md.gz
+      - -usr/share/doc/librsvg2-2/changelog.Debian.gz
+      - -usr/share/doc/librsvg2-2/copyright
+      - -usr/share/doc/librtmp1/changelog.Debian.gz
+      - -usr/share/doc/librtmp1/copyright
+      - -usr/share/doc/libsasl2-modules-db/changelog.Debian.gz
+      - -usr/share/doc/libsensors-config/changelog.Debian.gz
+      - -usr/share/doc/libsensors-config/copyright
+      - -usr/share/doc/libsensors5/changelog.Debian.gz
+      - -usr/share/doc/libsensors5/copyright
+      - -usr/share/doc/libsharpyuv0/changelog.Debian.gz
+      - -usr/share/doc/libsharpyuv0/copyright
+      - -usr/share/doc/libsm6/changelog.Debian.gz
+      - -usr/share/doc/libstemmer0d/changelog.Debian.gz
+      - -usr/share/doc/libstemmer0d/copyright
+      - -usr/share/doc/libstemmer0d/examples/stemwords.c
+      - -usr/share/doc/libstemmer0d/libstemmer_c_README.gz
+      - -usr/share/doc/libthai-data/changelog.Debian.gz
+      - -usr/share/doc/libthai-data/copyright
+      - -usr/share/doc/libthai0/changelog.Debian.gz
+      - -usr/share/doc/libthai0/copyright
+      - -usr/share/doc/libva-drm2/copyright
+      - -usr/share/doc/libva2/changelog.Debian.gz
+      - -usr/share/doc/libva2/copyright
+      - -usr/share/doc/libvulkan1/changelog.Debian.gz
+      - -usr/share/doc/libwayland-client0/changelog.Debian.gz
+      - -usr/share/doc/libwayland-client0/copyright
+      - -usr/share/doc/libwayland-cursor0/copyright
+      - -usr/share/doc/libwayland-egl1/changelog.Debian.gz
+      - -usr/share/doc/libwayland-egl1/copyright
+      - -usr/share/doc/libwebp7/copyright
+      - -usr/share/doc/libx11-6/changelog.Debian.gz
+      - -usr/share/doc/libxau6/changelog.Debian.gz
+      - -usr/share/doc/libxcb1/changelog.Debian.gz
+      - -usr/share/doc/libxcursor1/changelog.Debian.gz
+      - -usr/share/doc/libxdamage1/changelog.Debian.gz
+      - -usr/share/doc/libxdamage1/copyright
+      - -usr/share/doc/libxdmcp6/changelog.Debian.gz
+      - -usr/share/doc/libxdmcp6/copyright
+      - -usr/share/doc/libxext6/changelog.Debian.gz
+      - -usr/share/doc/libxfixes3/changelog.Debian.gz
+      - -usr/share/doc/libxi6/changelog.Debian.gz
+      - -usr/share/doc/libxinerama1/changelog.Debian.gz
+      - -usr/share/doc/libxmlb2/changelog.Debian.gz
+      - -usr/share/doc/libxrandr2/changelog.Debian.gz
+      - -usr/share/doc/libxrender1/changelog.Debian.gz
+      - -usr/share/doc/libxshmfence1/changelog.Debian.gz
+      - -usr/share/doc/libxxf86vm1/changelog.Debian.gz
+      - -usr/share/doc/libxxf86vm1/copyright
+      - -usr/share/doc/lsb-base/changelog.gz
+      - -usr/share/doc/mesa-libgallium/changelog.Debian.gz
+      - -usr/share/doc/mesa-libgallium/copyright
+      - -usr/share/doc/shared-mime-info/changelog.Debian.gz
+      - -usr/share/doc/shared-mime-info/shared-mime-info-spec.pdf
+      - -usr/share/doc/x11-common/changelog.gz
+      - -usr/share/doc/zenity-common/changelog.Debian.gz
+      - -usr/share/doc/zenity-common/copyright
+      - -usr/share/doc/zenity/NEWS.gz
+      - -usr/share/doc/zenity/changelog.Debian.gz
+      - -usr/share/doc/zenity/copyright
+      - -usr/share/fontconfig/conf.avail/35-lang-normalize.conf
+      - -usr/share/fontconfig/conf.avail/45-latin.conf
+      - -usr/share/fontconfig/conf.avail/50-user.conf
+      - -usr/share/fontconfig/conf.avail/60-latin.conf
+      - -usr/share/fontconfig/conf.avail/65-nonlatin.conf
+      - -usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf
+      - -usr/share/fonts/truetype/dejavu/DejaVuSans.ttf
+      - -usr/share/fonts/truetype/dejavu/DejaVuSansMono-Bold.ttf
+      - -usr/share/fonts/truetype/dejavu/DejaVuSansMono-BoldOblique.ttf
+      - -usr/share/fonts/truetype/dejavu/DejaVuSansMono-Oblique.ttf
+      - -usr/share/fonts/truetype/dejavu/DejaVuSansMono.ttf
+      - -usr/share/fonts/truetype/dejavu/DejaVuSerif-Bold.ttf
+      - -usr/share/fonts/truetype/dejavu/DejaVuSerif.ttf
+      - -usr/share/gtk-4.0/emoji/bn.gresource
+      - -usr/share/gtk-4.0/emoji/da.gresource
+      - -usr/share/gtk-4.0/emoji/de.gresource
+      - -usr/share/gtk-4.0/emoji/es.gresource
+      - -usr/share/gtk-4.0/emoji/et.gresource
+      - -usr/share/gtk-4.0/emoji/fi.gresource
+      - -usr/share/gtk-4.0/emoji/fr.gresource
+      - -usr/share/gtk-4.0/emoji/hi.gresource
+      - -usr/share/gtk-4.0/emoji/hu.gresource
+      - -usr/share/gtk-4.0/emoji/it.gresource
+      - -usr/share/gtk-4.0/emoji/ja.gresource
+      - -usr/share/gtk-4.0/emoji/ko.gresource
+      - -usr/share/gtk-4.0/emoji/lt.gresource
+      - -usr/share/gtk-4.0/emoji/ms.gresource
+      - -usr/share/gtk-4.0/emoji/nb.gresource
+      - -usr/share/gtk-4.0/emoji/nl.gresource
+      - -usr/share/gtk-4.0/emoji/pl.gresource
+      - -usr/share/gtk-4.0/emoji/pt.gresource
+      - -usr/share/gtk-4.0/emoji/ru.gresource
+      - -usr/share/gtk-4.0/emoji/sv.gresource
+      - -usr/share/gtk-4.0/emoji/th.gresource
+      - -usr/share/gtk-4.0/emoji/uk.gresource
+      - -usr/share/gtk-4.0/emoji/zh.gresource
+      - -usr/share/help/C/zenity/figures/zenity-colorselection-screenshot.png
+      - -usr/share/help/C/zenity/figures/zenity-fileselection-screenshot.png
+      - -usr/share/help/C/zenity/figures/zenity-information-screenshot.png
+      - -usr/share/help/C/zenity/figures/zenity-notification-listen-screenshot.png
+      - -usr/share/help/C/zenity/figures/zenity-notification-screenshot.png
+      - -usr/share/help/C/zenity/figures/zenity-warning-screenshot.png
+      - -usr/share/help/hu/zenity/figures/zenity-calendar-screenshot.png
+      - -usr/share/help/hu/zenity/figures/zenity-colorselection-screenshot.png
+      - -usr/share/help/hu/zenity/figures/zenity-entry-screenshot.png
+      - -usr/share/help/hu/zenity/figures/zenity-error-screenshot.png
+      - -usr/share/help/hu/zenity/figures/zenity-fileselection-screenshot.png
+      - -usr/share/help/hu/zenity/figures/zenity-forms-screenshot.png
+      - -usr/share/help/hu/zenity/figures/zenity-list-screenshot.png
+      - -usr/share/help/hu/zenity/figures/zenity-notification-screenshot.png
+      - -usr/share/help/hu/zenity/figures/zenity-password-screenshot.png
+      - -usr/share/help/hu/zenity/figures/zenity-progress-screenshot.png
+      - -usr/share/help/hu/zenity/figures/zenity-question-screenshot.png
+      - -usr/share/help/hu/zenity/figures/zenity-scale-screenshot.png
+      - -usr/share/help/hu/zenity/figures/zenity-text-screenshot.png
+      - -usr/share/help/hu/zenity/figures/zenity-warning-screenshot.png
+      - -usr/share/icons/Adwaita/cursors/alias
+      - -usr/share/icons/Adwaita/cursors/all-scroll
+      - -usr/share/icons/Adwaita/cursors/cell
+      - -usr/share/icons/Adwaita/cursors/col-resize
+      - -usr/share/icons/Adwaita/cursors/context-menu
+      - -usr/share/icons/Adwaita/cursors/copy
+      - -usr/share/icons/Adwaita/cursors/crosshair
+      - -usr/share/icons/Adwaita/cursors/default
+      - -usr/share/icons/Adwaita/cursors/e-resize
+      - -usr/share/icons/Adwaita/cursors/ew-resize
+      - -usr/share/icons/Adwaita/cursors/fleur
+      - -usr/share/icons/Adwaita/cursors/grab
+      - -usr/share/icons/Adwaita/cursors/grabbing
+      - -usr/share/icons/Adwaita/cursors/help
+      - -usr/share/icons/Adwaita/cursors/move
+      - -usr/share/icons/Adwaita/cursors/n-resize
+      - -usr/share/icons/Adwaita/cursors/ne-resize
+      - -usr/share/icons/Adwaita/cursors/nesw-resize
+      - -usr/share/icons/Adwaita/cursors/no-drop
+      - -usr/share/icons/Adwaita/cursors/not-allowed
+      - -usr/share/icons/Adwaita/cursors/ns-resize
+      - -usr/share/icons/Adwaita/cursors/nw-resize
+      - -usr/share/icons/Adwaita/cursors/nwse-resize
+      - -usr/share/icons/Adwaita/cursors/pointer
+      - -usr/share/icons/Adwaita/cursors/progress
+      - -usr/share/icons/Adwaita/cursors/row-resize
+      - -usr/share/icons/Adwaita/cursors/s-resize
+      - -usr/share/icons/Adwaita/cursors/se-resize
+      - -usr/share/icons/Adwaita/cursors/sw-resize
+      - -usr/share/icons/Adwaita/cursors/text
+      - -usr/share/icons/Adwaita/cursors/vertical-text
+      - -usr/share/icons/Adwaita/cursors/w-resize
+      - -usr/share/icons/Adwaita/cursors/wait
+      - -usr/share/icons/Adwaita/cursors/zoom-in
+      - -usr/share/icons/Adwaita/cursors/zoom-out
+      - -usr/share/icons/Adwaita/index.theme
+      - -usr/share/icons/Adwaita/scalable/places/user-desktop.svg
+      - -usr/share/icons/Adwaita/scalable/status/folder-open.svg
+      - -usr/share/icons/Adwaita/symbolic/actions/action-unavailable-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/actions/address-book-new-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/actions/document-open-recent-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/actions/document-open-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/actions/find-location-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/actions/format-justify-right-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/actions/format-text-plaintext-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/actions/format-text-rich-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/actions/go-home-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/actions/help-about-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/actions/insert-image-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/actions/insert-link-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/actions/insert-object-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/actions/insert-text-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/actions/mail-mark-junk-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/actions/sidebar-show-right-symbolic-rtl.svg
+      - -usr/share/icons/Adwaita/symbolic/actions/sidebar-show-right-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/actions/sidebar-show-symbolic-rtl.svg
+      - -usr/share/icons/Adwaita/symbolic/actions/sidebar-show-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/actions/tab-new-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/actions/view-app-grid-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/actions/view-list-ordered-symbolic-rtl.svg
+      - -usr/share/icons/Adwaita/symbolic/actions/view-mirror-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/actions/view-sort-ascending-rtl-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/actions/zoom-fit-best-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/actions/zoom-in-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/actions/zoom-original-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/actions/zoom-out-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/categories/applications-graphics-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/categories/applications-multimedia-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/categories/applications-science-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/categories/emoji-nature-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/categories/emoji-objects-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/categories/emoji-recent-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/categories/emoji-travel-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/categories/preferences-other-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/devices/camera-video-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/devices/camera-web-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/devices/input-gaming-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/devices/modem-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/devices/network-wired-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/devices/printer-network-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/legacy/accessories-dictionary-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/legacy/help-contents-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/legacy/preferences-color-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/mimetypes/application-rss+xml-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/mimetypes/application-x-addon-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/mimetypes/application-x-appliance-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/mimetypes/application-x-executable-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/mimetypes/application-x-firmware-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/mimetypes/application-x-sharedlib-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/mimetypes/font-x-generic-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/mimetypes/image-x-generic-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/mimetypes/inode-directory-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/mimetypes/package-x-generic-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/mimetypes/text-x-generic-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/mimetypes/video-x-generic-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/mimetypes/x-office-document-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/mimetypes/x-office-drawing-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/mimetypes/x-office-presentation-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/mimetypes/x-office-spreadsheet-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/places/folder-documents-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/places/folder-download-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/places/folder-drag-accept-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/places/folder-pictures-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/places/folder-publicshare-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/places/folder-remote-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/places/folder-saved-search-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/places/folder-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/places/folder-templates-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/places/folder-videos-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/places/network-server-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/places/network-workgroup-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/places/start-here-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/places/user-bookmarks-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/places/user-desktop-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/places/user-home-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/places/user-trash-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/status/daytime-sunrise-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/status/daytime-sunset-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/status/folder-drag-accept-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/status/folder-open-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/status/folder-visiting-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/status/image-missing-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/status/mail-replied-symbolic-rtl.svg
+      - -usr/share/icons/Adwaita/symbolic/status/mail-replied-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/status/mail-unread-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/status/microphone-disabled-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/status/microphone-hardware-disabled-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/status/microphone-sensitivity-high-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/status/microphone-sensitivity-low-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/status/microphone-sensitivity-medium-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/status/microphone-sensitivity-muted-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/status/network-vpn-acquiring-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/status/network-vpn-disabled-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/status/network-vpn-disconnected-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/status/network-vpn-no-route-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/status/network-vpn-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/status/night-light-disabled-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/status/night-light-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/status/notifications-disabled-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/status/orientation-landscape-inverse-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/status/orientation-landscape-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/status/orientation-portrait-left-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/status/orientation-portrait-right-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/status/power-profile-balanced-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/status/power-profile-performance-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/status/power-profile-power-saver-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/status/semi-starred-symbolic-rtl.svg
+      - -usr/share/icons/Adwaita/symbolic/status/user-trash-full-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/status/weather-clear-night-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/status/weather-clear-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/status/weather-few-clouds-night-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/status/weather-few-clouds-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/status/weather-overcast-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/status/weather-severe-alert-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/status/weather-showers-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/status/weather-snow-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/status/weather-storm-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/ui/checkbox-checked-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/ui/checkbox-mixed-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/ui/checkbox-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/ui/pan-down-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/ui/pan-end-symbolic-rtl.svg
+      - -usr/share/icons/Adwaita/symbolic/ui/pan-end-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/ui/pan-start-symbolic-rtl.svg
+      - -usr/share/icons/Adwaita/symbolic/ui/pan-start-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/ui/pan-up-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/ui/radio-checked-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/ui/radio-mixed-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/ui/radio-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/ui/selection-end-symbolic.svg
+      - -usr/share/icons/Adwaita/symbolic/ui/selection-start-symbolic.svg
+      - -usr/share/icons/hicolor/48x48/apps/zenity.png
+      - -usr/share/libthai/thbrk.tri
+      - -usr/share/mime/packages/freedesktop.org.xml
+      - -usr/share/perl5/Debian/AdduserCommon.pm
+      - -usr/share/perl5/Debian/AdduserLogging.pm
+      - -usr/share/perl5/Debian/AdduserRetvalues.pm
+      - -usr/share/pkgconfig/adwaita-icon-theme.pc
+      - -usr/share/zsh/vendor-completions/_curl
+      - -etc/openal/alsoft.conf
+      - -etc/xdg/autostart/xdg-user-dirs.desktop
+      - -usr/bin/cpp
+      - -usr/bin/usb-devices
+      - -usr/bin/xdg-desktop-icon
+      - -usr/bin/xdg-desktop-menu
+      - -usr/bin/xdg-email
+      - -usr/bin/xdg-icon-resource
+      - -usr/bin/xdg-mime
+      - -usr/bin/xdg-open
+      - -usr/bin/xdg-screensaver
+      - -usr/bin/xdg-settings
+      - -usr/lib/locale/aa_DJ/LC_CTYPE
+      - -usr/lib/locale/aa_ER/LC_CTYPE
+      - -usr/lib/locale/an_ES/LC_CTYPE
+      - -usr/lib/locale/anp_IN/LC_CTYPE
+      - -usr/lib/locale/ar_AE/LC_CTYPE
+      - -usr/lib/locale/as_IN/LC_CTYPE
+      - -usr/lib/locale/az_AZ/LC_CTYPE
+      - -usr/lib/locale/az_IR/LC_CTYPE
+      - -usr/lib/locale/be_BY/LC_CTYPE
+      - -usr/lib/locale/be_BY@latin/LC_CTYPE
+      - -usr/lib/locale/bg_BG.utf8/LC_MONETARY
+      - -usr/lib/locale/bg_BG/LC_MONETARY
+      - -usr/lib/locale/br_FR.utf8/LC_MONETARY
+      - -usr/lib/locale/bs_BA/LC_CTYPE
+      - -usr/lib/locale/cmn_TW/LC_CTYPE
+      - -usr/lib/locale/crh_UA/LC_CTYPE
+      - -usr/lib/locale/cs_CZ.utf8/LC_TIME
+      - -usr/lib/locale/cs_CZ/LC_TIME
+      - -usr/lib/locale/cv_RU/LC_ADDRESS
+      - -usr/lib/locale/cv_RU/LC_COLLATE
+      - -usr/lib/locale/cv_RU/LC_IDENTIFICATION
+      - -usr/lib/locale/cv_RU/LC_MESSAGES/SYS_LC_MESSAGES
+      - -usr/lib/locale/cv_RU/LC_MONETARY
+      - -usr/lib/locale/cv_RU/LC_TIME
+      - -usr/lib/locale/cy_GB/LC_CTYPE
+      - -usr/lib/locale/da_DK.utf8/LC_CTYPE
+      - -usr/lib/locale/da_DK/LC_CTYPE
+      - -usr/lib/locale/de_AT.utf8/LC_CTYPE
+      - -usr/lib/locale/de_AT/LC_CTYPE
+      - -usr/lib/locale/de_AT@euro/LC_CTYPE
+      - -usr/lib/locale/el_CY/LC_CTYPE
+      - -usr/lib/locale/eo/LC_TIME
+      - -usr/lib/locale/et_EE.utf8/LC_MONETARY
+      - -usr/lib/locale/eu_FR.utf8/LC_MONETARY
+      - -usr/lib/locale/fi_FI.utf8/LC_MONETARY
+      - -usr/lib/locale/fr_FR.utf8/LC_MONETARY
+      - -usr/lib/locale/fr_LU.utf8/LC_MONETARY
+      - -usr/lib/locale/gu_IN/LC_CTYPE
+      - -usr/lib/locale/hak_TW/LC_CTYPE
+      - -usr/lib/locale/he_IL/LC_CTYPE
+      - -usr/lib/locale/hr_HR.utf8/LC_CTYPE
+      - -usr/lib/locale/hr_HR.utf8/LC_IDENTIFICATION
+      - -usr/lib/locale/hr_HR.utf8/LC_MONETARY
+      - -usr/lib/locale/hr_HR/LC_CTYPE
+      - -usr/lib/locale/hr_HR/LC_IDENTIFICATION
+      - -usr/lib/locale/hr_HR/LC_MONETARY
+      - -usr/lib/locale/hsb_DE/LC_CTYPE
+      - -usr/lib/locale/hu_HU.utf8/LC_CTYPE
+      - -usr/lib/locale/hu_HU/LC_CTYPE
+      - -usr/lib/locale/hy_AM.armscii8/LC_CTYPE
+      - -usr/lib/locale/ia_FR/LC_MONETARY
+      - -usr/lib/locale/ja_JP.eucjp/LC_CTYPE
+      - -usr/lib/locale/ja_JP.utf8/LC_CTYPE
+      - -usr/lib/locale/ka_GE/LC_CTYPE
+      - -usr/lib/locale/kk_KZ.rk1048/LC_CTYPE
+      - -usr/lib/locale/kk_KZ/LC_CTYPE
+      - -usr/lib/locale/kn_IN/LC_CTYPE
+      - -usr/lib/locale/ko_KR.euckr/LC_CTYPE
+      - -usr/lib/locale/ko_KR.utf8/LC_CTYPE
+      - -usr/lib/locale/ku_TR/LC_CTYPE
+      - -usr/lib/locale/lb_LU/LC_CTYPE
+      - -usr/lib/locale/lg_UG/LC_CTYPE
+      - -usr/lib/locale/lt_LT/LC_CTYPE
+      - -usr/lib/locale/lv_LV.utf8/LC_COLLATE
+      - -usr/lib/locale/lv_LV.utf8/LC_MONETARY
+      - -usr/lib/locale/lv_LV.utf8/LC_TELEPHONE
+      - -usr/lib/locale/lv_LV/LC_COLLATE
+      - -usr/lib/locale/mk_MK/LC_CTYPE
+      - -usr/lib/locale/ml_IN/LC_CTYPE
+      - -usr/lib/locale/mn_MN/LC_CTYPE
+      - -usr/lib/locale/mnw_MM/LC_CTYPE
+      - -usr/lib/locale/mt_MT/LC_CTYPE
+      - -usr/lib/locale/oc_FR.utf8/LC_MONETARY
+      - -usr/lib/locale/or_IN/LC_CTYPE
+      - -usr/lib/locale/pa_IN/LC_CTYPE
+      - -usr/lib/locale/pa_PK/LC_CTYPE
+      - -usr/lib/locale/ps_AF/LC_CTYPE
+      - -usr/lib/locale/ro_RO.utf8/LC_CTYPE
+      - -usr/lib/locale/ro_RO/LC_CTYPE
+      - -usr/lib/locale/ru_RU.koi8r/LC_CTYPE
+      - -usr/lib/locale/ru_UA/LC_CTYPE
+      - -usr/lib/locale/shn_MM/LC_CTYPE
+      - -usr/lib/locale/sk_SK.utf8/LC_MONETARY
+      - -usr/lib/locale/sr_RS/LC_CTYPE
+      - -usr/lib/locale/sv_FI.utf8/LC_MONETARY
+      - -usr/lib/locale/sv_FI@euro/LC_CTYPE
+      - -usr/lib/locale/sv_SE.utf8/LC_MONETARY
+      - -usr/lib/locale/sv_SE.utf8/LC_TELEPHONE
+      - -usr/lib/locale/ta_IN/LC_CTYPE
+      - -usr/lib/locale/te_IN/LC_CTYPE
+      - -usr/lib/locale/tg_TJ/LC_CTYPE
+      - -usr/lib/locale/th_TH/LC_CTYPE
+      - -usr/lib/locale/tk_TM/LC_CTYPE
+      - -usr/lib/locale/tr_TR.utf8/LC_IDENTIFICATION
+      - -usr/lib/locale/tr_TR/LC_IDENTIFICATION
+      - -usr/lib/locale/uk_UA.utf8/LC_CTYPE
+      - -usr/lib/locale/uk_UA/LC_CTYPE
+      - -usr/lib/locale/uz_UZ.utf8/LC_CTYPE
+      - -usr/lib/locale/uz_UZ/LC_CTYPE
+      - -usr/lib/locale/uz_UZ@cyrillic/LC_CTYPE
+      - -usr/lib/locale/vi_VN/LC_CTYPE
+      - -usr/lib/locale/wa_BE.utf8/LC_CTYPE
+      - -usr/lib/locale/wa_BE/LC_CTYPE
+      - -usr/lib/locale/wa_BE@euro/LC_CTYPE
+      - -usr/lib/locale/yi_US.utf8/LC_CTYPE
+      - -usr/lib/locale/yi_US/LC_CTYPE
+      - -usr/lib/locale/yue_HK/LC_CTYPE
+      - -usr/lib/locale/zh_CN.gb18030/LC_CTYPE
+      - -usr/lib/locale/zh_CN.gbk/LC_CTYPE
+      - -usr/lib/locale/zh_CN/LC_CTYPE
+      - -usr/lib/locale/zh_HK/LC_CTYPE
+      - -usr/lib/locale/zh_TW.euctw/LC_CTYPE
+      - -usr/lib/locale/zh_TW/LC_CTYPE
+      - -usr/sbin/update-pciids
+      - -usr/share/X11/xkb
+      - -usr/share/alsa/cards/AACI.conf
+      - -usr/share/alsa/cards/ATIIXP-MODEM.conf
+      - -usr/share/alsa/cards/ATIIXP-SPDMA.conf
+      - -usr/share/alsa/cards/ATIIXP.conf
+      - -usr/share/alsa/cards/AU8810.conf
+      - -usr/share/alsa/cards/AU8820.conf
+      - -usr/share/alsa/cards/AU8830.conf
+      - -usr/share/alsa/cards/Audigy.conf
+      - -usr/share/alsa/cards/Audigy2.conf
+      - -usr/share/alsa/cards/Aureon51.conf
+      - -usr/share/alsa/cards/Aureon71.conf
+      - -usr/share/alsa/cards/CA0106.conf
+      - -usr/share/alsa/cards/CMI8338-SWIEC.conf
+      - -usr/share/alsa/cards/CMI8338.conf
+      - -usr/share/alsa/cards/CMI8738-MC6.conf
+      - -usr/share/alsa/cards/CMI8738-MC8.conf
+      - -usr/share/alsa/cards/CMI8788.conf
+      - -usr/share/alsa/cards/CS46xx.conf
+      - -usr/share/alsa/cards/EMU10K1.conf
+      - -usr/share/alsa/cards/EMU10K1X.conf
+      - -usr/share/alsa/cards/ENS1370.conf
+      - -usr/share/alsa/cards/ENS1371.conf
+      - -usr/share/alsa/cards/ES1968.conf
+      - -usr/share/alsa/cards/Echo_Echo3G.conf
+      - -usr/share/alsa/cards/FM801.conf
+      - -usr/share/alsa/cards/FWSpeakers.conf
+      - -usr/share/alsa/cards/FireWave.conf
+      - -usr/share/alsa/cards/GUS.conf
+      - -usr/share/alsa/cards/HDA-Intel.conf
+      - -usr/share/alsa/cards/HdmiLpeAudio.conf
+      - -usr/share/alsa/cards/ICE1712.conf
+      - -usr/share/alsa/cards/ICE1724.conf
+      - -usr/share/alsa/cards/ICH-MODEM.conf
+      - -usr/share/alsa/cards/ICH.conf
+      - -usr/share/alsa/cards/ICH4.conf
+      - -usr/share/alsa/cards/Loopback.conf
+      - -usr/share/alsa/cards/Maestro3.conf
+      - -usr/share/alsa/cards/NFORCE.conf
+      - -usr/share/alsa/cards/PC-Speaker.conf
+      - -usr/share/alsa/cards/PMac.conf
+      - -usr/share/alsa/cards/PMacToonie.conf
+      - -usr/share/alsa/cards/PS3.conf
+      - -usr/share/alsa/cards/RME9636.conf
+      - -usr/share/alsa/cards/RME9652.conf
+      - -usr/share/alsa/cards/SB-XFi.conf
+      - -usr/share/alsa/cards/SI7018.conf
+      - -usr/share/alsa/cards/TRID4DWAVENX.conf
+      - -usr/share/alsa/cards/USB-Audio.conf
+      - -usr/share/alsa/cards/VIA686A.conf
+      - -usr/share/alsa/cards/VIA8233.conf
+      - -usr/share/alsa/cards/VIA8233A.conf
+      - -usr/share/alsa/cards/VIA8237.conf
+      - -usr/share/alsa/cards/VX222.conf
+      - -usr/share/alsa/cards/VXPocket.conf
+      - -usr/share/alsa/cards/VXPocket440.conf
+      - -usr/share/alsa/cards/YMF744.conf
+      - -usr/share/alsa/cards/aliases.conf
+      - -usr/share/alsa/cards/pistachio-card.conf
+      - -usr/share/alsa/cards/vc4-hdmi.conf
+      - -usr/share/bug/libgtk-3-0t64/control
+      - -usr/share/doc/at-spi2-common/changelog.Debian.gz
+      - -usr/share/doc/at-spi2-common/copyright
+      - -usr/share/doc/cpp
+      - -usr/share/doc/libappindicator3-1/changelog.Debian.gz
+      - -usr/share/doc/libasound2-data/changelog.Debian.gz
+      - -usr/share/doc/libasound2-data/copyright
+      - -usr/share/doc/libasound2t64/changelog.Debian.gz
+      - -usr/share/doc/libasound2t64/copyright
+      - -usr/share/doc/libasyncns0/changelog.Debian.gz
+      - -usr/share/doc/libasyncns0/copyright
+      - -usr/share/doc/libatk-bridge2.0-0t64/copyright
+      - -usr/share/doc/libatk1.0-0t64/changelog.Debian.gz
+      - -usr/share/doc/libatk1.0-0t64/copyright
+      - -usr/share/doc/libatspi2.0-0t64/changelog.Debian.gz
+      - -usr/share/doc/libatspi2.0-0t64/copyright
+      - -usr/share/doc/libcodec2-1.2/changelog.Debian.gz
+      - -usr/share/doc/libdav1d7/changelog.Debian.gz
+      - -usr/share/doc/libdav1d7/copyright
+      - -usr/share/doc/libdbusmenu-glib4/changelog.Debian.gz
+      - -usr/share/doc/libdecor-0-0/changelog.Debian.gz
+      - -usr/share/doc/libdecor-0-0/copyright
+      - -usr/share/doc/libfuse2t64/changelog.Debian.gz
+      - -usr/share/doc/libglib2.0-0t64/NEWS.gz
+      - -usr/share/doc/libglib2.0-0t64/README.md
+      - -usr/share/doc/libglib2.0-0t64/changelog.Debian.gz
+      - -usr/share/doc/libglib2.0-0t64/copyright
+      - -usr/share/doc/libgomp1
+      - -usr/share/doc/libgsm1/changelog.Debian.gz
+      - -usr/share/doc/libgsm1/copyright
+      - -usr/share/doc/libgtk-3-0t64/changelog.Debian.gz
+      - -usr/share/doc/libgtk-3-0t64/copyright
+      - -usr/share/doc/libgtk-3-common/NEWS.gz
+      - -usr/share/doc/libgtk-3-common/changelog.Debian.gz
+      - -usr/share/doc/libgtk-3-common/copyright
+      - -usr/share/doc/libgtk2.0-0t64/changelog.Debian.gz
+      - -usr/share/doc/libgtk2.0-0t64/copyright
+      - -usr/share/doc/libgtk2.0-common/changelog.Debian.gz
+      - -usr/share/doc/libgtk2.0-common/copyright
+      - -usr/share/doc/libibus-1.0-5/changelog.Debian.gz
+      - -usr/share/doc/libibus-1.0-5/copyright
+      - -usr/share/doc/libisl23/changelog.Debian.gz
+      - -usr/share/doc/liblzma5/AUTHORS
+      - -usr/share/doc/liblzma5/NEWS.gz
+      - -usr/share/doc/liblzma5/changelog.Debian.gz
+      - -usr/share/doc/liblzma5/copyright
+      - -usr/share/doc/libmp3lame0/changelog.Debian.gz
+      - -usr/share/doc/libmp3lame0/copyright
+      - -usr/share/doc/libmpc3/changelog.Debian.gz
+      - -usr/share/doc/libmpfr6/BUGS
+      - -usr/share/doc/libmpfr6/NEWS.gz
+      - -usr/share/doc/libmpfr6/README
+      - -usr/share/doc/libmpfr6/TODO.gz
+      - -usr/share/doc/libmpfr6/changelog.Debian.gz
+      - -usr/share/doc/libmpg123-0t64/changelog.Debian.gz
+      - -usr/share/doc/libmpg123-0t64/copyright
+      - -usr/share/doc/libnm0/changelog.Debian.gz
+      - -usr/share/doc/libnuma1/changelog.Debian.gz
+      - -usr/share/doc/libogg0/changelog.Debian.gz
+      - -usr/share/doc/libogg0/copyright
+      - -usr/share/doc/libopenal-data/changelog.Debian.gz
+      - -usr/share/doc/libopenal-data/copyright
+      - -usr/share/doc/libopenal1/changelog.Debian.gz
+      - -usr/share/doc/libopenal1/copyright
+      - -usr/share/doc/libopenal1/examples/alsoftrc.sample
+      - -usr/share/doc/libopenjp2-7/changelog.Debian.gz
+      - -usr/share/doc/libopenjp2-7/copyright
+      - -usr/share/doc/libopus0/changelog.Debian.gz
+      - -usr/share/doc/libopus0/copyright
+      - -usr/share/doc/libpci3/changelog.Debian.gz
+      - -usr/share/doc/libpci3/copyright
+      - -usr/share/doc/libpipewire-0.3-0t64/copyright
+      - -usr/share/doc/libpulse0/NEWS.gz
+      - -usr/share/doc/libpulse0/changelog.Debian.gz
+      - -usr/share/doc/libsamplerate0/changelog.Debian.gz
+      - -usr/share/doc/libsdl2-2.0-0/changelog.Debian.gz
+      - -usr/share/doc/libsdl2-2.0-0/copyright
+      - -usr/share/doc/libshine3/changelog.Debian.gz
+      - -usr/share/doc/libsnappy1v5/changelog.Debian.gz
+      - -usr/share/doc/libsndfile1/changelog.Debian.gz
+      - -usr/share/doc/libsndfile1/copyright
+      - -usr/share/doc/libsoxr0/changelog.Debian.gz
+      - -usr/share/doc/libspa-0.2-modules/changelog.Debian.gz
+      - -usr/share/doc/libspa-0.2-modules/copyright
+      - -usr/share/doc/libspeex1/changelog.Debian.gz
+      - -usr/share/doc/libtwolame0/changelog.Debian.gz
+      - -usr/share/doc/libusb-1.0-0/changelog.Debian.gz
+      - -usr/share/doc/libusb-1.0-0/copyright
+      - -usr/share/doc/libva-x11-2/copyright
+      - -usr/share/doc/libvdpau1/changelog.Debian.gz
+      - -usr/share/doc/libvdpau1/copyright
+      - -usr/share/doc/libvorbis0a/changelog.Debian.gz
+      - -usr/share/doc/libwebpmux3/copyright
+      - -usr/share/doc/libxaw7/changelog.Debian.gz
+      - -usr/share/doc/libxcomposite1/changelog.Debian.gz
+      - -usr/share/doc/libxmu6/changelog.Debian.gz
+      - -usr/share/doc/libxmuu1/changelog.Debian.gz
+      - -usr/share/doc/libxpm4/changelog.Debian.gz
+      - -usr/share/doc/libxss1/changelog.Debian.gz
+      - -usr/share/doc/libxt6t64/changelog.Debian.gz
+      - -usr/share/doc/libxtst6/changelog.Debian.gz
+      - -usr/share/doc/libxvidcore4/changelog.Debian.gz
+      - -usr/share/doc/libxvidcore4/copyright
+      - -usr/share/doc/libzvbi-common/NEWS.gz
+      - -usr/share/doc/libzvbi-common/README.md.gz
+      - -usr/share/doc/libzvbi-common/changelog.Debian.gz
+      - -usr/share/doc/libzvbi-common/copyright
+      - -usr/share/doc/libzvbi0t64/NEWS.gz
+      - -usr/share/doc/libzvbi0t64/README.md.gz
+      - -usr/share/doc/libzvbi0t64/changelog.Debian.gz
+      - -usr/share/doc/libzvbi0t64/copyright
+      - -usr/share/doc/locales-all/changelog.Debian.gz
+      - -usr/share/doc/locales-all/copyright
+      - -usr/share/doc/lsof/00FAQ.gz
+      - -usr/share/doc/lsof/changelog.Debian.gz
+      - -usr/share/doc/lsof/copyright
+      - -usr/share/doc/lsof/examples/big_brother.pl
+      - -usr/share/doc/lsof/examples/identd.pl
+      - -usr/share/doc/lsof/examples/shared.pl
+      - -usr/share/doc/lsof/examples/sort_res.pl
+      - -usr/share/doc/ocl-icd-libopencl1/changelog.Debian.gz
+      - -usr/share/doc/ocl-icd-libopencl1/copyright
+      - -usr/share/doc/ocl-icd-libopencl1/html/libOpenCL.html
+      - -usr/share/doc/pci.ids/changelog.Debian.gz
+      - -usr/share/doc/pci.ids/copyright
+      - -usr/share/doc/pciutils/README.gz
+      - -usr/share/doc/pciutils/copyright
+      - -usr/share/doc/psmisc/changelog.Debian.gz
+      - -usr/share/doc/usbutils/changelog.Debian.gz
+      - -usr/share/doc/usbutils/copyright
+      - -usr/share/doc/x11-xserver-utils/changelog.gz
+      - -usr/share/doc/xdg-user-dirs/changelog.Debian.gz
+      - -usr/share/doc/xdg-utils/NEWS.gz
+      - -usr/share/doc/xdg-utils/TODO
+      - -usr/share/doc/xdg-utils/changelog.Debian.gz
+      - -usr/share/doc/xkb-data/changelog.Debian.gz
+      - -usr/share/doc/xkb-data/copyright
+      - -usr/share/doc/zlib1g/changelog.Debian.gz
+      - -usr/share/gtk-3.0/emoji/bn.gresource
+      - -usr/share/gtk-3.0/emoji/da.gresource
+      - -usr/share/gtk-3.0/emoji/de.gresource
+      - -usr/share/gtk-3.0/emoji/es.gresource
+      - -usr/share/gtk-3.0/emoji/et.gresource
+      - -usr/share/gtk-3.0/emoji/fi.gresource
+      - -usr/share/gtk-3.0/emoji/fr.gresource
+      - -usr/share/gtk-3.0/emoji/hi.gresource
+      - -usr/share/gtk-3.0/emoji/hu.gresource
+      - -usr/share/gtk-3.0/emoji/it.gresource
+      - -usr/share/gtk-3.0/emoji/ja.gresource
+      - -usr/share/gtk-3.0/emoji/ko.gresource
+      - -usr/share/gtk-3.0/emoji/lt.gresource
+      - -usr/share/gtk-3.0/emoji/ms.gresource
+      - -usr/share/gtk-3.0/emoji/nb.gresource
+      - -usr/share/gtk-3.0/emoji/nl.gresource
+      - -usr/share/gtk-3.0/emoji/pl.gresource
+      - -usr/share/gtk-3.0/emoji/pt.gresource
+      - -usr/share/gtk-3.0/emoji/ru.gresource
+      - -usr/share/gtk-3.0/emoji/sv.gresource
+      - -usr/share/gtk-3.0/emoji/th.gresource
+      - -usr/share/gtk-3.0/emoji/uk.gresource
+      - -usr/share/gtk-3.0/emoji/zh.gresource
+      - -usr/share/lintian/overrides/libatspi2.0-0t64
+      - -usr/share/locale/de/LC_MESSAGES/zvbi.mo
+      - -usr/share/locale/en@boldquot/LC_MESSAGES/zvbi.mo
+      - -usr/share/locale/en@quot/LC_MESSAGES/zvbi.mo
+      - -usr/share/locale/es/LC_MESSAGES/zvbi.mo
+      - -usr/share/locale/fr/LC_MESSAGES/zvbi.mo
+      - -usr/share/locale/it/LC_MESSAGES/zvbi.mo
+      - -usr/share/locale/ka/LC_MESSAGES/zvbi.mo
+      - -usr/share/locale/nl/LC_MESSAGES/zvbi.mo
+      - -usr/share/locale/pl/LC_MESSAGES/zvbi.mo
+      - -usr/share/misc/pci.ids
+      - -usr/share/openal/alsoftrc.sample
+      - -usr/share/openal/presets/3D7.1.ambdec
+      - -usr/share/pkgconfig/xkeyboard-config.pc
     organize:
-      snap/steam/current/usr: usr
-    build-environment:
-      - CC: gcc -m32
-      - CXX: g++ -m32
-      - PKG_CONFIG_PATH: /usr/lib/i386-linux-gnu/pkgconfig:/usr/lib/x86_64-linux-gnu/pkgconfig:/usr/lib/pkgconfig
-    meson-parameters:
-      - --prefix=/usr
-      - --libdir=lib/i386-linux-gnu
-      - -Dappend_libdir_mangohud=false
-    build-packages:
-      - gcc
-      - gcc-multilib
-      - g++
-      - g++-multilib
-      - glslang-dev
-      - glslang-tools
-      - libdbus-1-dev
-      - libgl-dev
-      - libglvnd-dev
-      - libx11-dev
-      - libxnvctrl-dev
-      - mesa-common-dev
-      - python3-mako
-      - libwayland-dev:i386
-      - libwayland-dev
-      - libxkbcommon-dev:i386
-      - libxkbcommon-dev
-    stage-packages:
-      - libxkbcommon0:i386
-    override-build: |
-        craftctl default
-        sed -i 's/\/usr\/\\\$LIB/\$SNAP\/usr\/\\\$LIB/' $CRAFT_PART_INSTALL/usr/bin/mangohud
-
-  mangohud64:
-    after: [meson-deps, mangohud]
-    source: https://github.com/flightlessmango/MangoHud.git
-    source-tag: "v0.8.1"
-    plugin: meson
-    organize:
-      snap/steam/current/usr: usr
-    meson-parameters:
-      - --prefix=/usr
-      - --libdir=lib/x86_64-linux-gnu
-      - -Dappend_libdir_mangohud=false
-    stage:
-      - -usr/bin/mangohud
-      - -usr/share/vulkan/implicit_layer.d/MangoHud.json
-      - -usr/share/vulkan/implicit_layer.d/libMangoApp.json
-      - -usr/share/doc/mangohud/MangoHud.conf.example
-      - -usr/share/man/man1/mangohud.1
-
-  gamemode:
-    after: [meson-deps]
-    source: https://github.com/FeralInteractive/gamemode.git
-    source-tag: "1.8.2"
-    plugin: meson
-    build-environment:
-      - CC: gcc -m32
-      - CXX: g++ -m32
-      - PKG_CONFIG_PATH: /usr/lib/i386-linux-gnu/pkgconfig:/usr/lib/x86_64-linux-gnu/pkgconfig:/usr/lib/pkgconfig
-    organize:
-      snap/steam/current/usr: usr
-    meson-parameters:
-      - --prefix=/usr
-      - --libdir=lib/i386-linux-gnu
-    build-packages:
-      - libsystemd-dev:i386
-      - libdbus-1-dev:i386
-      - pkg-config
-    stage:
-      - usr/bin/gamemode*
-      - usr/lib/*/libgamemode*.so.*
-      - usr/lib/*/libinih.so.*
-
-  gamemode64:
-    after: [meson-deps, gamemode]
-    source: https://github.com/FeralInteractive/gamemode.git
-    source-tag: "1.8.2"
-    plugin: meson
-    organize:
-      snap/steam/current/usr: usr
-    meson-parameters:
-      - --prefix=/usr
-      - --libdir=lib/x86_64-linux-gnu
-    build-packages:
-      - libsystemd-dev
-      - libdbus-1-dev
-      - pkg-config
-    stage:
-      - usr/lib/*/libgamemode*.so.*
-      - usr/lib/*/libinih.so.*
-
-  debug-tools:
-    plugin: nil
-    stage-packages:
-      - jq
-    prime:
-      - usr/bin/jq
-      - usr/lib/*/libjq.so*
-      - usr/lib/*/libonig.so*
-
-  tests:
+        steam_231_amd64: .
+  amd64-rootfs:
     plugin: dump
-    source: tests
-    override-build: |
-      mkdir -p $CRAFT_PART_INSTALL/tests
-      cp -rp * $CRAFT_PART_INSTALL/tests/
-
+    source: https://github.com/MitchellAugustin/steam-snap/releases/download/amd64-components-9-2-26/amd64_rootfs.tar.gz
+    organize:
+        amd64_rootfs: .
+  fex-emu:
+    plugin: nil
+    stage-packages:
+      - fex-emu-armv8.0
+      - fex-emu-wine
+      - zenity
+  fex-config:
+    plugin: dump
+    source: ./fex_config
+  wget:
+    plugin: nil
+    stage-packages:
+      - wget
+  desktop-launch:
+    plugin: dump
+    source: ./src/
+    organize:
+        desktop-launch: bin/
+    stage:
+      - bin/desktop-launch
   steam-devices:
     plugin: dump
     source: https://github.com/ValveSoftware/steam-devices.git
-
   steam:
     plugin: nil
-    #source: http://repo.steampowered.com/steam/archive/precise/steam_latest.deb
     build-packages:
       - dpkg-dev
       - dirmngr # Needed for launchpad builds
     build-snaps:
-      - core24
+      - core26
     stage-packages:
-      - steam-launcher
-      - steam-libs-amd64
-      - steam-libs-i386
       - libappindicator3-1
-      - libxcb-dri3-0:amd64
-      - libxcb-dri3-0:i386
+      - libxcb-dri3-0
       - xkb-data
       - libpci3
-      - libvulkan1:i386
-      - libvulkan1:amd64
-      - libxml2:i386
-      - libxml2:amd64
-      - libicu74:i386
-      - libicu74:amd64
-      - zlib1g:i386
-      - zlib1g:amd64
+      - libvulkan1
+      - libxml2
+      - libicu74
+      - zlib1g
       - xdg-utils
       - xdg-user-dirs
       - fontconfig-config
-      - fontconfig:i386
-      - fontconfig:amd64
+      - fontconfig
       - pciutils
       - lsof
       - locales-all
       - usbutils # Allows finding controllers etc
       - psmisc
-      - libfuse2:amd64
-      - libfuse2:i386
-      - libxss1:amd64
-      - libxss1:i386
+      - libfuse2
+      - libxss1
       - x11-xserver-utils
-      - libxtst6:amd64
-      - libxtst6:i386
+      - libxtst6
       - libibus-1.0-5
-      - libxrandr2:amd64
-      - libxrandr2:i386
-      - libxi6:amd64
-      - libxi6:i386
-      - libpipewire-0.3-0t64:amd64
-      - libpipewire-0.3-0t64:i386
-      - libopenal1:amd64
-      - libopenal1:i386
-      - libpulse0:amd64
-      - libpulse0:i386
-      - libnm0:amd64
-      - libnm0:i386
-      - libglib2.0-0t64:amd64
-      - libglib2.0-0t64:i386
-      - libxfixes3:amd64
-      - libxfixes3:i386
-      - libgtk2.0-0t64:amd64
-      - libgtk2.0-0t64:i386
-      - libxcb-res0:amd64
-      - libxcb-res0:i386
-      - liblzma5:amd64
-      - liblzma5:i386
-      - libice6:i386
-      - libice6:amd64
-      - libsm6:i386
-      - libsm6:amd64
-      - libsdl2-2.0-0:i386
-      - libsdl2-2.0-0:amd64
-      - libaom3:i386
-      - libaom3:amd64
-      - libavcodec60:i386
-      - libavcodec60:amd64
-      - libavutil58:i386
-      - libavutil58:amd64
-      - libdav1d7:i386
-      - libdav1d7:amd64
-      - libswscale7:i386
-      - libswscale7:amd64
-      - libvpx9:i386
-      - libvpx9:amd64
-    override-build: |
-      craftctl default
-      # Set the snap version from the .deb package version
-      craftctl set version=$(dpkg-parsechangelog -l $CRAFT_PART_INSTALL/usr/share/doc/steam-launcher/changelog.*.gz -S Version | sed -e s/1://g)
+      - libxrandr2
+      - libxi6
+      - libpipewire-0.3-0t64
+      - libopenal1
+      - libpulse0
+      - libnm0
+      - libglib2.0-0t64
+      - libxfixes3
+      - libgtk2.0-0t64
+      - libxcb-res0
+      - liblzma5
+      - libice6
+      - libsm6
+      - libsdl2-2.0-0
+      - libaom3
+      - libavcodec60
+      - libavutil58
+      - libdav1d7
+      - libswscale7
+      - libvpx9
     prime:
       - -usr/include
       - -usr/share/doc
@@ -478,67 +1119,20 @@ parts:
       - -usr/lib/*/libvulkan*
       - -usr/lib/*/libVk*
       - -usr/lib/*/libLLVM*
-      - -usr/lib/*/libgallium* # provided by gaming-graphics-core24
+      - -usr/lib/*/libgallium* # provided by gaming-graphics-core26
       - -usr/lib/*/libasound.so* # conflicts with alsa-mixin
     override-prime: |
       set -eux
       craftctl default
-      cp -a /snap/core24/current/usr/lib/i386-linux-gnu/* usr/lib/i386-linux-gnu/
+      cp -a /snap/core26/current/usr/lib/aarch64-linux-gnu/* usr/lib/aarch64-linux-gnu/
+      # snap pack rejects non-world-readable meta dirs; pre-create them 0755 so the
+      # pack step's mkdir(exist_ok=True) can't leave them at the builder's umask.
+      install -d -m 755 meta meta/gui meta/hooks
 
-  yaru-skin:
-    plugin: nil
-    source: https://github.com/ubuntu/yaru-for-steam.git
-    source-type: git
-    stage-packages:
-      - fonts-ubuntu
-    override-build: |
-      mkdir -p $CRAFT_PART_INSTALL/usr/share/Steam/skins
-      ./install.py -t $CRAFT_PART_INSTALL/usr/share/Steam/skins -w full -n Yaru
-    prime:
-      - usr/share/fonts/truetype/ubuntu
-      - usr/share/Steam/skins
-
-  conditioning:
-    after: [steam]
-    plugin: nil
-    build-packages:
-      - shared-mime-info
-      - gtk-update-icon-cache
-    override-prime: |
-      set -eux
-      craftctl default
-      update-mime-database usr/share/mime
-      for dir in usr/share/icons/*; do
-        if [ -f "$dir/index.theme" ]; then
-          gtk-update-icon-cache --force "$dir"
-        fi
-      done
-
-  cleanup:
-    after: [steam, conditioning]
-    plugin: nil
-    build-snaps:
-      - gaming-graphics-core24/kisak-fresh/stable
-    override-prime: |
-      set -eux
-      cd /snap/gaming-graphics-core24/current/usr/lib
-      find . -type f,l -exec rm -f $CRAFT_PRIME/usr/lib/{} \;
-      cd /snap/gaming-graphics-core24/current/usr/share
-      find . -type f,l -exec rm -f $CRAFT_PRIME/usr/share/{} \;
-
+  
 apps:
   steam:
-    command-chain: [snap/command-chain/alsa-launch, bin/desktop-launch]
-    command: usr/lib/steam/bin_steam.sh -no-cef-sandbox
-    environment:
-      HOME: $SNAP_USER_COMMON
-      #LIBGL_DEBUG: verbose
-      TMPDIR: $XDG_RUNTIME_DIR
-      ALWAYS_USE_PULSEAUDIO: 1
-      DISABLE_WAYLAND: 1
-      PKG_CONFIG_PATH: $SNAP/usr/lib/i386-linux-gnu/pkgconfig:$SNAP/usr/lib/x86_64-linux-gnu/pkgconfig:$SNAP/usr/lib/pkgconfig
-      STEAM_LINUX_RUNTIME_VERBOSE: 1
-      STEAM_LINUX_RUNTIME_LOG: 1
+    command: usr/bin/fex_launcher.sh
     plugs:
       - shmem
       - camera
@@ -551,6 +1145,7 @@ apps:
       - hardware-observe
       - mount-observe
       - system-observe
+      - network-observe
       - joystick
       - network
       - network-bind
@@ -566,49 +1161,5 @@ apps:
       - removable-media
       - upower-observe
       - uinput
-  report:
-    command-chain: [bin/desktop-launch]
-    command: bin/steamreport
-    environment:
-      DISABLE_WAYLAND: 1
-    plugs:
-      - system-observe
-      - hardware-observe
-      - opengl
-      - x11
-      - desktop
-  vulkaninfo:
-    command-chain: [bin/desktop-launch]
-    command: bin/vulkaninfo
-    plugs:
-      - opengl
-      - x11
-      - desktop
-  vkcube:
-    command-chain: [bin/desktop-launch]
-    command: bin/vkcube
-    plugs:
-      - opengl
-      - x11
-      - desktop
-  glxinfo:
-    command-chain: [bin/desktop-launch]
-    command: bin/glxinfo
-    plugs:
-      - opengl
-      - x11
-      - desktop
-  glxgears:
-    command-chain: [bin/desktop-launch]
-    command: bin/glxgears
-    plugs:
-      - opengl
-      - x11
-      - desktop
-  test:
-    command-chain: [bin/desktop-launch]
-    command: tests/run.sh
-    plugs:
-      - opengl
-      - x11
-      - desktop
+      - dot-local-share-steam
+
