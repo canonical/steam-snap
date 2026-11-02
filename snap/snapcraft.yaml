@@ -37,6 +37,8 @@ layout:
     bind: $SNAP/usr/lib/steam
   /usr/share/zenity:
     bind: $SNAP/usr/share/zenity
+  /usr/libexec/glycin-loaders:
+    bind: $SNAP/usr/libexec/glycin-loaders
   # https://discourse.ubuntu.com/t/the-graphics-core20-snap-interface/23000
   /usr/share/drirc.d:
     bind: $SNAP/graphics/usr/share/drirc.d
@@ -146,6 +148,7 @@ parts:
       cp * $CRAFT_PART_INSTALL/bin/
     stage-packages:
       - python3
+      - python3-requests
       - python3-gi
       - gir1.2-gtk-4.0
       - xdotool
@@ -488,6 +491,7 @@ parts:
       - -usr/bin/python3*
       - -usr/lib/python3.*
     prime:
+      - -usr/bin/xdg-open
       - -usr/include
       - -usr/share/man
       - -usr/share/bug
@@ -603,6 +607,7 @@ apps:
       - opengl
       - x11
       - desktop
+      - desktop-legacy
   vulkaninfo:
     command-chain: [bin/desktop-launch]
     command: bin/vulkaninfo
