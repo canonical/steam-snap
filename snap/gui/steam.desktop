@@ -33,7 +33,7 @@ Terminal=false
 Type=Application
 Categories=Network;FileTransfer;Game;
 MimeType=x-scheme-handler/steam;x-scheme-handler/steamlink;
-Actions=Store;Community;Library;Servers;Screenshots;News;Settings;BigPicture;Friends;Report;
+Actions=Store;Community;Library;Servers;Screenshots;News;Settings;BigPicture;ExitBigPicture;Friends;Report;
 PrefersNonDefaultGPU=true
 X-KDE-RunOnDiscreteGpu=true
 
@@ -249,7 +249,11 @@ Exec=steam steam://open/settings
 
 [Desktop Action BigPicture]
 Name=Big Picture
-Exec=steam steam://open/bigpicture
+Exec=steam -start steam://open/bigpicture
+
+[Desktop Action ExitBigPicture]
+Name=Exit Big Picture
+Exec=steam steam://exitbigpicture
 
 [Desktop Action Friends]
 Name=Friends

@@ -1,0 +1,14 @@
+#!/bin/bash
+#
+# Shows a "Starting Steam..." splash immediately, without blocking the
+# rest of the command-chain. steam-splash itself decides fullscreen vs.
+# windowed and closes when Steam's final window is focused (or on timeout).
+
+# exec below keeps this PID, so the splash can watch the Steam chain exit.
+# The app's LD_LIBRARY_PATH lists i386 dirs first, so GTK would load a 32-bit
+# libX11; put the 64-bit dirs first for the (64-bit) splash only.
+LD_LIBRARY_PATH="$SNAP/usr/lib/x86_64-linux-gnu:$SNAP/graphics/usr/lib/x86_64-linux-gnu:$SNAP/lib/x86_64-linux-gnu:$LD_LIBRARY_PATH" \
+    GTK_A11Y=none "$SNAP/bin/steam-splash" $$ &
+disown
+
+exec "$@"
