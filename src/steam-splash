@@ -124,7 +124,7 @@ def steam_window_present():
     another application can keep focus even though Steam is up. The search
     matches WM_CLASS "steam"; the login window has instance "steamwebhelper"
     so the instance name is not checked. Tiny helper windows are ignored."""
-    windows = _xdotool("search", "--onlyvisible", "--class", "^steam$")
+    windows = _xdotool("search", "--onlyvisible", "--class", "^[Ss]team$")
     for window in (windows or "").split():
         width, height = _window_size(window)
         if width < 200 or height < 200:
