@@ -1065,8 +1065,8 @@ parts:
       - xkb-data
       - libpci3
       - libvulkan1
-      - libxml2
-      - libicu74
+      - libxml2-16
+      - libicu78
       - zlib1g
       - xdg-utils
       - xdg-user-dirs
@@ -1077,7 +1077,7 @@ parts:
       - locales-all
       - usbutils # Allows finding controllers etc
       - psmisc
-      - libfuse2
+      - libfuse2t64
       - libxss1
       - x11-xserver-utils
       - libxtst6
@@ -1097,10 +1097,10 @@ parts:
       - libsm6
       - libsdl2-2.0-0
       - libaom3
-      - libavcodec60
-      - libavutil58
+      - libavcodec62
+      - libavutil60
       - libdav1d7
-      - libswscale7
+      - libswscale9
       - libvpx12
     prime:
       - -usr/include
