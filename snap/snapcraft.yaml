@@ -208,6 +208,9 @@ parts:
   amd64-content:
     plugin: dump
     source: https://github.com/MitchellAugustin/steam-snap/releases/download/amd64-components-11-9-26/steam_285_amd64.tar.gz
+    override-pull: |
+      craftctl default
+      find "$CRAFT_PART_SRC" -type d -exec chmod a+rx {} +
     stage:
       # the amd64 snap's own metadata; snapcraft regenerates meta/ for this snap
       - -meta
@@ -1037,6 +1040,9 @@ parts:
   amd64-rootfs:
     plugin: dump
     source: https://github.com/MitchellAugustin/steam-snap/releases/download/amd64-components-11-9-26/amd64_rootfs.tar.gz
+    override-pull: |
+      craftctl default
+      find "$CRAFT_PART_SRC" -type d -exec chmod a+rx {} +
     organize:
         amd64_rootfs: .
   fex-emu:
