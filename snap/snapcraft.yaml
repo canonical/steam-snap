@@ -1128,6 +1128,8 @@ parts:
       - -usr/lib/*/libLLVM*
       - -usr/lib/*/libgallium* # provided by gaming-graphics-core26
       - -usr/lib/*/libasound.so* # conflicts with alsa-mixin
+      - -usr/bin/cpp-15
+      - -usr/bin/pcilmr
     override-prime: |
       set -eux
       craftctl default
