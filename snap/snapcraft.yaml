@@ -1,5 +1,5 @@
 name: steam
-version: '1.0.0.85'
+version: '1.0.0.87'
 summary: Launcher for the Steam software distribution service
 description: |
   Steam is a software distribution service with an online store, automated
@@ -32,8 +32,8 @@ package-repositories:
   # default ubuntu.sources with `Architectures: arm64 armhf`, and armhf is not
   # published on archive.ubuntu.com, breaking `apt update`.
   - type: apt
-    url: http://ports.ubuntu.com/ubuntu-ports/
-    suites: [noble, noble-updates]
+    url: http://archive.ubuntu.com/ubuntu/
+    suites: [resolute, resolute-updates]
     components: [main, universe]
     key-id: F6ECB3762474EDA9D21B7022871920D1991BC93C
     key-server: keyserver.ubuntu.com
@@ -207,7 +207,7 @@ parts:
       - gaming-graphics-core26/kisak-fresh/candidate
   amd64-content:
     plugin: dump
-    source: https://github.com/MitchellAugustin/steam-snap/releases/download/amd64-components-1-26-26/steam_231_amd64.tar.gz
+    source: https://github.com/MitchellAugustin/steam-snap/releases/download/amd64-components-11-9-26/steam_285_amd64.tar.gz
     stage:
       # the amd64 snap's own metadata; snapcraft regenerates meta/ for this snap
       - -meta
@@ -1026,7 +1026,7 @@ parts:
         steam_231_amd64: .
   amd64-rootfs:
     plugin: dump
-    source: https://github.com/MitchellAugustin/steam-snap/releases/download/amd64-components-9-2-26/amd64_rootfs.tar.gz
+    source: https://github.com/MitchellAugustin/steam-snap/releases/download/amd64-components-11-9-26/amd64_rootfs.tar.gz
     organize:
         amd64_rootfs: .
   fex-emu:
