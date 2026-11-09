@@ -1,5 +1,7 @@
 #!/bin/bash
 
+export XKB_CONFIG_ROOT="$SNAP/usr/share/X11/xkb"
+
 # Refuse to launch if the kernel has a 64k page size
 PAGE_SIZE=$(getconf PAGESIZE)
 
@@ -36,6 +38,13 @@ mkdir -p $SNAP_USER_COMMON/.fex-emu/
 export FEX_SERVERSOCKETPATH=$SNAP_USER_COMMON/.fex-emu/FEXServer.Socket
 export FEX_APP_CONFIG_LOCATION=$SNAP_USER_COMMON/fex_config/
 export FEX_ROOTFS=$SNAP_USER_COMMON/x86_rootfs/
+
+shadow_common="$FEX_ROOTFS$SNAP_USER_COMMON"
+if [[ -d "$shadow_common" && ! -L "$shadow_common" ]]; then
+	shadow_backup=$(mktemp -d "$SNAP_USER_COMMON/fex-shadow-backup.XXXXXX") || exit 1
+	mv -- "$shadow_common" "$shadow_backup/common" || exit 1
+	echo "Preserved shadowed FEX user data in $shadow_backup/common"
+fi
 
 mkdir -p $SNAP_USER_COMMON/.fex-emu/nvidia_ngx_config
 export FEX_STEAM_NGX_LIB_VERSION_FILE=$SNAP_USER_COMMON/.fex-emu/nvidia_ngx_config/ngx_lib_version.txt
