@@ -1022,6 +1022,13 @@ parts:
       - -usr/share/openal/alsoftrc.sample
       - -usr/share/openal/presets/3D7.1.ambdec
       - -usr/share/pkgconfig/xkeyboard-config.pc
+      - -usr/bin/bwrap
+      - -usr/bin/glycin-thumbnailer
+      - -usr/bin/gtk4-update-icon-cache
+      - -usr/libexec/glycin-loaders/2+/glycin-heif
+      - -usr/libexec/glycin-loaders/2+/glycin-image-rs
+      - -usr/libexec/glycin-loaders/2+/glycin-jxl
+      - -usr/libexec/glycin-loaders/2+/glycin-svg
     organize:
         steam_231_amd64: .
   amd64-rootfs:
