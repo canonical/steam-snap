@@ -1101,7 +1101,6 @@ parts:
       - libavutil58
       - libdav1d7
       - libswscale7
-      - libvpx9
     prime:
       - -usr/include
       - -usr/share/doc
