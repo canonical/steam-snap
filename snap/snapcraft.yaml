@@ -1029,6 +1029,7 @@ parts:
       - -usr/libexec/glycin-loaders/2+/glycin-image-rs
       - -usr/libexec/glycin-loaders/2+/glycin-jxl
       - -usr/libexec/glycin-loaders/2+/glycin-svg
+      - -usr/share/doc/libheif-plugin-aomdec/changelog.Debian.gz
     organize:
         steam_231_amd64: .
   amd64-rootfs:
