@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Fullscreen (gamepad-shell) or windowed (everywhere else) "Starting
-Steam..." splash. Closes itself once Steam's final window is focused, or
+Steam..." splash. Closes itself once Steam's final window is visible, or
 after a timeout if detection never succeeds."""
 
 import os
@@ -85,13 +85,12 @@ class SplashWindow(Gtk.ApplicationWindow):
         return GLib.SOURCE_CONTINUE
 
 
-# Windows Steam shows before its main window (updater, login, dialogs).
+# Windows Steam shows before it is usable (updater, dialogs). The login
+# window is not listed: once it is up, the user can interact with Steam.
 INTERIM_TITLE_PREFIXES = (
     "updating steam",
     "steam - updating",
     "steam - self updater",
-    "sign in to steam",
-    "steam login",
     "steam dialog",
 )
 
@@ -109,16 +108,31 @@ def _xdotool(*args):
     return result.stdout.strip() if result.returncode == 0 else None
 
 
+def _window_size(window):
+    geometry = _xdotool("getwindowgeometry", "--shell", window) or ""
+    values = dict(line.split("=", 1) for line in geometry.splitlines() if "=" in line)
+    try:
+        return int(values["WIDTH"]), int(values["HEIGHT"])
+    except (KeyError, ValueError):
+        return 0, 0
+
+
 def steam_window_present():
-    """True once Steam's final (main) window is the focused window."""
-    window = _xdotool("getactivewindow")
-    if not window:
-        return False
-    wm_class = _xdotool("getwindowclassname", window)
-    if not wm_class or wm_class.lower() != "steam":
-        return False
-    title = (_xdotool("getwindowname", window) or "").lower()
-    return bool(title) and not title.startswith(INTERIM_TITLE_PREFIXES)
+    """True once a real Steam window (main or login) is visible.
+
+    Focus is deliberately not required: on desktop sessions the splash or
+    another application can keep focus even though Steam is up. The search
+    matches WM_CLASS "steam"; the login window has instance "steamwebhelper"
+    so the instance name is not checked. Tiny helper windows are ignored."""
+    windows = _xdotool("search", "--onlyvisible", "--class", "^[Ss]team$")
+    for window in (windows or "").split():
+        width, height = _window_size(window)
+        if width < 200 or height < 200:
+            continue
+        title = (_xdotool("getwindowname", window) or "").lower()
+        if title and not title.startswith(INTERIM_TITLE_PREFIXES):
+            return True
+    return False
 
 
 class SplashApp(Gtk.Application):
