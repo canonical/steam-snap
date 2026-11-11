@@ -7,8 +7,10 @@ import argparse
 from collections import defaultdict
 import requests
 import gi
-gi.require_version("Gtk", "3.0")
-from gi.repository import Gtk, Gdk
+
+gi.require_version("Gtk", "4.0")
+gi.require_version("Gdk", "4.0")
+from gi.repository import Gtk
 
 ISSUE_URL = "https://github.com/canonical/steam-snap/issues/new?assignees=&labels=bug&projects=&template=bug_report.yml"
 DISCUSSION_URL = "https://github.com/canonical/steam-snap/discussions/new?category=game-reports"
@@ -25,19 +27,21 @@ snap connect steam:system-observe"""
 data = {}
 
 class SteamReportWindow(Gtk.Window):
-    def __init__(self, args):
-        super().__init__()
+    def __init__(self, args, application):
+        super().__init__(application=application)
         self.set_resizable(True)
-        self.set_border_width(10)
-        self.set_position(Gtk.WindowPosition.CENTER)
         self.set_default_size(-1, 450)
 
         grid = Gtk.Grid(
             row_spacing=10,
             column_spacing=10,
             column_homogeneous=True,
+            margin_top=10,
+            margin_bottom=10,
+            margin_start=10,
+            margin_end=10,
         )
-        self.add(grid)
+        self.set_child(grid)
 
         label = Gtk.Label(halign=Gtk.Align.START)
         label.set_markup(
@@ -46,7 +50,7 @@ class SteamReportWindow(Gtk.Window):
         )
         grid.attach(label, 0, 0, 5, 1)
 
-        copy_button = Gtk.Button.new_from_icon_name("edit-copy-symbolic", Gtk.IconSize.MENU)
+        copy_button = Gtk.Button.new_from_icon_name("edit-copy-symbolic")
         copy_button.set_tooltip_text("Copy")
         copy_button.connect("clicked", lambda x: self.button_copy())
         copy_button.set_halign(Gtk.Align.END)
@@ -63,7 +67,7 @@ class SteamReportWindow(Gtk.Window):
             left_margin=10
         )
         textview.get_buffer().set_text(dict_to_string(gather_data(args)).strip())
-        scrolled_window.add(textview)
+        scrolled_window.set_child(textview)
         grid.attach(scrolled_window, 0, 2, 6, 1)
 
         issue_button = Gtk.Button(
@@ -86,8 +90,7 @@ class SteamReportWindow(Gtk.Window):
 
 
     def button_copy(self):
-        clipboard = Gtk.Clipboard.get(Gdk.SELECTION_CLIPBOARD)
-        clipboard.set_text(dict_to_string(data), -1)
+        self.get_clipboard().set(dict_to_string(data))
 
 
     def button_issue(self):
@@ -99,18 +102,20 @@ class SteamReportWindow(Gtk.Window):
 
 
 class NeedPlugsWindow(Gtk.Window):
-    def __init__(self, args):
-        super().__init__()
+    def __init__(self, args, application):
+        super().__init__(application=application)
         self.set_resizable(False)
-        self.set_border_width(10)
-        self.set_position(Gtk.WindowPosition.CENTER)
 
         grid = Gtk.Grid(
             row_spacing=10,
             column_spacing=10,
-            column_homogeneous=True
+            column_homogeneous=True,
+            margin_top=10,
+            margin_bottom=10,
+            margin_start=10,
+            margin_end=10,
         )
-        self.add(grid)
+        self.set_child(grid)
 
         title_label = Gtk.Label()
         title_label.set_markup(
@@ -124,7 +129,7 @@ class NeedPlugsWindow(Gtk.Window):
         )
         grid.attach_next_to(prompt_label, title_label, Gtk.PositionType.BOTTOM, 3, 1)
 
-        copy_button = Gtk.Button.new_from_icon_name("edit-copy-symbolic", Gtk.IconSize.MENU)
+        copy_button = Gtk.Button.new_from_icon_name("edit-copy-symbolic")
         copy_button.set_margin_top(20)
         copy_button.set_tooltip_text("Copy")
         copy_button.connect("clicked", lambda x: self.button_copy())
@@ -152,13 +157,12 @@ class NeedPlugsWindow(Gtk.Window):
 
 
     def button_copy(self):
-        clipboard = Gtk.Clipboard.get(Gdk.SELECTION_CLIPBOARD)
-        clipboard.set_text(SNAP_COMMAND, - 1)
+        self.get_clipboard().set(SNAP_COMMAND)
 
 
     def button_retry(self, args):
+        create_window(args, self.get_application())
         self.close()
-        create_window(args)
 
 
 def summary():
@@ -396,15 +400,12 @@ def open_issue(data):
     webbrowser.open_new_tab(url)
 
 
-def create_window(args):
-    window: Gtk.Window = None
+def create_window(args, application):
     if plugs_connected() or args.force:
-        window = SteamReportWindow(args)
+        window = SteamReportWindow(args, application)
     else:
-        window = NeedPlugsWindow(args)
-    window.connect("destroy", Gtk.main_quit)
-    window.show_all()
-    Gtk.main()
+        window = NeedPlugsWindow(args, application)
+    window.present()
 
 
 def main():
@@ -465,8 +466,10 @@ def main():
         if not args.no_submit:
             open_discussion(data)
     else:
-        create_window(args)
+        application = Gtk.Application()
+        application.connect("activate", lambda app: create_window(args, app))
+        return application.run([])
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())

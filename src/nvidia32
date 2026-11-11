@@ -1,10 +1,13 @@
 #!/usr/bin/env python3
 
 import gi
-gi.require_version("Gtk", "3.0")
-from gi.repository import Gtk, Gdk
+
+gi.require_version("Gtk", "4.0")
+gi.require_version("Gdk", "4.0")
+from gi.repository import Gtk
 import os
 import argparse
+import sys
 
 TITLE = "NVIDIA 32-bit Not Found"
 TEXT = """<b>32-bit NVIDIA driver files were not found on your host system.</b>
@@ -66,21 +69,22 @@ def nvidia_missing():
 
 
 class NvidiaWindow(Gtk.Window):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, application):
+        super().__init__(application=application, title=TITLE)
         self.set_resizable(False)
-        self.set_border_width(10)
-        self.set_position(Gtk.WindowPosition.CENTER)
-        self.set_keep_above(True)
 
-        header = Gtk.HeaderBar(title=TITLE)
+        header = Gtk.HeaderBar()
         self.set_titlebar(header)
 
         self.grid = Gtk.Grid(
             row_spacing=10,
-            column_spacing=10
+            column_spacing=10,
+            margin_top=10,
+            margin_bottom=10,
+            margin_start=10,
+            margin_end=10,
         )
-        self.add(self.grid)
+        self.set_child(self.grid)
 
         # main text
         self.label = Gtk.Label()
@@ -96,7 +100,7 @@ class NvidiaWindow(Gtk.Window):
         self.grid.attach_next_to(self.run_label, self.label, Gtk.PositionType.BOTTOM, 1, 1)
 
         # copy button
-        self.copy_btn = Gtk.Button.new_from_icon_name("edit-copy-symbolic", Gtk.IconSize.MENU)
+        self.copy_btn = Gtk.Button.new_from_icon_name("edit-copy-symbolic")
         self.copy_btn.set_margin_top(20)
         self.copy_btn.set_tooltip_text("Copy")
         self.copy_btn.connect("clicked", lambda x: self.button_copy())
@@ -139,8 +143,8 @@ class NvidiaWindow(Gtk.Window):
 
 
     def button_copy(self):
-        clipboard = Gtk.Clipboard.get(Gdk.SELECTION_CLIPBOARD)
-        clipboard.set_text(COMMAND.format(self.nvidia_version[1]), -1)
+        buffer = self.textview.get_buffer()
+        self.get_clipboard().set(buffer.get_text(*buffer.get_bounds(), False))
 
 
 def main():
@@ -161,11 +165,10 @@ def main():
         do_not_show_file(False)
 
     if args.show or (nvidia_missing() and not os.path.exists(DO_NOT_SHOW_PATH)):
-        win = NvidiaWindow()
-        win.connect("destroy", Gtk.main_quit)
-        win.show_all()
-        Gtk.main()
+        application = Gtk.Application()
+        application.connect("activate", lambda app: NvidiaWindow(app).present())
+        return application.run([])
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())
