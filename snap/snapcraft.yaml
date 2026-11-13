@@ -214,6 +214,9 @@ parts:
     stage:
       # the amd64 snap's own metadata; snapcraft regenerates meta/ for this snap
       - -meta
+      # Native packages provide their own documentation, which may differ from
+      # the amd64 artifact even when the runtime files do not overlap.
+      - -usr/share/doc
       - -usr/bin/curl
       - -usr/bin/fc-cache
       - -usr/bin/fc-cat
@@ -1051,6 +1054,7 @@ parts:
       - fex-emu-armv8.0
       - fex-emu-wine
       - zenity
+      - bubblewrap # Private home bind for FEX and nested Steam runtimes
   fex-config:
     plugin: dump
     source: ./fex_config
@@ -1177,4 +1181,3 @@ apps:
       - upower-observe
       - uinput
       - dot-local-share-steam
-

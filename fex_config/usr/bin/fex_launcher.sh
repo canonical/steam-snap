@@ -39,13 +39,6 @@ export FEX_SERVERSOCKETPATH=$SNAP_USER_COMMON/.fex-emu/FEXServer.Socket
 export FEX_APP_CONFIG_LOCATION=$SNAP_USER_COMMON/fex_config/
 export FEX_ROOTFS=$SNAP_USER_COMMON/x86_rootfs/
 
-shadow_common="$FEX_ROOTFS$SNAP_USER_COMMON"
-if [[ -d "$shadow_common" && ! -L "$shadow_common" ]]; then
-	shadow_backup=$(mktemp -d "$SNAP_USER_COMMON/fex-shadow-backup.XXXXXX") || exit 1
-	mv -- "$shadow_common" "$shadow_backup/common" || exit 1
-	echo "Preserved shadowed FEX user data in $shadow_backup/common"
-fi
-
 mkdir -p $SNAP_USER_COMMON/.fex-emu/nvidia_ngx_config
 export FEX_STEAM_NGX_LIB_VERSION_FILE=$SNAP_USER_COMMON/.fex-emu/nvidia_ngx_config/ngx_lib_version.txt
 touch $FEX_STEAM_NGX_LIB_VERSION_FILE
@@ -66,6 +59,22 @@ if [ "$SNAP_ROOTFS_HASH" != "$HOME_ROOTFS_HASH" ]; then
 	echo "" > $FEX_STEAM_NGX_LIB_VERSION_FILE
 	rm $SNAP_USER_COMMON/prefer_custom_user_config # Also ask the user again if they want to update their config, if it differs
 fi
+
+# Steam recreates HOME inside the interpreter root, and nested pressure-vessel
+# containers then mount that incomplete home (losing .steam/sdk64, for example).
+# Preserve any old shadow data, then prepare a mount point for the private bind
+# at launch below. A bind preserves canonical paths; a symlink can loop in FEX
+# or change the rootfs prefix and break graphics-library imports.
+# Do this after extraction so a rootfs refresh cannot undo the mount point.
+shadow_common="${FEX_ROOTFS%/}$SNAP_USER_COMMON"
+if [[ -e "$shadow_common" || -L "$shadow_common" ]]; then
+	if [[ -L "$shadow_common" || ! -d "$shadow_common" || -n "$(find "$shadow_common" -mindepth 1 -maxdepth 1 -print -quit)" ]]; then
+		shadow_backup=$(mktemp -d "$SNAP_USER_COMMON/fex-shadow-backup.XXXXXX") || exit 1
+		mv -- "$shadow_common" "$shadow_backup/common" || exit 1
+		echo "Preserved shadowed FEX user data in $shadow_backup/common"
+	fi
+fi
+mkdir -p -- "$shadow_common" || exit 1
 
 nvidia_driver_version=$(cat /sys/module/nvidia/version 2>/dev/null || true)
 
@@ -192,4 +201,11 @@ export PRESSURE_VESSEL_FILESYSTEMS_RO="/snap/steam/current/usr/share/fex-emu:/sn
 #export LD_DEBUG=libs,files
 #export LD_DEBUG_OUTPUT=$SNAP_USER_COMMON/ld-debug
 
-$SNAP/usr/bin/FEXBash -c $SNAP/bin/desktop-launch "${desktop_launch_args[@]}"
+# With -c, the first argument after the command string becomes $0, not $1.
+# Use an explicit $0 and forward the executable and its arguments through $@.
+# Keep the bind inside a private mount namespace. Explicitly preserve /dev:
+# a normal bubblewrap bind is nodev, which would make /dev/null and GPU devices
+# unusable in the nested Steam runtimes.
+"$SNAP/usr/bin/bwrap" --bind / / --dev-bind /dev /dev --proc /proc \
+	--bind "$SNAP_USER_COMMON" "$shadow_common" -- \
+	"$SNAP/usr/bin/FEXBash" -c 'exec "$@"' bash "$SNAP/bin/desktop-launch" "${desktop_launch_args[@]}"

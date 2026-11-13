@@ -1,12 +1,9 @@
-# Does a FRESH REBUILD, which will clear the local rootfs components and download the new latest artifacts from remote.
-# To update the remote rootfs components, run tarx86.sh and upload those artifacts.
-# Download checksums of artifacts. If mismatched, download actual artifacts.
-# TODO download step
+#!/bin/bash
+set -euo pipefail
 
-snapcraft clean
-# Extract the artifacts
-rm -rf amd64_rootfs
-rm -rf steam_218_amd64
-tar -xvf steam_218_amd64.tar.gz
-tar -xvf amd64_rootfs.tar.gz 
-snapcraft
+cd -- "$(dirname -- "${BASH_SOURCE[0]}")"
+
+# Snapcraft downloads the amd64 artifacts declared in snap/snapcraft.yaml.
+# Reuse the isolated build environment; run `snapcraft clean --use-lxd` first
+# when a fresh rebuild is required.
+exec snapcraft pack --use-lxd "$@"
