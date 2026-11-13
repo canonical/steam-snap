@@ -1,0 +1,20 @@
+tracepoint:syscalls:sys_enter_openat
+/comm == "exe"/
+{
+    @fname[tid] = str(args->filename);
+}
+
+tracepoint:syscalls:sys_exit_openat
+/comm == "exe"/
+{
+    if ((int64)args->ret < 0) {
+        printf(
+            "[PID %d] FAILED open: %s (errno=%d)\n",
+            pid,
+            @fname[tid],
+            -(int64)args->ret
+        );
+    }
+    delete(@fname[tid]);
+}
+

@@ -1,0 +1,7 @@
+{
+  "Config": {
+    "HideHypervisorBit": "1",
+    "Multiblock": "0",
+    "DynamicL1CacheDecreaseCountHeuristic": "0"
+  }
+}
