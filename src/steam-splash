@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
 """Fullscreen (gamepad-shell) or windowed (everywhere else) "Starting
-Steam..." splash. Closes itself once Steam's final window is focused, or
+Steam..." splash. Closes itself once Steam's final window is visible, or
 after a timeout if detection never succeeds."""
 
 import os
 import subprocess
 import sys
 
-# Run on X11/XWayland like Steam itself, so xdotool sees focus moving
-# between the splash and Steam (native Wayland windows are invisible to it).
+# Run on X11/XWayland like Steam itself (native Wayland windows are
+# invisible to xdotool).
 os.environ["GDK_BACKEND"] = "x11"
 
 import gi
@@ -110,15 +110,15 @@ def _xdotool(*args):
 
 
 def steam_window_present():
-    """True once Steam's final (main) window is the focused window."""
-    window = _xdotool("getactivewindow")
-    if not window:
+    """True once Steam's final (main) window is visible, regardless of focus."""
+    windows = _xdotool("search", "--onlyvisible", "--class", "^steam$")
+    if not windows:
         return False
-    wm_class = _xdotool("getwindowclassname", window)
-    if not wm_class or wm_class.lower() != "steam":
-        return False
-    title = (_xdotool("getwindowname", window) or "").lower()
-    return bool(title) and not title.startswith(INTERIM_TITLE_PREFIXES)
+    for window in windows.splitlines():
+        title = (_xdotool("getwindowname", window) or "").lower()
+        if title and not title.startswith(INTERIM_TITLE_PREFIXES):
+            return True
+    return False
 
 
 class SplashApp(Gtk.Application):
