@@ -24,6 +24,20 @@ Install with
 
     snap install steam.snap --dangerous
 
+If you haven't installed the snap before, you may need to manually make the
+connections manually for it to work correctly.
+
+Run
+
+    snap connections steam
+
+Ensure that most plugs are connected. You can manually connect a plug with
+
+    snap connect steam:my-plug-here
+
+Most importantly, ensure `steam-support` is connected. Alternatively, install
+the Steam snap from the store and then install a local build over it.
+
 Run with
 
     snap run steam
