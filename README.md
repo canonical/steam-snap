@@ -25,7 +25,7 @@ Install with
     snap install steam.snap --dangerous
 
 If you haven't installed the snap before, you may need to manually make the
-connections manually for it to work correctly.
+connections for it to work correctly.
 
 Run
 
