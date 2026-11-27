@@ -28,6 +28,21 @@ snap run steam.test
 snap run --shell steam
 ```
 
+### [Workshop](https://ubuntu.com/workshop/docs/) VM
+
+If the `dev` Workshop exists, try to use it to iterate on changes. If the Workshop
+does not exist, prompt the user to create it or continue on the host without
+Workshop.
+
+- The checkout is mounted read-write at `/project`. Use `workshop run dev -- pack`
+  from the host or `snapcraft pack` from `/project` inside the VM.
+  The snap appears in the checkout root. The developer installs and tests it on
+  the host; do not install it or run Steam in the VM.
+- After the developer runs `.workshop/connect-host.sh`, inspect read-only host
+  data at `/host/home/snap/steam`, `/host/var/snap/steam`, `/host/snap/steam`,
+  and `/host/snap/gaming-graphics-core26`. Treat Steam settings and logs as
+  potentially sensitive and do not include credentials in reports.
+
 ### Runtime paths
 
 - `/snap/steam/current`: installed snap contents (`$SNAP`).
