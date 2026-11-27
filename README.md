@@ -5,24 +5,54 @@
 This is a snap of Valve's [Steam client][1]. It is intended to run on any system that supports snapd, providing a consistent environment to
 run the games separate from the underlying host operating system.
 
-## Building locally
+## Installing
+
+To install the Snap from the [official store](https://snapcraft.io/steam), run:
+
+```
+snap install steam
+```
+
+## Building & Installing Locally
 
 To build this snap locally, you need [Snapcraft][2].  The project can
 be built with the following command:
 
-    snapcraft --use-lxd
+    snapcraft pack
 
 Install with
 
     snap install steam.snap --dangerous
 
+If you haven't installed the snap before, you may need to manually make the
+connections for it to work correctly.
+
+Run
+
+    snap connections steam
+
+Ensure that most plugs are connected. You can manually connect a plug with
+
+    snap connect steam:my-plug-here
+
+Most importantly, ensure `steam-support` is connected. Alternatively, install
+the Steam snap from the store and then install a local build over it.
+
 Run with
 
     snap run steam
 
+After development and testing, be sure to revert to the official version of the Snap:
+
+    snap refresh steam --stable --amend
+
 ## Documentation
 
 For more information, refer to the [official Steam snap documentation][3].
+
+## Contributing
+
+See [CONTRIBUTING.md](./CONTRIBUTING.md).
 
 [1]: https://store.steampowered.com/about/
 [2]: https://docs.snapcraft.io/snapcraft-overview
