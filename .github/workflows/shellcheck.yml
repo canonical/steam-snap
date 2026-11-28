@@ -16,4 +16,4 @@ jobs:
     steps:
     - uses: actions/checkout@v7
     - name: Run ShellCheck
-      run: shellcheck src/desktop-launch src/glxgears src/glxinfo src/steam-snap.sh src/vkcube src/vulkaninfo
+      run: shellcheck src/desktop-launch src/glxgears src/glxinfo src/steam-snap.sh src/vkcube src/vulkaninfo .workshop/connect-host.sh
