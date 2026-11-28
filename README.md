@@ -46,6 +46,37 @@ After development and testing, be sure to revert to the official version of the 
 
     snap refresh steam --stable --amend
 
+### Build in a Workshop VM
+
+With [Workshop](https://ubuntu.com/workshop/docs/), you can iterate and build
+the snap from within a VM. This is optional, and just provides a more restricted
+and reproducible environment.
+
+```shell
+workshop launch dev
+workshop run dev -- pack
+```
+
+Install the resulting `steam_*.snap` from the checkout root manually on the
+host, using its filename with `sudo snap install --dangerous`.
+
+To debug the snap, run `.workshop/connect-host.sh` to copy your OpenCode settings
+and attach the host Steam snap directories read-only. Review what you share first:
+the VM can read the mounted Steam data, and the copied settings may contain credentials.
+
+Run OpenCode with `workshop run dev -- opencode`.
+
+By default, the script does not copy saved OpenCode provider connections. To
+pass provider credentials to the Workshop, run:
+
+```shell
+.workshop/connect-host.sh --with-provider-connections
+```
+
+Shell into the Workshop with `workshop shell dev`.
+
+Remove the Workshop with `workshop remove dev`.
+
 ## Documentation
 
 For more information, refer to the [official Steam snap documentation][3].

@@ -1,0 +1,9 @@
+#!/bin/bash
+set -euo pipefail
+
+snap wait system seed.loaded
+snap install --classic --channel=latest/stable snapcraft
+snap install --channel=6/stable lxd
+lxd waitready
+lxd init --auto --storage-backend=dir
+usermod -aG lxd workshop

@@ -1,0 +1,19 @@
+#!/bin/bash
+set -euo pipefail
+
+if ! systemctl is-active --quiet snapd.service || ! snap version; then
+    workshopctl set-health error "snapd is not running"
+    exit 1
+fi
+
+if ! snapcraft --version; then
+    workshopctl set-health error "Snapcraft is not available"
+    exit 1
+fi
+
+if ! runuser -u workshop -- lxc info; then
+    workshopctl set-health error "LXD is not available to the workshop user"
+    exit 1
+fi
+
+workshopctl set-health okay

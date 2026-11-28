@@ -1,0 +1,35 @@
+name: dev
+base: ubuntu@26.04
+runtime: lxd-vm
+cpus: 4
+disk: 20GiB
+sdks:
+  - name: opencode
+    channel: 2/stable
+  - name: project-snapcraft
+    plugs:
+      steam-user:
+        interface: mount
+        workshop-target: /host/home/snap/steam
+        read-only: true
+      steam-data:
+        interface: mount
+        workshop-target: /host/var/snap/steam
+        read-only: true
+      steam-snap:
+        interface: mount
+        workshop-target: /host/snap/steam
+        read-only: true
+      gaming-graphics:
+        interface: mount
+        workshop-target: /host/snap/gaming-graphics-core26
+        read-only: true
+actions:
+  pack: |
+    cd /project
+    snapcraft pack "$@"
+  clean: |
+    cd /project
+    snapcraft clean "$@"
+  opencode: |
+    opencode --standalone "$@"
